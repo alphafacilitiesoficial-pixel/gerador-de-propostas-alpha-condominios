@@ -1,7 +1,15 @@
 // Cálculo automático dos planos Alpha Condomínios
+// Nova tabela de preços (administração por faixa + síndico por unidades)
 
-export type PlanoEssencial = { tipo: "valor"; mensal: number; porUnidade: number } | { tipo: "consulta"; texto: string };
-export type PlanoSindico = { tipo: "valor"; mensal: number } | { tipo: "consulta"; texto: string };
+const SALARIO_MINIMO = Number(import.meta.env.VITE_SALARIO_MINIMO || "") || 0;
+
+export type PlanoEssencial =
+  | { tipo: "valor"; mensal: number; porUnidade: number }
+  | { tipo: "consulta"; texto: string };
+
+export type PlanoSindico =
+  | { tipo: "valor"; mensal: number; label?: string }
+  | { tipo: "consulta"; texto: string };
 
 export interface Calculo {
   essencial: PlanoEssencial;
@@ -10,68 +18,52 @@ export interface Calculo {
   sindico: PlanoSindico;
 }
 
-function calcAdmin(unidades: number, faixas: { ate: number; valor: number }[], minimo?: number, primeiraFaixa?: number): PlanoEssencial {
-  for (const f of faixas) {
-    if (unidades <= f.ate) {
-      let total = unidades * f.valor;
-      if (minimo && unidades <= (primeiraFaixa ?? 0) && total < minimo) total = minimo;
-      return { tipo: "valor", mensal: total, porUnidade: f.valor };
-    }
+// ===== ADMINISTRAÇÃO =====
+function calcAdminEssencial(unidades: number): PlanoEssencial {
+  if (unidades <= 28) return { tipo: "valor", mensal: 450, porUnidade: 450 / Math.max(unidades, 1) };
+  if (unidades <= 50) return { tipo: "valor", mensal: unidades * 15.5, porUnidade: 15.5 };
+  if (unidades <= 80) return { tipo: "valor", mensal: unidades * 14.5, porUnidade: 14.5 };
+  return { tipo: "valor", mensal: unidades * 12.5, porUnidade: 12.5 };
+}
+
+function calcAdminCompleto(unidades: number): PlanoEssencial {
+  if (unidades <= 28) return { tipo: "valor", mensal: 550, porUnidade: 550 / Math.max(unidades, 1) };
+  if (unidades <= 50) return { tipo: "valor", mensal: unidades * 17.5, porUnidade: 17.5 };
+  if (unidades <= 80) return { tipo: "valor", mensal: unidades * 18.5, porUnidade: 18.5 };
+  return { tipo: "valor", mensal: unidades * 15.5, porUnidade: 15.5 };
+}
+
+function calcAdminPremium(unidades: number): PlanoEssencial {
+  if (unidades <= 28) return { tipo: "valor", mensal: 650, porUnidade: 650 / Math.max(unidades, 1) };
+  if (unidades <= 50) return { tipo: "valor", mensal: unidades * 18.5, porUnidade: 18.5 };
+  if (unidades <= 80) return { tipo: "valor", mensal: unidades * 17.5, porUnidade: 17.5 };
+  return { tipo: "valor", mensal: unidades * 16.5, porUnidade: 16.5 };
+}
+
+// ===== SÍNDICO =====
+function calcSindico(unidades: number): PlanoSindico {
+  if (unidades <= 16) return { tipo: "valor", mensal: 1000, label: "R$ 1.000,00/mês" };
+  if (unidades <= 40) {
+    if (SALARIO_MINIMO) return { tipo: "valor", mensal: SALARIO_MINIMO, label: `1 salário-mínimo/mês (${formatBRL(SALARIO_MINIMO)})` };
+    return { tipo: "consulta", texto: "1 salário-mínimo/mês" };
   }
-  const ultima = faixas[faixas.length - 1];
-  return { tipo: "valor", mensal: unidades * ultima.valor, porUnidade: ultima.valor };
+  if (unidades <= 80) {
+    if (SALARIO_MINIMO) {
+      const v = SALARIO_MINIMO * 1.5;
+      return { tipo: "valor", mensal: v, label: `1,5 salário-mínimo/mês (${formatBRL(v)})` };
+    }
+    return { tipo: "consulta", texto: "1,5 salário-mínimo/mês" };
+  }
+  return { tipo: "consulta", texto: "Necessário visita ao condomínio para avaliar estrutura e demanda" };
 }
 
 export function calcularPlanos(unidades: number): Calculo {
-  // ESSENCIAL
-  const essencial: PlanoEssencial = calcAdmin(
-    unidades,
-    [
-      { ate: 20, valor: 22.5 },
-      { ate: 40, valor: 18.5 },
-      { ate: 80, valor: 16.5 },
-      { ate: Infinity, valor: 14.5 },
-    ],
-    450,
-    20,
-  );
-
-  // COMPLETO
-  const completo: PlanoEssencial = calcAdmin(
-    unidades,
-    [
-      { ate: 20, valor: 27.5 },
-      { ate: 40, valor: 22.5 },
-      { ate: 80, valor: 19.5 },
-      { ate: Infinity, valor: 17.5 },
-    ],
-    550,
-    20,
-  );
-
-  // PREMIUM
-  let premium: PlanoEssencial;
-  if (unidades >= 151) {
-    premium = { tipo: "consulta", texto: "Sob consulta" };
-  } else if (unidades <= 40) {
-    const total = Math.max(unidades * 35, 750);
-    premium = { tipo: "valor", mensal: total, porUnidade: 35 };
-  } else if (unidades <= 80) {
-    premium = { tipo: "valor", mensal: unidades * 27.5, porUnidade: 27.5 };
-  } else {
-    premium = { tipo: "valor", mensal: unidades * 22.5, porUnidade: 22.5 };
-  }
-
-  // SÍNDICO
-  let sindico: PlanoSindico;
-  if (unidades <= 15) sindico = { tipo: "valor", mensal: 1350 };
-  else if (unidades <= 20) sindico = { tipo: "valor", mensal: 1800 };
-  else if (unidades <= 40) sindico = { tipo: "valor", mensal: 2800 };
-  else if (unidades <= 80) sindico = { tipo: "valor", mensal: 4200 };
-  else if (unidades <= 150) sindico = { tipo: "consulta", texto: "7% da arrecadação (mínimo R$ 5.500)" };
-  else sindico = { tipo: "consulta", texto: "8 a 10% da arrecadação — Consultar" };
-
-  return { essencial, completo, premium, sindico };
+  return {
+    essencial: calcAdminEssencial(unidades),
+    completo: calcAdminCompleto(unidades),
+    premium: calcAdminPremium(unidades),
+    sindico: calcSindico(unidades),
+  };
 }
 
 export function formatBRL(v: number): string {
@@ -83,10 +75,10 @@ export function formatPlano(p: PlanoEssencial): string {
 }
 
 export function formatSindico(s: PlanoSindico): string {
-  return s.tipo === "valor" ? formatBRL(s.mensal) + "/mês" : s.texto;
+  if (s.tipo === "valor") return s.label ?? formatBRL(s.mensal) + "/mês";
+  return s.texto;
 }
 
-// Aplica desconto combo
 export function aplicarDescontoCombo(plano: PlanoEssencial, sindico: PlanoSindico): string {
   if (plano.tipo !== "valor" || sindico.tipo !== "valor") return "Sob consulta";
   const total = (plano.mensal + sindico.mensal) * 0.9;
