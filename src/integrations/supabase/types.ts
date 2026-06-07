@@ -14,13 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string | null
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          nome?: string | null
+          role?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string | null
+          role?: string
+        }
+        Relationships: []
+      }
+      propostas: {
+        Row: {
+          created_at: string
+          email: string
+          endereco: string
+          id: string
+          incluiu_administracao: boolean
+          incluiu_sindico: boolean
+          nome_condominio: string
+          nome_contato: string
+          numero_proposta: string
+          status: string
+          telefone: string
+          tipo: string
+          unidades: number
+          user_id: string
+          valor_completo: number | null
+          valor_essencial: number | null
+          valor_premium: string | null
+          valor_sindico: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          endereco: string
+          id?: string
+          incluiu_administracao?: boolean
+          incluiu_sindico?: boolean
+          nome_condominio: string
+          nome_contato: string
+          numero_proposta: string
+          status?: string
+          telefone: string
+          tipo: string
+          unidades: number
+          user_id: string
+          valor_completo?: number | null
+          valor_essencial?: number | null
+          valor_premium?: string | null
+          valor_sindico?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          endereco?: string
+          id?: string
+          incluiu_administracao?: boolean
+          incluiu_sindico?: boolean
+          nome_condominio?: string
+          nome_contato?: string
+          numero_proposta?: string
+          status?: string
+          telefone?: string
+          tipo?: string
+          unidades?: number
+          user_id?: string
+          valor_completo?: number | null
+          valor_essencial?: number | null
+          valor_premium?: string | null
+          valor_sindico?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_proposta_numero: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
