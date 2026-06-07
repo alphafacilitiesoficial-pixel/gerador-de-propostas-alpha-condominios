@@ -23,7 +23,7 @@ export function gerarPDFProposta(data: PropostaPDFData): PDFHandle {
       import("./pdf-document"),
       import("react"),
     ]);
-    const element = React.createElement(PropostaDocument, data);
+    const element = React.createElement(PropostaDocument, data) as any;
     return await pdf(element).toBlob();
   };
 
