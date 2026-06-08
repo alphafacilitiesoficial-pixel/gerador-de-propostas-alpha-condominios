@@ -144,13 +144,13 @@ export interface PropostaDocProps {
 }
 
 const DEFAULT_EMPRESA = {
-  nome: "Alpha Facilities",
+  nome: "Alpha Condomínios",
   telefone: "(31) 99778-7316",
-  email: "comercial@alphafacilities.com.br",
+  email: "comercial@alphacondominios.com.br",
 };
 
 const DEFAULT_QUEM_SOMOS = [
-  "A Alpha Facilities nasceu para transformar a administração de condomínios em Belo Horizonte e região metropolitana, oferecendo uma gestão profissional, transparente e humana. Atuamos com tecnologia de ponta e equipe altamente qualificada para garantir tranquilidade ao síndico e valorização do patrimônio dos condôminos.",
+  "A Alpha Condomínios nasceu para transformar a administração de condomínios em Belo Horizonte e região metropolitana, oferecendo uma gestão profissional, transparente e humana. Atuamos com tecnologia de ponta e equipe altamente qualificada para garantir tranquilidade ao síndico e valorização do patrimônio dos condôminos.",
   "Combinamos rigor técnico-contábil, agilidade no atendimento e proximidade com cada cliente. Acreditamos que cada condomínio é único — por isso, nossa proposta de valor é construída sob medida, sempre orientada por ética, eficiência e foco em resultados duradouros.",
 ];
 
@@ -238,7 +238,7 @@ function extrairCidade(endereco: string): string {
 function FooterBar({ pagina }: { pagina: string }) {
   return (
     <View style={s.footer} fixed>
-      <Text style={s.footerBrand}>ALPHA FACILITIES</Text>
+      <Text style={s.footerBrand}>ALPHA CONDOMÍNIOS</Text>
       <Text style={s.footerText}>{pagina}</Text>
     </View>
   );
@@ -272,7 +272,7 @@ export function PropostaDocument(props: PropostaDocProps) {
               <View style={s.coverLogoBox}>
                 <Text style={s.coverLogoMark}>A</Text>
               </View>
-              <Text style={{ color: GOLD, fontSize: 9, letterSpacing: 4, fontWeight: 700, marginTop: 8 }}>ALPHA FACILITIES</Text>
+              <Text style={{ color: GOLD, fontSize: 9, letterSpacing: 4, fontWeight: 700, marginTop: 8 }}>ALPHA CONDOMÍNIOS</Text>
             </View>
 
             <View>
@@ -319,7 +319,7 @@ export function PropostaDocument(props: PropostaDocProps) {
 
       {/* ============ PAGE 2: QUEM SOMOS ============ */}
       <Page size="A4" style={s.page}>
-        <SectionHeader badge="ALPHA FACILITIES" title="Quem Somos" />
+        <SectionHeader badge="ALPHA CONDOMÍNIOS" title="Quem Somos" />
         {quemSomos.map((p, i) => <Text key={i} style={s.paragraph}>{p}</Text>)}
 
         <View style={s.pillRow}>
@@ -585,7 +585,7 @@ export function PropostaDocument(props: PropostaDocProps) {
         <View style={{ marginTop: 30, height: 1, backgroundColor: GOLD }} />
 
         <View style={{ marginTop: 30, alignItems: "center" }}>
-          <Text style={{ fontSize: 10, color: GOLD, letterSpacing: 4, fontWeight: 700, marginBottom: 6 }}>ALPHA FACILITIES</Text>
+          <Text style={{ fontSize: 10, color: GOLD, letterSpacing: 4, fontWeight: 700, marginBottom: 6 }}>ALPHA CONDOMÍNIOS</Text>
           <Text style={{ fontSize: 16, color: NAVY, fontWeight: 700, textAlign: "center", maxWidth: 380, lineHeight: 1.4 }}>
             Estamos prontos para cuidar do seu condomínio com a excelência que ele merece.
           </Text>
