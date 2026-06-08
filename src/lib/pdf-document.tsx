@@ -23,8 +23,8 @@ const GRAY_700 = "#374151";
 const TEXT = "#111827";
 
 const s = StyleSheet.create({
-  page: { fontFamily: "Montserrat", fontSize: 10, color: TEXT, paddingTop: 50, paddingBottom: 60, paddingHorizontal: 50, backgroundColor: WHITE },
-  pageNavy: { fontFamily: "Montserrat", fontSize: 10, color: WHITE, backgroundColor: NAVY, padding: 0 },
+  page: { fontSize: 10, color: TEXT, paddingTop: 50, paddingBottom: 60, paddingHorizontal: 50, backgroundColor: WHITE },
+  pageNavy: { fontSize: 10, color: WHITE, backgroundColor: NAVY, padding: 0 },
 
   // Header / titles
   badge: { fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: 700, textTransform: "uppercase", marginBottom: 8 },
