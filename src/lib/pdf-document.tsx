@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import {
   calcularPlanos,
   formatPlano,
@@ -6,17 +6,8 @@ import {
   aplicarDescontoCombo,
 } from "./calculations";
 
-// Register Montserrat for a modern corporate feel
-Font.register({
-  family: "Montserrat",
-  fonts: [
-    { src: "https://fonts.gstatic.com/s/montserrat/v26/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Hw5aXp-p7K4KLg.ttf", fontWeight: 400 },
-    { src: "https://fonts.gstatic.com/s/montserrat/v26/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCs16Hw5aXp-p7K4KLg.ttf", fontWeight: 500 },
-    { src: "https://fonts.gstatic.com/s/montserrat/v26/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCvC5Hw5aXp-p7K4KLg.ttf", fontWeight: 600 },
-    { src: "https://fonts.gstatic.com/s/montserrat/v26/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCuM70w5aXp-p7K4KLg.ttf", fontWeight: 700 },
-    { src: "https://fonts.gstatic.com/s/montserrat/v26/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCth70w5aXp-p7K4KLg.ttf", fontWeight: 800 },
-  ],
-});
+// Using default Helvetica font (built-in to react-pdf) for maximum reliability.
+// External font registration via Google Fonts CDN can fail and silently break PDF generation.
 
 // Brand colors
 const NAVY = "#1B2A4A";
