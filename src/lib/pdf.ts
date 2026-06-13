@@ -9,6 +9,7 @@ export interface PropostaPDFData {
   contato: { nome: string; telefone: string; email: string };
   incluiAdmin: boolean;
   incluiSindico: boolean;
+  consideracoesFinais?: string; // ALTERADO — nova prop opcional
 }
 
 export interface PDFHandle {
