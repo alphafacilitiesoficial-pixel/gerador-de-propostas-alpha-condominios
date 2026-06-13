@@ -13,7 +13,7 @@ import { ClipboardList, UserCog, Sparkles, Check, ArrowLeft, ArrowRight, Buildin
 import { toast } from "sonner";
 import { calcularPlanos, formatPlano, formatSindico, aplicarDescontoCombo } from "@/lib/calculations";
 import { gerarPDFProposta } from "@/lib/pdf";
-import { Textarea } from "@/components/ui/textarea"; // ALTERADO — import do Textarea
+import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/_authenticated/nova")({
   component: NovaProposta,
@@ -45,7 +45,7 @@ function NovaProposta() {
   const [saving, setSaving] = useState(false);
   const [incluiAdmin, setIncluiAdmin] = useState(true);
   const [incluiSindico, setIncluiSindico] = useState(false);
-  const [consideracoesFinais, setConsideracoesFinais] = useState(""); // ALTERADO — novo estado
+  const [consideracoesFinais, setConsideracoesFinais] = useState("");
   const [form, setForm] = useState({
     nome_condominio: "",
     endereco: "",
@@ -136,7 +136,6 @@ function NovaProposta() {
       });
       if (error) throw error;
 
-      // ALTERADO — passa consideracoesFinais para o PDF
       const doc = gerarPDFProposta({
         numero, data: now,
         condominio: { nome: form.nome_condominio, endereco: form.endereco, unidades: unidadesNum, tipo: form.tipo as string },
@@ -177,6 +176,7 @@ function NovaProposta() {
           <Progress value={progress} className="h-2" />
         </div>
 
+        {/* ===== STEP 0 — Serviços ===== */}
         {step === 0 && (
           <div className="space-y-4">
             <h2 className="font-semibold text-lg">Quais serviços incluir?</h2>
@@ -197,8 +197,8 @@ function NovaProposta() {
               />
               <ServiceCard
                 icon={<Sparkles className="w-6 h-6" />}
-                title="Combo Completo"
-                desc="Ambos com 10% de desconto"
+                title="Combo (10% OFF)"
+                desc="Administração + Síndico com desconto"
                 checked={incluiAdmin && incluiSindico}
                 onClick={setCombo}
               />
@@ -206,128 +206,162 @@ function NovaProposta() {
           </div>
         )}
 
+        {/* ===== STEP 1 — Condomínio ===== */}
         {step === 1 && (
           <div className="space-y-4">
-            <h2 className="font-semibold text-lg flex items-center gap-2"><Building2 className="w-5 h-5" /> Dados do Condomínio</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
-                <Label>Nome do Condomínio</Label>
-                <Input value={form.nome_condominio} onChange={(e) => setForm({ ...form, nome_condominio: e.target.value })} placeholder="Ex.: Edifício Alpha Tower" />
-                {errors.nome_condominio && <p className="text-destructive text-xs mt-1">{errors.nome_condominio}</p>}
-              </div>
-              <div className="md:col-span-2">
-                <Label>Endereço</Label>
-                <Input value={form.endereco} onChange={(e) => setForm({ ...form, endereco: e.target.value })} placeholder="Rua, nº, bairro, cidade – UF" />
-                {errors.endereco && <p className="text-destructive text-xs mt-1">{errors.endereco}</p>}
+            <h2 className="font-semibold text-lg">Dados do Condomínio</h2>
+            <div className="grid gap-4">
+              <div>
+                <Label htmlFor="nome_condominio">Nome do Condomínio</Label>
+                <Input id="nome_condominio" value={form.nome_condominio} onChange={(e) => setForm({ ...form, nome_condominio: e.target.value })} placeholder="Ex: Residencial Bela Vista" />
+                {errors.nome_condominio && <p className="text-xs text-destructive mt-1">{errors.nome_condominio}</p>}
               </div>
               <div>
-                <Label>Nº de Unidades</Label>
-                <Input type="number" min={1} value={form.unidades} onChange={(e) => setForm({ ...form, unidades: e.target.value })} placeholder="Ex.: 60" />
-                {errors.unidades && <p className="text-destructive text-xs mt-1">{errors.unidades}</p>}
+                <Label htmlFor="endereco">Endereço Completo</Label>
+                <Input id="endereco" value={form.endereco} onChange={(e) => setForm({ ...form, endereco: e.target.value })} placeholder="Rua, número, bairro, cidade – UF" />
+                {errors.endereco && <p className="text-xs text-destructive mt-1">{errors.endereco}</p>}
               </div>
-              <div>
-                <Label>Tipo</Label>
-                <Select value={form.tipo} onValueChange={(v) => setForm({ ...form, tipo: v as any })}>
-                  <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="residencial">Residencial</SelectItem>
-                    <SelectItem value="comercial">Comercial</SelectItem>
-                    <SelectItem value="misto">Misto</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.tipo && <p className="text-destructive text-xs mt-1">{errors.tipo}</p>}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="unidades">Nº de Unidades</Label>
+                  <Input id="unidades" type="number" min={1} value={form.unidades} onChange={(e) => setForm({ ...form, unidades: e.target.value })} placeholder="Ex: 60" />
+                  {errors.unidades && <p className="text-xs text-destructive mt-1">{errors.unidades}</p>}
+                </div>
+                <div>
+                  <Label>Tipo</Label>
+                  <Select value={form.tipo} onValueChange={(v) => setForm({ ...form, tipo: v as any })}>
+                    <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="residencial">Residencial</SelectItem>
+                      <SelectItem value="comercial">Comercial</SelectItem>
+                      <SelectItem value="misto">Misto</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.tipo && <p className="text-xs text-destructive mt-1">{errors.tipo}</p>}
+                </div>
               </div>
             </div>
           </div>
         )}
 
+        {/* ===== STEP 2 — Contato ===== */}
         {step === 2 && (
           <div className="space-y-4">
-            <h2 className="font-semibold text-lg flex items-center gap-2"><Phone className="w-5 h-5" /> Contato do Responsável</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
-                <Label>Nome</Label>
-                <Input value={form.nome_contato} onChange={(e) => setForm({ ...form, nome_contato: e.target.value })} placeholder="Nome completo" />
-                {errors.nome_contato && <p className="text-destructive text-xs mt-1">{errors.nome_contato}</p>}
+            <h2 className="font-semibold text-lg">Contato do Responsável</h2>
+            <div className="grid gap-4">
+              <div>
+                <Label htmlFor="nome_contato">Nome</Label>
+                <Input id="nome_contato" value={form.nome_contato} onChange={(e) => setForm({ ...form, nome_contato: e.target.value })} placeholder="Nome completo" />
+                {errors.nome_contato && <p className="text-xs text-destructive mt-1">{errors.nome_contato}</p>}
               </div>
               <div>
-                <Label>Telefone</Label>
-                <Input value={form.telefone} onChange={(e) => setForm({ ...form, telefone: maskTelefone(e.target.value) })} placeholder="(31) 99999-9999" />
-                {errors.telefone && <p className="text-destructive text-xs mt-1">{errors.telefone}</p>}
+                <Label htmlFor="telefone">Telefone</Label>
+                <Input id="telefone" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: maskTelefone(e.target.value) })} placeholder="(31) 99999-9999" />
+                {errors.telefone && <p className="text-xs text-destructive mt-1">{errors.telefone}</p>}
               </div>
               <div>
-                <Label>E-mail</Label>
-                <Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="contato@email.com" />
-                {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
+                <Label htmlFor="email">E-mail</Label>
+                <Input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="contato@condominio.com" />
+                {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
               </div>
             </div>
           </div>
         )}
 
+        {/* ===== STEP 3 — Revisão ===== */}
         {step === 3 && (
           <div className="space-y-4">
-            <h2 className="font-semibold text-lg flex items-center gap-2"><FileText className="w-5 h-5" /> Revisão da Proposta</h2>
-            <div className="rounded-lg bg-muted/50 p-4 space-y-3 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">Condomínio</span><span className="font-medium">{form.nome_condominio}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Endereço</span><span className="font-medium">{form.endereco}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Unidades</span><span className="font-medium">{unidadesNum}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Tipo</span><span className="font-medium">{form.tipo ? tipoLabel[form.tipo as keyof typeof tipoLabel] : ""}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Contato</span><span className="font-medium">{form.nome_contato}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Telefone</span><span className="font-medium">{form.telefone}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">E-mail</span><span className="font-medium">{form.email}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Serviços</span>
-                <span className="flex gap-1">
-                  {incluiAdmin && <Badge variant="secondary">Administração</Badge>}
-                  {incluiSindico && <Badge variant="secondary">Síndico</Badge>}
-                </span>
+            <h2 className="font-semibold text-lg">Revisão da Proposta</h2>
+
+            <div className="grid gap-3 text-sm">
+              <div className="flex items-start gap-2">
+                <Building2 className="w-4 h-4 mt-0.5 text-primary" />
+                <div>
+                  <p className="font-medium">{form.nome_condominio}</p>
+                  <p className="text-muted-foreground">{form.endereco}</p>
+                  <p className="text-muted-foreground">{unidadesNum} unidades · {tipoLabel[form.tipo as keyof typeof tipoLabel]}</p>
+                </div>
               </div>
+
+              <div className="flex items-start gap-2">
+                <Phone className="w-4 h-4 mt-0.5 text-primary" />
+                <div>
+                  <p className="font-medium">{form.nome_contato}</p>
+                  <p className="text-muted-foreground">{form.telefone} · {form.email}</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <FileText className="w-4 h-4 mt-0.5 text-primary" />
+                <div>
+                  <p className="font-medium">Serviços selecionados</p>
+                  <div className="flex gap-2 mt-1">
+                    {incluiAdmin && <Badge variant="secondary">Administração</Badge>}
+                    {incluiSindico && <Badge variant="secondary">Síndico Profissional</Badge>}
+                    {incluiAdmin && incluiSindico && <Badge variant="outline" className="text-xs">10% OFF Combo</Badge>}
+                  </div>
+                </div>
+              </div>
+
               {calc && incluiAdmin && (
-                <>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Essencial</span><span className="font-medium">{formatPlano(calc.essencial)}/mês</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Completo</span><span className="font-medium">{formatPlano(calc.completo)}/mês</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Premium</span><span className="font-medium">{formatPlano(calc.premium)}/mês</span></div>
-                </>
+                <div className="mt-2 rounded-lg border p-3 bg-muted/30 text-xs space-y-1">
+                  <p><strong>Essencial:</strong> {formatPlano(calc.essencial)}</p>
+                  <p><strong>Completo:</strong> {formatPlano(calc.completo)}</p>
+                  <p><strong>Premium:</strong> {formatPlano(calc.premium)}</p>
+                  {incluiSindico && calc.sindico && (
+                    <>
+                      <p><strong>Síndico:</strong> {formatSindico(calc.sindico)}</p>
+                      <p><strong>Combo Completo + Síndico (10% OFF):</strong> {aplicarDescontoCombo(calc.completo, calc.sindico)}</p>
+                    </>
+                  )}
+                </div>
               )}
-              {calc && incluiSindico && (
-                <div className="flex justify-between"><span className="text-muted-foreground">Síndico Profissional</span><span className="font-medium">{formatSindico(calc.sindico)}/mês</span></div>
-              )}
-              {calc && incluiAdmin && incluiSindico && (
-                <div className="flex justify-between border-t pt-2"><span className="text-muted-foreground font-semibold">Combo (–10%)</span><span className="font-bold text-primary">{aplicarDescontoCombo(calc)}/mês</span></div>
+
+              {calc && !incluiAdmin && incluiSindico && (
+                <div className="mt-2 rounded-lg border p-3 bg-muted/30 text-xs space-y-1">
+                  <p><strong>Síndico Profissional:</strong> {formatSindico(calc.sindico)}</p>
+                </div>
               )}
             </div>
 
-            {/* ALTERADO — campo de Considerações Finais */}
-            <div className="space-y-2">
+            {/* Campo Considerações Finais */}
+            <div className="space-y-2 pt-2">
               <Label htmlFor="consideracoes">Considerações Finais (opcional)</Label>
               <Textarea
                 id="consideracoes"
+                placeholder="Observações, condições especiais, informações extras que devem aparecer na proposta…"
                 value={consideracoesFinais}
                 onChange={(e) => setConsideracoesFinais(e.target.value)}
-                placeholder="Observações adicionais que devem aparecer na proposta…"
                 rows={4}
                 className="resize-y"
               />
               <p className="text-xs text-muted-foreground">
-                Se preenchido, será incluído como página extra no PDF.
+                Se preenchido, será incluído como página dedicada no PDF.
               </p>
             </div>
           </div>
         )}
 
-        <div className="flex justify-between mt-6">
+        {/* ===== Navegação ===== */}
+        <div className="flex justify-between mt-8">
           {step > 0 ? (
             <Button variant="outline" onClick={() => setStep(step - 1)}>
-              <ArrowLeft className="w-4 h-4 mr-1" /> Voltar
-            </Button>
-          ) : <span />}
-          {step < 3 ? (
-            <Button onClick={avancar}>
-              Avançar <ArrowRight className="w-4 h-4 ml-1" />
+              <ArrowLeft className="w-4 h-4 mr-2" /> Voltar
             </Button>
           ) : (
-            <Button onClick={gerarESalvar} disabled={saving} className="gap-2">
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
-              Gerar PDF e Salvar
+            <Button variant="outline" onClick={() => navigate({ to: "/dashboard" })}>
+              <ArrowLeft className="w-4 h-4 mr-2" /> Cancelar
+            </Button>
+          )}
+
+          {step < 3 ? (
+            <Button onClick={avancar}>
+              Avançar <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          ) : (
+            <Button onClick={gerarESalvar} disabled={saving}>
+              {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
+              {saving ? "Gerando…" : "Gerar Proposta"}
             </Button>
           )}
         </div>
@@ -338,10 +372,20 @@ function NovaProposta() {
 
 function ServiceCard({ icon, title, desc, checked, onClick }: { icon: React.ReactNode; title: string; desc: string; checked: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} className={`relative rounded-lg border-2 p-4 text-left transition-all hover:shadow-md ${checked ? "border-primary bg-primary/5" : "border-muted"}`}>
-      {checked && <Check className="absolute top-2 right-2 w-4 h-4 text-primary" />}
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative rounded-xl border-2 p-4 text-left transition-all hover:shadow-md ${
+        checked ? "border-primary bg-primary/5 shadow-sm" : "border-muted bg-card hover:border-muted-foreground/30"
+      }`}
+    >
+      {checked && (
+        <span className="absolute top-2 right-2 rounded-full bg-primary p-0.5 text-white">
+          <Check className="w-3 h-3" />
+        </span>
+      )}
       <div className="mb-2 text-primary">{icon}</div>
-      <h3 className="font-semibold text-sm">{title}</h3>
+      <p className="font-semibold text-sm">{title}</p>
       <p className="text-xs text-muted-foreground mt-1">{desc}</p>
     </button>
   );
