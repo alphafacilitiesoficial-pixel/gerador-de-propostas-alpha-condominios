@@ -156,12 +156,14 @@ const DIFERENCIAIS = [
 ];
 
 const SERVICOS_GRID = [
-  { icon: "$", title: "Gestão Financeira", desc: "Emissão de boletos, cobrança, conciliação bancária e balancetes." },
-  { icon: "⚙", title: "Gestão de Manutenção", desc: "Acompanhamento de fornecedores, orçamentos e ordens de serviço." },
-  { icon: "▤", title: "Gestão Administrativa", desc: "Atas, convocações, comunicados e arquivo documental." },
-  { icon: "✚", title: "Gestão de RH", desc: "Folha, encargos, férias e obrigações trabalhistas dos funcionários." },
-  { icon: "§", title: "Assessoria Jurídica", desc: "Cobranças, ações de inadimplência e orientações sobre a Lei 4.591/64." },
-  { icon: "◈", title: "Tecnologia", desc: "Portal do condômino, app, integração bancária e relatórios online." },
+  { icon: "🏢", title: "Administração de Condomínios", desc: "Gestão completa: financeira, operacional, documental e de assembleias." },
+  { icon: "👔", title: "Síndico Profissional", desc: "Administração dedicada com presença semanal e tomada de decisão estratégica." },
+  { icon: "🔐", title: "Certificado Digital", desc: "Emissão e renovação do e-CNPJ do condomínio para obrigações fiscais e bancárias." },
+  { icon: "🛡️", title: "Seguro Condominial", desc: "Cotação e gestão do seguro predial obrigatório com as melhores coberturas do mercado." },
+  { icon: "🔥", title: "AVCB", desc: "Auto de Vistoria do Corpo de Bombeiros: regularização, laudos e renovação." },
+  { icon: "⚖️", title: "Assessoria Jurídica", desc: "Cobranças, ações de inadimplência, contratos e orientação legal especializada." },
+  { icon: "💳", title: "Garantidora de Crédito", desc: "Antecipação de receitas e proteção contra inadimplência com garantia de recebíveis." },
+  { icon: "➕", title: "Dentre Outros", desc: "Soluções personalizadas conforme a necessidade do seu condomínio." },
 ];
 
 const PLANO_ESSENCIAL_ITENS = [
