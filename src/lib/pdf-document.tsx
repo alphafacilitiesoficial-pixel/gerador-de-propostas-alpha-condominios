@@ -138,7 +138,7 @@ export interface PropostaDocProps {
 const DEFAULT_EMPRESA = {
   nome: "Alpha Condomínios",
   telefone: "(31) 99778-7316",
-  email: "comercial@alphacondominios.com.br",
+  email: "comercial@alphafacilities.com.br",
 };
 
 const DEFAULT_QUEM_SOMOS = [
