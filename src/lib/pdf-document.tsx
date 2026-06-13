@@ -7,9 +7,6 @@ import {
 } from "./calculations";
 import logoAlpha from "../assets/logo-alpha.png";
 
-// Using default Helvetica font (built-in to react-pdf) for maximum reliability.
-// External font registration via Google Fonts CDN can fail and silently break PDF generation.
-
 // Brand colors
 const NAVY = "#1B2A4A";
 const NAVY_DARK = "#0F1B33";
@@ -27,7 +24,6 @@ const s = StyleSheet.create({
   page: { fontSize: 10, color: TEXT, paddingTop: 50, paddingBottom: 60, paddingHorizontal: 50, backgroundColor: WHITE },
   pageNavy: { fontSize: 10, color: WHITE, backgroundColor: NAVY, padding: 0 },
 
-  // Header / titles
   badge: { fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: 700, textTransform: "uppercase", marginBottom: 8 },
   badgeNavy: { fontSize: 8, color: NAVY, letterSpacing: 2, fontWeight: 700, textTransform: "uppercase", marginBottom: 8 },
   h1: { fontSize: 26, fontWeight: 800, color: NAVY, marginBottom: 14, letterSpacing: -0.5 },
@@ -38,12 +34,10 @@ const s = StyleSheet.create({
 
   divider: { height: 3, width: 48, backgroundColor: GOLD, marginBottom: 18 },
 
-  // Footer
   footer: { position: "absolute", bottom: 24, left: 50, right: 50, flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingTop: 10, borderTopWidth: 0.5, borderTopColor: GRAY_300 },
   footerText: { fontSize: 8, color: GRAY_500 },
   footerBrand: { fontSize: 8, color: NAVY, fontWeight: 700, letterSpacing: 1 },
 
-  // Cards
   cardGrid: { flexDirection: "row", flexWrap: "wrap", marginHorizontal: -6 },
   card: { width: "50%", padding: 6 },
   cardInner: { backgroundColor: WHITE, borderWidth: 1, borderColor: GRAY_100, borderRadius: 8, padding: 16, height: 130 },
@@ -51,11 +45,9 @@ const s = StyleSheet.create({
   cardTitle: { fontSize: 11, fontWeight: 700, color: NAVY, marginBottom: 4 },
   cardDesc: { fontSize: 9, color: GRAY_500, lineHeight: 1.5 },
 
-  // Pills
   pillRow: { flexDirection: "row", marginTop: 20 },
   pill: { backgroundColor: NAVY, color: WHITE, paddingVertical: 6, paddingHorizontal: 14, borderRadius: 20, fontSize: 9, fontWeight: 600, marginRight: 8 },
 
-  // Plan page
   planHero: { backgroundColor: NAVY, padding: 24, borderRadius: 10, marginBottom: 20 },
   planHeroBadge: { fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: 700, marginBottom: 6 },
   planHeroTitle: { fontSize: 26, color: WHITE, fontWeight: 800, marginBottom: 4 },
@@ -75,7 +67,9 @@ const s = StyleSheet.create({
   invValue: { fontSize: 28, color: WHITE, fontWeight: 800 },
   invNote: { fontSize: 8, color: GOLD_LIGHT, marginTop: 6 },
 
-  // Comparison table
+  // ALTERADO — novo estilo para "Consulte as Vantagens"
+  invConsulte: { fontSize: 18, color: GOLD_LIGHT, fontWeight: 700, fontStyle: "italic" },
+
   table: { borderWidth: 1, borderColor: GRAY_100, borderRadius: 6, overflow: "hidden", marginBottom: 14 },
   thRow: { flexDirection: "row", backgroundColor: NAVY },
   th: { color: WHITE, fontSize: 9.5, fontWeight: 700, padding: 10, textAlign: "center" },
@@ -88,7 +82,6 @@ const s = StyleSheet.create({
   catRow: { backgroundColor: NAVY_DARK, padding: 6, paddingLeft: 10 },
   catText: { color: GOLD, fontSize: 8.5, fontWeight: 700, letterSpacing: 1 },
 
-  // Conditions grid
   condGrid: { flexDirection: "row", flexWrap: "wrap", marginHorizontal: -7 },
   condCell: { width: "50%", padding: 7 },
   condBox: { borderWidth: 1, borderColor: GRAY_100, borderRadius: 8, padding: 16, backgroundColor: GRAY_50, minHeight: 100 },
@@ -96,7 +89,6 @@ const s = StyleSheet.create({
   condTitle: { fontSize: 11, fontWeight: 700, color: NAVY, marginBottom: 4 },
   condText: { fontSize: 9.5, color: GRAY_700, lineHeight: 1.5 },
 
-  // Next steps
   stepRow: { flexDirection: "row", marginBottom: 18, alignItems: "flex-start" },
   stepNumWrap: { width: 50, height: 50, borderRadius: 25, backgroundColor: NAVY, alignItems: "center", justifyContent: "center", marginRight: 16 },
   stepNum: { color: GOLD, fontSize: 20, fontWeight: 800 },
@@ -104,7 +96,6 @@ const s = StyleSheet.create({
   stepTitle: { fontSize: 13, fontWeight: 700, color: NAVY, marginBottom: 4 },
   stepDesc: { fontSize: 10, color: GRAY_700, lineHeight: 1.5 },
 
-  // Cover
   coverWrap: { flex: 1, flexDirection: "row", backgroundColor: NAVY },
   coverLeft: { width: "60%", padding: 50, paddingTop: 60, justifyContent: "space-between" },
   coverRight: { width: "40%", backgroundColor: NAVY_DARK, padding: 0, position: "relative" },
@@ -133,6 +124,7 @@ export interface PropostaDocProps {
   incluiSindico: boolean;
   empresa?: { nome: string; telefone: string; email: string };
   quemSomos?: string[];
+  consideracoesFinais?: string; // ALTERADO — nova prop opcional
 }
 
 const DEFAULT_EMPRESA = {
@@ -215,6 +207,60 @@ const COMPARATIVO = [
   ]},
 ];
 
+// ALTERADO — Texto da página dedicada ao Síndico Profissional
+const SINDICO_PROFISSIONAL_DESCRICAO = [
+  {
+    titulo: "Gestão Administrativa e Legal",
+    itens: [
+      "Representação oficial do condomínio, ativa e passivamente, em juízo ou fora dele",
+      "Cumprimento rigoroso da Convenção, Regimento Interno e deliberações de assembleia",
+      "Planejamento, convocação e condução de assembleias (ordinárias e extraordinárias) com atas registradas",
+      "Gestão de contratos com fornecedores, buscando melhor custo-benefício",
+      "Seguro predial sempre atualizado e em conformidade legal",
+    ],
+  },
+  {
+    titulo: "Gestão Financeira e Orçamentária",
+    itens: [
+      "Elaboração da previsão orçamentária anual com cenários e premissas claras",
+      "Prestação de contas mensal e anual com balancetes e relatórios objetivos",
+      "Combate à inadimplência: negociação estruturada e, quando necessário, medidas judiciais",
+    ],
+  },
+  {
+    titulo: "Gestão Operacional e Manutenção",
+    itens: [
+      "Conservação das áreas comuns e manutenção preventiva e corretiva (elevadores, bombas, portões, estrutura)",
+      "Fiscalização de serviços próprios e terceirizados (limpeza, portaria, jardinagem)",
+      "Coordenação de obras e melhorias aprovadas, controlando prazos, custos e normas técnicas",
+    ],
+  },
+  {
+    titulo: "Gestão de Pessoas e Relacionamento",
+    itens: [
+      "Liderança da equipe: definição de funções, escalas e padrões de desempenho",
+      "Comunicação constante com moradores via circulares e canais digitais",
+      "Mediação imparcial de conflitos, ancorada no Regimento Interno",
+    ],
+  },
+  {
+    titulo: "Presença Semanal — Nosso Compromisso",
+    itens: [
+      "Inspeção detalhada das áreas comuns e instalações",
+      "Verificação de execução de limpeza, segurança e manutenção",
+      "Acompanhamento de obras e reparos em andamento",
+      "Conversas com funcionários e moradores para captar demandas",
+      "Ações proativas para otimizar operação e reduzir custos",
+    ],
+  },
+];
+
+const SINDICO_RC_DESTAQUE = {
+  titulo: "Seguro de Responsabilidade Civil (RC) do Síndico",
+  desc: "Cobertura para danos materiais, corporais ou morais a terceiros, custos com advogados, processos judiciais decorrentes de decisões administrativas e, conforme apólice, gestão de crises de imagem.",
+  nota: "O RC Síndico é um seguro pessoal para o administrador — diferente do seguro predial obrigatório, que cobre a estrutura do edifício.",
+};
+
 const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 
 function formatDateExt(d: Date, cidade: string): string {
@@ -222,7 +268,6 @@ function formatDateExt(d: Date, cidade: string): string {
 }
 
 function extrairCidade(endereco: string): string {
-  // try to find "cidade/UF" pattern
   const m = endereco.match(/([A-Za-zÀ-ÿ\s]+)\s*[/-]\s*[A-Z]{2}/);
   if (m) return m[1].trim();
   const parts = endereco.split(",").map((p) => p.trim()).filter(Boolean);
@@ -255,11 +300,29 @@ export function PropostaDocument(props: PropostaDocProps) {
   const cidade = props.cidade ?? extrairCidade(condominio.endereco);
   const calc = calcularPlanos(condominio.unidades);
   const dataExt = formatDateExt(data, cidade);
+  const consideracoesFinais = props.consideracoesFinais; // ALTERADO
+
+  // ALTERADO — calcular total de páginas dinamicamente
+  const temPaginaSindico = incluiSindico; // sempre mostra a página descritiva do síndico
+  const temConsideracoes = !!consideracoesFinais && consideracoesFinais.trim().length > 0;
+  let totalPaginas = 10; // base: capa + quem somos + diferenciais + serviços + 3 planos + comparativo + condições + próximos passos
+  if (temPaginaSindico) totalPaginas++;
+  if (temConsideracoes) totalPaginas++;
+
+  // ALTERADO — helper para número de página
+  let paginaAtual = 0;
+  const proxPag = (label: string) => {
+    paginaAtual++;
+    const num = String(paginaAtual).padStart(2, "0");
+    const total = String(totalPaginas).padStart(2, "0");
+    return `${num} / ${total}  ·  ${label}`;
+  };
 
   return (
     <Document title={`Proposta ${numero} — ${condominio.nome}`} author={empresa.nome}>
       {/* ============ PAGE 1: COVER ============ */}
       <Page size="A4" style={s.pageNavy}>
+        {(() => { paginaAtual = 1; return null; })()}
         <View style={s.coverWrap}>
           <View style={s.coverLeft}>
             <View>
@@ -293,7 +356,7 @@ export function PropostaDocument(props: PropostaDocProps) {
             </View>
 
             <View style={s.coverContactCard}>
-              <View style={s.coverLogoBox && { width: 30, height: 30, borderRadius: 4, backgroundColor: NAVY, alignItems: "center", justifyContent: "center", marginBottom: 10 }}>
+              <View style={{ width: 30, height: 30, borderRadius: 4, backgroundColor: NAVY, alignItems: "center", justifyContent: "center", marginBottom: 10 }}>
                 <Text style={{ color: GOLD, fontSize: 13, fontWeight: 800 }}>A</Text>
               </View>
               <View style={s.coverContactRow}>
@@ -311,7 +374,6 @@ export function PropostaDocument(props: PropostaDocProps) {
 
       {/* ============ PAGE 2: QUEM SOMOS ============ */}
       <Page size="A4" style={s.page}>
-        <SectionHeader badge="ALPHA CONDOMÍNIOS" title="Quem Somos" />
         {quemSomos.map((p, i) => <Text key={i} style={s.paragraph}>{p}</Text>)}
 
         <View style={s.pillRow}>
@@ -327,7 +389,7 @@ export function PropostaDocument(props: PropostaDocProps) {
           </Text>
         </View>
 
-        <FooterBar pagina="02 / 10  ·  Quem Somos" />
+        <FooterBar pagina={proxPag("Quem Somos")} />
       </Page>
 
       {/* ============ PAGE 3: DIFERENCIAIS ============ */}
@@ -344,7 +406,7 @@ export function PropostaDocument(props: PropostaDocProps) {
             </View>
           ))}
         </View>
-        <FooterBar pagina="03 / 10  ·  Diferenciais" />
+        <FooterBar pagina={proxPag("Diferenciais")} />
       </Page>
 
       {/* ============ PAGE 4: SERVIÇOS ============ */}
@@ -361,7 +423,7 @@ export function PropostaDocument(props: PropostaDocProps) {
             </View>
           ))}
         </View>
-        <FooterBar pagina="04 / 10  ·  Serviços" />
+        <FooterBar pagina={proxPag("Serviços")} />
       </Page>
 
       {/* ============ PAGE 5: ESSENCIAL ============ */}
@@ -386,15 +448,20 @@ export function PropostaDocument(props: PropostaDocProps) {
           </View>
         ))}
 
-        {incluiAdmin && (
-          <View style={s.invBox}>
-            <Text style={s.invLabel}>INVESTIMENTO MENSAL</Text>
-            <Text style={s.invValue}>{formatPlano(calc.essencial)}</Text>
-            <Text style={s.invNote}>Para {condominio.unidades} unidades · reajuste anual pelo IPCA/IGP-M</Text>
-          </View>
-        )}
+        {/* ALTERADO — mostra valor ou "Consulte as Vantagens" */}
+        <View style={s.invBox}>
+          <Text style={s.invLabel}>INVESTIMENTO MENSAL</Text>
+          {incluiAdmin ? (
+            <>
+              <Text style={s.invValue}>{formatPlano(calc.essencial)}</Text>
+              <Text style={s.invNote}>Para {condominio.unidades} unidades · reajuste anual pelo IPCA/IGP-M</Text>
+            </>
+          ) : (
+            <Text style={s.invConsulte}>Consulte as Vantagens</Text>
+          )}
+        </View>
 
-        <FooterBar pagina="05 / 10  ·  Plano Essencial" />
+        <FooterBar pagina={proxPag("Plano Essencial")} />
       </Page>
 
       {/* ============ PAGE 6: COMPLETO ============ */}
@@ -420,15 +487,20 @@ export function PropostaDocument(props: PropostaDocProps) {
           </View>
         ))}
 
-        {incluiAdmin && (
-          <View style={s.invBox}>
-            <Text style={s.invLabel}>INVESTIMENTO MENSAL</Text>
-            <Text style={s.invValue}>{formatPlano(calc.completo)}</Text>
-            <Text style={s.invNote}>Para {condominio.unidades} unidades · plano mais contratado</Text>
-          </View>
-        )}
+        {/* ALTERADO — mostra valor ou "Consulte as Vantagens" */}
+        <View style={s.invBox}>
+          <Text style={s.invLabel}>INVESTIMENTO MENSAL</Text>
+          {incluiAdmin ? (
+            <>
+              <Text style={s.invValue}>{formatPlano(calc.completo)}</Text>
+              <Text style={s.invNote}>Para {condominio.unidades} unidades · plano mais contratado</Text>
+            </>
+          ) : (
+            <Text style={s.invConsulte}>Consulte as Vantagens</Text>
+          )}
+        </View>
 
-        <FooterBar pagina="06 / 10  ·  Plano Completo" />
+        <FooterBar pagina={proxPag("Plano Completo")} />
       </Page>
 
       {/* ============ PAGE 7: PREMIUM ============ */}
@@ -454,15 +526,20 @@ export function PropostaDocument(props: PropostaDocProps) {
           </View>
         ))}
 
-        {incluiAdmin && (
-          <View style={s.invBox}>
-            <Text style={s.invLabel}>INVESTIMENTO MENSAL</Text>
-            <Text style={s.invValue}>{formatPlano(calc.premium)}</Text>
-            <Text style={s.invNote}>Para {condominio.unidades} unidades · atendimento prioritário</Text>
-          </View>
-        )}
+        {/* ALTERADO — mostra valor ou "Consulte as Vantagens" */}
+        <View style={s.invBox}>
+          <Text style={s.invLabel}>INVESTIMENTO MENSAL</Text>
+          {incluiAdmin ? (
+            <>
+              <Text style={s.invValue}>{formatPlano(calc.premium)}</Text>
+              <Text style={s.invNote}>Para {condominio.unidades} unidades · atendimento prioritário</Text>
+            </>
+          ) : (
+            <Text style={s.invConsulte}>Consulte as Vantagens</Text>
+          )}
+        </View>
 
-        <FooterBar pagina="07 / 10  ·  Plano Premium" />
+        <FooterBar pagina={proxPag("Plano Premium")} />
       </Page>
 
       {/* ============ PAGE 8: COMPARATIVO ============ */}
@@ -495,18 +572,25 @@ export function PropostaDocument(props: PropostaDocProps) {
           ))}
         </View>
 
+        {/* ALTERADO — mostra valores ou "Consulte" no comparativo */}
         <View style={{ marginTop: 14, flexDirection: "row", justifyContent: "space-around", padding: 12, backgroundColor: GRAY_50, borderRadius: 6 }}>
           <View style={{ alignItems: "center" }}>
             <Text style={{ fontSize: 8, color: GRAY_500, letterSpacing: 1 }}>ESSENCIAL</Text>
-            <Text style={{ fontSize: 13, color: NAVY, fontWeight: 700, marginTop: 2 }}>{formatPlano(calc.essencial)}</Text>
+            <Text style={{ fontSize: 13, color: NAVY, fontWeight: 700, marginTop: 2 }}>
+              {incluiAdmin ? formatPlano(calc.essencial) : "Consulte"}
+            </Text>
           </View>
           <View style={{ alignItems: "center" }}>
             <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 1, fontWeight: 700 }}>COMPLETO ★</Text>
-            <Text style={{ fontSize: 13, color: NAVY, fontWeight: 800, marginTop: 2 }}>{formatPlano(calc.completo)}</Text>
+            <Text style={{ fontSize: 13, color: NAVY, fontWeight: 800, marginTop: 2 }}>
+              {incluiAdmin ? formatPlano(calc.completo) : "Consulte"}
+            </Text>
           </View>
           <View style={{ alignItems: "center" }}>
             <Text style={{ fontSize: 8, color: GRAY_500, letterSpacing: 1 }}>PREMIUM</Text>
-            <Text style={{ fontSize: 13, color: NAVY, fontWeight: 700, marginTop: 2 }}>{formatPlano(calc.premium)}</Text>
+            <Text style={{ fontSize: 13, color: NAVY, fontWeight: 700, marginTop: 2 }}>
+              {incluiAdmin ? formatPlano(calc.premium) : "Consulte"}
+            </Text>
           </View>
         </View>
 
@@ -522,10 +606,54 @@ export function PropostaDocument(props: PropostaDocProps) {
           </View>
         )}
 
-        <FooterBar pagina="08 / 10  ·  Comparativo" />
+        <FooterBar pagina={proxPag("Comparativo")} />
       </Page>
 
-      {/* ============ PAGE 9: CONDIÇÕES ============ */}
+      {/* ============ ALTERADO — PÁGINA SÍNDICO PROFISSIONAL (após comparativo) ============ */}
+      {temPaginaSindico && (
+        <Page size="A4" style={s.page}>
+          <SectionHeader badge="SÍNDICO PROFISSIONAL · ALPHA" title="Síndico Profissional" />
+
+          {/* Destaque RC Síndico */}
+          <View style={{ backgroundColor: NAVY, padding: 18, borderRadius: 8, marginBottom: 20 }}>
+            <Text style={{ fontSize: 11, color: GOLD, fontWeight: 700, marginBottom: 6 }}>🛡️ {SINDICO_RC_DESTAQUE.titulo}</Text>
+            <Text style={{ fontSize: 9.5, color: WHITE, lineHeight: 1.6, marginBottom: 6 }}>{SINDICO_RC_DESTAQUE.desc}</Text>
+            <Text style={{ fontSize: 8.5, color: GOLD_LIGHT, fontStyle: "italic", lineHeight: 1.5 }}>{SINDICO_RC_DESTAQUE.nota}</Text>
+          </View>
+
+          {/* Seções do serviço */}
+          {SINDICO_PROFISSIONAL_DESCRICAO.map((secao, si) => (
+            <View key={si} style={{ marginBottom: 14 }}>
+              <Text style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 6, letterSpacing: 0.5 }}>{secao.titulo}</Text>
+              {secao.itens.map((item, ii) => (
+                <View key={ii} style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 4, paddingLeft: 6 }}>
+                  <Text style={{ fontSize: 9, color: GOLD, marginRight: 6, marginTop: 1 }}>✓</Text>
+                  <Text style={{ fontSize: 9, color: GRAY_700, flex: 1, lineHeight: 1.5 }}>{item}</Text>
+                </View>
+              ))}
+            </View>
+          ))}
+
+          <View style={{ marginTop: 10, padding: 12, backgroundColor: GRAY_50, borderRadius: 6, borderLeftWidth: 3, borderLeftColor: GOLD }}>
+            <Text style={{ fontSize: 9.5, color: NAVY, fontWeight: 700, lineHeight: 1.5 }}>
+              Com o Síndico Profissional da Alpha, seu condomínio ganha gestão de alto padrão, proteção jurídica reforçada e previsibilidade financeira.
+            </Text>
+          </View>
+
+          <FooterBar pagina={proxPag("Síndico Profissional")} />
+        </Page>
+      )}
+
+      {/* ============ ALTERADO — PÁGINA CONSIDERAÇÕES FINAIS (opcional) ============ */}
+      {temConsideracoes && (
+        <Page size="A4" style={s.page}>
+          <SectionHeader badge="ALPHA · OBSERVAÇÕES" title="Considerações Finais" />
+          <Text style={s.paragraph}>{consideracoesFinais}</Text>
+          <FooterBar pagina={proxPag("Considerações Finais")} />
+        </Page>
+      )}
+
+      {/* ============ CONDIÇÕES COMERCIAIS ============ */}
       <Page size="A4" style={s.page}>
         <SectionHeader badge="ALPHA · FORMALIZAÇÃO" title="Condições Comerciais" />
         <Text style={s.subtitle}>Transparência e flexibilidade para formalizar nossa parceria.</Text>
@@ -553,10 +681,10 @@ export function PropostaDocument(props: PropostaDocProps) {
           </Text>
         </View>
 
-        <FooterBar pagina="09 / 10  ·  Condições Comerciais" />
+        <FooterBar pagina={proxPag("Condições Comerciais")} />
       </Page>
 
-      {/* ============ PAGE 10: PRÓXIMOS PASSOS ============ */}
+      {/* ============ PRÓXIMOS PASSOS ============ */}
       <Page size="A4" style={s.page}>
         <SectionHeader badge="VAMOS COMEÇAR?" title="Próximos Passos" />
 
@@ -596,7 +724,7 @@ export function PropostaDocument(props: PropostaDocProps) {
           </Text>
         </View>
 
-        <FooterBar pagina="10 / 10  ·  Próximos Passos" />
+        <FooterBar pagina={proxPag("Próximos Passos")} />
       </Page>
     </Document>
   );
