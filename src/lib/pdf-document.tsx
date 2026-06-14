@@ -42,152 +42,127 @@ const GRAY_700 = "#374151";
 const TEXT_COLOR = "#111827";
 
 /* ================================================================
-   ÍCONES SVG INLINE (react-pdf compatíveis)
+   ÍCONES SVG — SOMENTE <Path fill> e <Rect fill>
+   (compatíveis com @react-pdf/renderer — sem stroke, sem Line,
+    sem opacity em filhos)
    ================================================================ */
 
-/* Ícone: Gráfico de barras — Transparência / Financeiro */
+/* Gráfico de barras — Transparência / Financeiro */
 function IconChart({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Rect x="3" y="14" width="4" height="7" rx="1" fill={color} opacity={0.6} />
-      <Rect x="10" y="8" width="4" height="13" rx="1" fill={color} opacity={0.8} />
-      <Rect x="17" y="3" width="4" height="18" rx="1" fill={color} />
+      <Path d="M3 14h4v7H3zM10 8h4v13h-4zM17 3h4v18h-4z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Monitor/tela — Tecnologia */
+/* Monitor — Tecnologia */
 function IconMonitor({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Rect x="2" y="3" width="20" height="14" rx="2" fill="none" stroke={color} strokeWidth={1.8} />
-      <Line x1="8" y1="21" x2="16" y2="21" stroke={color} strokeWidth={1.8} />
-      <Line x1="12" y1="17" x2="12" y2="21" stroke={color} strokeWidth={1.8} />
+      <Path d="M2 3h20v14H2V3zm2 2v10h16V5H4zm5 14h6v2H9v-2z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Pessoas — Atendimento / Assembleia */
+/* Pessoas — Atendimento */
 function IconPeople({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Circle cx="9" cy="7" r="3" fill="none" stroke={color} strokeWidth={1.8} />
-      <Path d="M2 21 C2 16 5 14 9 14 C13 14 16 16 16 21" fill="none" stroke={color} strokeWidth={1.8} />
-      <Circle cx="17" cy="8" r="2.5" fill="none" stroke={color} strokeWidth={1.5} opacity={0.7} />
-      <Path d="M19 14 C21 15 22 17 22 21" fill="none" stroke={color} strokeWidth={1.5} opacity={0.7} />
+      <Path d="M9 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zM2 20c0-4 3.5-6 7-6s7 2 7 6H2zM17 6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM19 14c2 1 3 3 3 6h-4c0-2.5-1-4.5-3-5.5a6 6 0 0 1 4-.5z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Escudo com check — Conformidade / Seguro */
+/* Escudo com check — Conformidade / Seguro */
 function IconShield({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M12 2 L3 6 L3 12 C3 17 7 21 12 22 C17 21 21 17 21 12 L21 6 Z" fill="none" stroke={color} strokeWidth={1.8} />
-      <Path d="M8 12 L11 15 L16 9" fill="none" stroke={color} strokeWidth={2} />
+      <Path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 15l-4-4 1.41-1.41L11 13.17l5.59-5.59L18 9l-7 7z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Documento/página — Gestão Financeira / Contrato */
+/* Documento — Gestão Financeira */
 function IconDocument({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M6 2 L14 2 L20 8 L20 22 L6 22 Z" fill="none" stroke={color} strokeWidth={1.8} />
-      <Path d="M14 2 L14 8 L20 8" fill="none" stroke={color} strokeWidth={1.8} />
-      <Line x1="9" y1="13" x2="17" y2="13" stroke={color} strokeWidth={1.3} />
-      <Line x1="9" y1="16" x2="15" y2="16" stroke={color} strokeWidth={1.3} />
+      <Path d="M6 2h8l6 6v14H6V2zm8 1.5V8h4.5L14 3.5zM9 13h8v1.5H9V13zm0 3h6v1.5H9V16z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Calendário — Planejamento / Vigência */
+/* Calendário — Planejamento / Vigência */
 function IconCalendar({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke={color} strokeWidth={1.8} />
-      <Line x1="3" y1="10" x2="21" y2="10" stroke={color} strokeWidth={1.8} />
-      <Line x1="8" y1="2" x2="8" y2="6" stroke={color} strokeWidth={1.8} />
-      <Line x1="16" y1="2" x2="16" y2="6" stroke={color} strokeWidth={1.8} />
+      <Path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zM5 10h14v10H5V10z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Chave inglesa — Operacional / Manutenção */
+/* Chave inglesa — Operacional / Manutenção */
 function IconWrench({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M14.7 6.3 C13.5 3.5 10.5 2 7.5 2.8 C4.5 3.6 2.5 6.5 3 9.5 C3.3 11.5 4.7 13.2 6.5 14 L14 21.5 C14.8 22.3 16.2 22.3 17 21.5 L17.5 21 C18.3 20.2 18.3 18.8 17.5 18 L10 10.5 C10.8 8.7 10.5 6.5 9 5" fill="none" stroke={color} strokeWidth={1.8} />
+      <Path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Megafone — Comunicação */
+/* Megafone — Comunicação */
 function IconMegaphone({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M18 3 L6 8 L6 16 L18 21 Z" fill="none" stroke={color} strokeWidth={1.8} />
-      <Rect x="2" y="9" width="4" height="6" rx="1" fill="none" stroke={color} strokeWidth={1.8} />
-      <Line x1="18" y1="8" x2="22" y2="6" stroke={color} strokeWidth={1.5} />
-      <Line x1="18" y1="12" x2="22" y2="12" stroke={color} strokeWidth={1.5} />
-      <Line x1="18" y1="16" x2="22" y2="18" stroke={color} strokeWidth={1.5} />
+      <Path d="M18 3v18l-12-5V8l12-5zM2 9h4v6H2V9zm7 8.5l3 1.25V17l-3-1.25v1.75z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Cifrão em círculo — Pagamento */
+/* Cifrão — Pagamento */
 function IconMoney({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Circle cx="12" cy="12" r="10" fill="none" stroke={color} strokeWidth={1.8} />
-      <Line x1="12" y1="6" x2="12" y2="18" stroke={color} strokeWidth={1.5} />
-      <Path d="M8 10 C8 8 10 7.5 12 7.5 C14 7.5 16 8.5 16 10 C16 12 8 12 8 14 C8 15.5 10 16.5 12 16.5 C14 16.5 16 16 16 14" fill="none" stroke={color} strokeWidth={1.5} />
+      <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-1c-1.5-.2-2.8-1-3.2-2.2l1.5-.6c.3.9 1.1 1.3 2.2 1.3 1.2 0 2-.5 2-1.3 0-.8-.5-1.2-2-1.6-1.8-.5-3.2-1-3.2-2.8 0-1.3 1-2.3 2.7-2.6V7h2v1c1.3.2 2.2.9 2.6 2l-1.5.6c-.3-.7-.9-1.1-1.8-1.1-1 0-1.7.5-1.7 1.2 0 .7.6 1 2 1.4 1.9.5 3.2 1.1 3.2 3 0 1.4-1.1 2.4-2.8 2.7V17z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Lápis / Editar — Reajuste */
+/* Lápis — Reajuste */
 function IconEdit({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M16 3 L21 8 L8 21 L3 21 L3 16 Z" fill="none" stroke={color} strokeWidth={1.8} />
-      <Line x1="14" y1="5" x2="19" y2="10" stroke={color} strokeWidth={1.5} />
+      <Path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Relógio — Implantação / Prazo */
+/* Relógio — Implantação */
 function IconClock({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Circle cx="12" cy="12" r="10" fill="none" stroke={color} strokeWidth={1.8} />
-      <Line x1="12" y1="6" x2="12" y2="12" stroke={color} strokeWidth={2} />
-      <Line x1="12" y1="12" x2="16" y2="14" stroke={color} strokeWidth={2} />
+      <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 11h-2V7h2v4h3v2h-3z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: X em círculo — Rescisão */
+/* X em círculo — Rescisão */
 function IconCancel({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Circle cx="12" cy="12" r="10" fill="none" stroke={color} strokeWidth={1.8} />
-      <Line x1="8" y1="8" x2="16" y2="16" stroke={color} strokeWidth={2} />
-      <Line x1="16" y1="8" x2="8" y2="16" stroke={color} strokeWidth={2} />
+      <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" fill={color} />
     </Svg>
   );
 }
 
-/* Ícone: Check em círculo — Validade / Aceite */
+/* Check em círculo — Validade / Aceite */
 function IconCheckCircle({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Circle cx="12" cy="12" r="10" fill="none" stroke={color} strokeWidth={1.8} />
-      <Path d="M7 12 L10 15 L17 8" fill="none" stroke={color} strokeWidth={2} />
+      <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15l-5-5 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill={color} />
     </Svg>
   );
 }
-
 
 /* ================================================================
    ESTILOS
@@ -538,27 +513,43 @@ const s = StyleSheet.create({
     fontSize: 9,
     color: GRAY_500,
   },
+  /* CORREÇÃO 1 — box de contato com borda dourada e fundo branco garantido */
   coverContactBox: {
     backgroundColor: WHITE,
     borderRadius: 8,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
     width: 280,
     alignItems: "center",
+    borderWidth: 1.5,
+    borderColor: GOLD,
+  },
+  coverContactLabel: {
+    fontSize: 8,
+    color: GOLD,
+    letterSpacing: 2,
+    fontWeight: 700,
+    marginBottom: 8,
   },
   coverContactText: {
-    fontSize: 10,
+    fontSize: 11,
+    color: NAVY,
+    fontWeight: 700,
+    textAlign: "center",
+    marginBottom: 4,
+  },
+  coverContactEmail: {
+    fontSize: 9,
     color: NAVY,
     fontWeight: 600,
     textAlign: "center",
     marginBottom: 3,
   },
-  coverContactEmail: {
+  coverContactSite: {
     fontSize: 8.5,
-    color: NAVY,
-    fontWeight: 600,
+    color: GRAY_500,
     textAlign: "center",
-    width: "100%",
+    marginTop: 2,
   },
 });
 
@@ -592,8 +583,6 @@ function BuildingSilhouette() {
       <Rect x="88" y="147" width="10" height="12" fill={WHITE} opacity={0.15} />
       <Rect x="70" y="170" width="10" height="12" fill={WHITE} opacity={0.15} />
       <Rect x="88" y="170" width="10" height="12" fill={WHITE} opacity={0.15} />
-      <Line x1="85" y1="40" x2="85" y2="22" stroke={GOLD} strokeWidth={1.5} opacity={0.3} />
-      <Line x1="80" y1="28" x2="90" y2="28" stroke={GOLD} strokeWidth={1} opacity={0.3} />
 
       <Rect x="120" y="70" width="45" height="150" fill={GOLD_LIGHT} opacity={0.18} />
       <Rect x="130" y="82" width="8" height="10" fill={WHITE} opacity={0.12} />
@@ -614,8 +603,6 @@ function BuildingSilhouette() {
       <Rect x="188" y="158" width="6" height="8" fill={WHITE} opacity={0.1} />
       <Rect x="178" y="176" width="6" height="8" fill={WHITE} opacity={0.1} />
       <Rect x="188" y="176" width="6" height="8" fill={WHITE} opacity={0.1} />
-
-      <Line x1="0" y1="220" x2="200" y2="220" stroke={GOLD} strokeWidth={1} opacity={0.3} />
     </Svg>
   );
 }
@@ -677,7 +664,7 @@ export interface PDFPropostaProps {
 /* ================================================================
    DOCUMENTO
    ================================================================ */
-export function PropostaPDF({
+export function PropostaDocument({
   numero,
   data,
   condominio,
@@ -704,7 +691,7 @@ export function PropostaPDF({
   return (
     <Document title={`Proposta ${numero} — Alpha Condominios`} author="Alpha Condominios">
       {/* ================================================================
-          PAGINA 1 — CAPA
+          PAGINA 1 — CAPA (CORREÇÃO 1: telefone + e-mail + site visíveis)
           ================================================================ */}
       <Page size="A4" style={{ padding: 0 }}>
         <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
@@ -731,9 +718,12 @@ export function PropostaPDF({
 
           <View style={s.coverRight}>
             <BuildingSilhouette />
+            {/* ---- Box de contato corrigido ---- */}
             <View style={[s.coverContactBox, { marginTop: 24 }]}>
+              <Text style={s.coverContactLabel}>ENTRE EM CONTATO</Text>
               <Text style={s.coverContactText}>(31) 99778-7316</Text>
               <Text style={s.coverContactEmail}>comercial@alphafacilities.com.br</Text>
+              <Text style={s.coverContactSite}>www.alphafacilities.com.br</Text>
             </View>
           </View>
         </View>
@@ -781,7 +771,7 @@ export function PropostaPDF({
           ================================================================ */}
       {incluiAdmin && (
         <>
-          {/* ------ NOSSOS DIFERENCIAIS ------ */}
+          {/* ------ NOSSOS DIFERENCIAIS (CORREÇÃO 3: ícones fill-only) ------ */}
           <Page size="A4" style={s.pageNavy}>
             <View style={{ padding: 50, flex: 1, justifyContent: "center" }}>
               <SectionTitle
@@ -815,7 +805,7 @@ export function PropostaPDF({
                   <View key={i} style={s.card}>
                     <View style={s.cardInner}>
                       <View style={s.cardIconWrap}>
-                        <d.IconComp color={GOLD} size={26} />
+                        <d.IconComp color={GOLD} size={28} />
                       </View>
                       <Text style={s.cardTitle}>{d.title}</Text>
                       <Text style={s.cardDesc}>{d.desc}</Text>
@@ -827,7 +817,7 @@ export function PropostaPDF({
             </View>
           </Page>
 
-          {/* ------ NOSSOS SERVICOS ------ */}
+          {/* ------ NOSSOS SERVICOS (CORREÇÃO 3: ícones fill-only) ------ */}
           <Page size="A4" style={s.page}>
             <SectionTitle
               badge="SERVICOS"
@@ -860,7 +850,7 @@ export function PropostaPDF({
                 <View key={i} style={s.card}>
                   <View style={s.cardInner}>
                     <View style={s.cardIconWrap}>
-                      <serv.IconComp color={GOLD} size={26} />
+                      <serv.IconComp color={GOLD} size={28} />
                     </View>
                     <Text style={s.cardTitle}>{serv.title}</Text>
                     <Text style={s.cardDesc}>{serv.desc}</Text>
@@ -1016,7 +1006,7 @@ export function PropostaPDF({
             <Footer page={pg()} total={pageCount} />
           </Page>
 
-          {/* ------ COMPARATIVO DE PLANOS (SEM valor de sindico) ------ */}
+          {/* ------ COMPARATIVO DE PLANOS ------ */}
           <Page size="A4" style={s.page}>
             <SectionTitle
               badge="COMPARATIVO"
@@ -1174,7 +1164,7 @@ export function PropostaPDF({
       )}
 
       {/* ================================================================
-          PAGINA — CONDICOES COMERCIAIS
+          PAGINA — CONDICOES COMERCIAIS (CORREÇÃO 3: ícones fill-only)
           ================================================================ */}
       <Page size="A4" style={s.page}>
         <SectionTitle
@@ -1219,7 +1209,7 @@ export function PropostaPDF({
             <View key={i} style={s.condCell}>
               <View style={s.condBox}>
                 <View style={s.condIconWrap}>
-                  <cond.IconComp color={GOLD} size={24} />
+                  <cond.IconComp color={GOLD} size={26} />
                 </View>
                 <Text style={s.condTitle}>{cond.title}</Text>
                 <Text style={s.condText}>{cond.text}</Text>
