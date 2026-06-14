@@ -801,6 +801,16 @@ export function PropostaDocument({
                     title: "Conformidade Legal",
                     desc: "Cumprimento rigoroso das obrigacoes fiscais, trabalhistas e condominiais.",
                   },
+                  {
+                    IconComp: IconChart,
+                    title: "Reducao de Custos",
+                    desc: "Gestao estrategica e negociacao qualificada com fornecedores, gerando economia real e sustentavel para o condominio.",
+                  },
+                  {
+                    IconComp: IconShield,
+                    title: "Excelencia Comprovada",
+                    desc: "Mais de 25 anos de experiencia em administracao condominial, com historico consistente de resultados e satisfacao dos clientes.",
+                  },
                 ].map((d, i) => (
                   <View key={i} style={s.card}>
                     <View style={s.cardInner}>
