@@ -33,7 +33,6 @@ import {
   calcularPlanos,
   formatPlano,
   formatSindico,
-  aplicarDescontoCombo,
 } from "@/lib/calculations";
 import { gerarPDFProposta } from "@/lib/pdf";
 import { Textarea } from "@/components/ui/textarea";
@@ -138,7 +137,6 @@ function NovaProposta() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
-  const [sharing, setSharing] = useState(false);
   const [incluiAdmin, setIncluiAdmin] = useState(true);
   const [incluiSindico, setIncluiSindico] = useState(false);
   const [consideracoesFinais, setConsideracoesFinais] = useState("");
@@ -281,193 +279,248 @@ function NovaProposta() {
         },
         incluiAdmin,
         incluiSindico,
-        consideracoesFinais: consideracoesFinais.trim() || undefined,
+        consideracoesFinais,
       });
 
       const dataStr = now.toISOString().slice(0, 10);
       const filename = `Proposta_${form.nome_condominio.replace(/\s+/g, "_")}_${dataStr}.pdf`;
+      doc.save(filename);
 
-      await doc.save(filename);
-
-      // Salva referência para usar no botão WhatsApp (sem o handle do PDF)
       setPropostaGerada({ numero });
-
-      toast.success(`Proposta ${numero} criada com sucesso!`);
-    } catch (e: any) {
-      toast.error(e.message ?? "Erro ao salvar proposta");
+      toast.success("Proposta gerada e salva com sucesso!");
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Erro ao gerar proposta");
     } finally {
       setSaving(false);
     }
   }
 
-  function enviarWhatsApp() {
+  function compartilharWhatsApp() {
     if (!propostaGerada) return;
-    setSharing(true);
-    try {
-      const texto = montarTextoWhatsApp({
-        numero: propostaGerada.numero,
-        nomeCondominio: form.nome_condominio,
-        endereco: form.endereco,
-        unidades: unidadesNum,
-        tipo: form.tipo as string,
-        nomeContato: form.nome_contato,
-        telefone: form.telefone,
-        email: form.email,
-        incluiAdmin,
-        incluiSindico,
-      });
-
-      // Abre WhatsApp Web/App com texto (sem anexar PDF)
-      const telefoneContato = form.telefone.replace(/\D/g, "");
-      const telComCodigo = telefoneContato.startsWith("55")
-        ? telefoneContato
-        : `55${telefoneContato}`;
-      const url = `https://wa.me/${telComCodigo}?text=${encodeURIComponent(texto)}`;
-      window.open(url, "_blank");
-
-      toast.success("WhatsApp aberto com o resumo da proposta!");
-    } catch (e: any) {
-      toast.error("Erro ao compartilhar: " + (e.message ?? ""));
-    } finally {
-      setSharing(false);
-    }
+    const texto = montarTextoWhatsApp({
+      numero: propostaGerada.numero,
+      nomeCondominio: form.nome_condominio,
+      endereco: form.endereco,
+      unidades: unidadesNum,
+      tipo: form.tipo as string,
+      nomeContato: form.nome_contato,
+      telefone: form.telefone,
+      email: form.email,
+      incluiAdmin,
+      incluiSindico,
+    });
+    const encoded = encodeURIComponent(texto);
+    window.open(`https://wa.me/?text=${encoded}`, "_blank");
   }
-
-  function voltarAoDashboard() {
-    navigate({ to: "/dashboard" });
-  }
-
-  const progress = ((step + 1) / STEPS.length) * 100;
-  const tipoLabel = {
-    residencial: "Residencial",
-    comercial: "Comercial",
-    misto: "Misto",
-  } as const;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="container max-w-4xl py-8 space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Nova Proposta</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Preencha as etapas para gerar uma proposta personalizada
+          Crie propostas comerciais personalizadas em poucos cliques
         </p>
       </div>
 
       <Card className="p-6">
-        <div className="mb-6">
-          <div className="flex justify-between text-xs font-medium mb-2">
-            {STEPS.map((s, i) => (
-              <span
-                key={s}
-                className={
-                  i <= step ? "text-primary" : "text-muted-foreground"
-                }
-              >
-                {i + 1}. {s}
-              </span>
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            {STEPS.map((label, i) => (
+              <div key={i} className="flex items-center flex-1">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                    i <= step
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {i + 1}
+                </div>
+                {i < STEPS.length - 1 && (
+                  <div
+                    className={`flex-1 h-1 mx-2 ${
+                      i < step ? "bg-primary" : "bg-muted"
+                    }`}
+                  />
+                )}
+              </div>
             ))}
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={((step + 1) / STEPS.length) * 100} className="h-2" />
         </div>
 
-        {/* ===== STEP 0 — Serviços ===== */}
         {step === 0 && (
-          <div className="space-y-4">
-            <h2 className="font-semibold text-lg">
-              Quais serviços incluir?
-            </h2>
-            <div className="grid md:grid-cols-3 gap-3">
-              <ServiceCard
-                icon={<ClipboardList className="w-6 h-6" />}
-                title="Administração"
-                desc="Gestão completa do condomínio"
-                checked={incluiAdmin}
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <ClipboardList className="w-5 h-5" />
+                Serviços Inclusos
+              </h2>
+              <p className="text-sm text-muted-foreground mb-6">
+                Selecione os serviços que farão parte da proposta
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <Card
+                className={`p-6 cursor-pointer transition-all ${
+                  incluiAdmin
+                    ? "border-primary bg-primary/5 shadow-elegant"
+                    : "border-muted hover:border-primary/50"
+                }`}
                 onClick={() => setIncluiAdmin(!incluiAdmin)}
-              />
-              <ServiceCard
-                icon={<UserCog className="w-6 h-6" />}
-                title="Síndico Profissional"
-                desc="Representação e gestão executiva"
-                checked={incluiSindico}
+              >
+                <div className="flex items-start gap-4">
+                  <div
+                    className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
+                      incluiAdmin
+                        ? "bg-primary border-primary"
+                        : "border-muted-foreground"
+                    }`}
+                  >
+                    {incluiAdmin && <Check className="w-4 h-4 text-white" />}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold mb-2">Administração Condominial</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Planos Essencial, Completo e Premium com gestão financeira,
+                      operacional e conformidade legal.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card
+                className={`p-6 cursor-pointer transition-all ${
+                  incluiSindico
+                    ? "border-primary bg-primary/5 shadow-elegant"
+                    : "border-muted hover:border-primary/50"
+                }`}
                 onClick={() => setIncluiSindico(!incluiSindico)}
-              />
-              <ServiceCard
-                icon={<Sparkles className="w-6 h-6" />}
-                title="Combo (10% OFF)"
-                desc="Administração + Síndico com desconto"
-                checked={incluiAdmin && incluiSindico}
-                onClick={setCombo}
-              />
+              >
+                <div className="flex items-start gap-4">
+                  <div
+                    className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
+                      incluiSindico
+                        ? "bg-primary border-primary"
+                        : "border-muted-foreground"
+                    }`}
+                  >
+                    {incluiSindico && <Check className="w-4 h-4 text-white" />}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold mb-2">
+                      Síndico Profissional
+                      <Badge variant="outline" className="ml-2 text-xs">
+                        Inclui Seguro RC
+                      </Badge>
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Profissional dedicado com representação legal do condomínio e
+                      cobertura de Seguro de Responsabilidade Civil (RC).
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              {incluiAdmin && incluiSindico && (
+                <Card className="p-4 bg-amber-50 border-amber-200">
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="w-5 h-5 text-amber-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-amber-900 mb-1">
+                        Combo com 10% de desconto
+                      </p>
+                      <p className="text-sm text-amber-700">
+                        Ao contratar administração + síndico profissional, você
+                        ganha 10% de desconto no valor total.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              {!incluiAdmin && !incluiSindico && (
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full"
+                  onClick={setCombo}
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Contratar Combo (10% OFF)
+                </Button>
+              )}
             </div>
           </div>
         )}
 
-        {/* ===== STEP 1 — Condomínio ===== */}
         {step === 1 && (
-          <div className="space-y-4">
-            <h2 className="font-semibold text-lg">Dados do Condomínio</h2>
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Building2 className="w-5 h-5" />
+                Dados do Condomínio
+              </h2>
+            </div>
+
             <div className="grid gap-4">
               <div>
-                <Label htmlFor="nome_condominio">Nome do Condomínio</Label>
+                <Label>Nome do Condomínio *</Label>
                 <Input
-                  id="nome_condominio"
                   value={form.nome_condominio}
                   onChange={(e) =>
                     setForm({ ...form, nome_condominio: e.target.value })
                   }
-                  placeholder="Ex: Residencial Bela Vista"
+                  placeholder="Ex: Edifício Solar das Flores"
                 />
                 {errors.nome_condominio && (
-                  <p className="text-xs text-destructive mt-1">
+                  <p className="text-sm text-destructive mt-1">
                     {errors.nome_condominio}
                   </p>
                 )}
               </div>
+
               <div>
-                <Label htmlFor="endereco">Endereço Completo</Label>
+                <Label>Endereço Completo *</Label>
                 <Input
-                  id="endereco"
                   value={form.endereco}
-                  onChange={(e) =>
-                    setForm({ ...form, endereco: e.target.value })
-                  }
-                  placeholder="Rua, número, bairro, cidade – UF"
+                  onChange={(e) => setForm({ ...form, endereco: e.target.value })}
+                  placeholder="Rua, número, bairro, cidade"
                 />
                 {errors.endereco && (
-                  <p className="text-xs text-destructive mt-1">
-                    {errors.endereco}
-                  </p>
+                  <p className="text-sm text-destructive mt-1">{errors.endereco}</p>
                 )}
               </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="unidades">Nº de Unidades</Label>
+                  <Label>Número de Unidades *</Label>
                   <Input
-                    id="unidades"
                     type="number"
-                    min={1}
                     value={form.unidades}
                     onChange={(e) =>
-                      setForm({ ...form, unidades: e.target.value })
+                      setForm({ ...form, unidades: Number(e.target.value) || "" })
                     }
-                    placeholder="Ex: 60"
+                    placeholder="Ex: 40"
+                    min={1}
                   />
                   {errors.unidades && (
-                    <p className="text-xs text-destructive mt-1">
+                    <p className="text-sm text-destructive mt-1">
                       {errors.unidades}
                     </p>
                   )}
                 </div>
+
                 <div>
-                  <Label>Tipo</Label>
+                  <Label>Tipo *</Label>
                   <Select
                     value={form.tipo}
-                    onValueChange={(v) =>
-                      setForm({ ...form, tipo: v as any })
-                    }
+                    onValueChange={(v: any) => setForm({ ...form, tipo: v })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione" />
+                      <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="residencial">Residencial</SelectItem>
@@ -476,9 +529,7 @@ function NovaProposta() {
                     </SelectContent>
                   </Select>
                   {errors.tipo && (
-                    <p className="text-xs text-destructive mt-1">
-                      {errors.tipo}
-                    </p>
+                    <p className="text-sm text-destructive mt-1">{errors.tipo}</p>
                   )}
                 </div>
               </div>
@@ -486,270 +537,208 @@ function NovaProposta() {
           </div>
         )}
 
-        {/* ===== STEP 2 — Contato ===== */}
         {step === 2 && (
-          <div className="space-y-4">
-            <h2 className="font-semibold text-lg">
-              Contato do Responsável
-            </h2>
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Phone className="w-5 h-5" />
+                Dados de Contato
+              </h2>
+            </div>
+
             <div className="grid gap-4">
               <div>
-                <Label htmlFor="nome_contato">Nome</Label>
+                <Label>Nome do Responsável *</Label>
                 <Input
-                  id="nome_contato"
                   value={form.nome_contato}
                   onChange={(e) =>
                     setForm({ ...form, nome_contato: e.target.value })
                   }
-                  placeholder="Nome completo"
+                  placeholder="Ex: João Silva"
                 />
                 {errors.nome_contato && (
-                  <p className="text-xs text-destructive mt-1">
+                  <p className="text-sm text-destructive mt-1">
                     {errors.nome_contato}
                   </p>
                 )}
               </div>
-              <div>
-                <Label htmlFor="telefone">Telefone</Label>
-                <Input
-                  id="telefone"
-                  value={form.telefone}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      telefone: maskTelefone(e.target.value),
-                    })
-                  }
-                  placeholder="(31) 99999-9999"
-                />
-                {errors.telefone && (
-                  <p className="text-xs text-destructive mt-1">
-                    {errors.telefone}
-                  </p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="email">E-mail</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) =>
-                    setForm({ ...form, email: e.target.value })
-                  }
-                  placeholder="contato@condominio.com"
-                />
-                {errors.email && (
-                  <p className="text-xs text-destructive mt-1">
-                    {errors.email}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
 
-        {/* ===== STEP 3 — Revisão ===== */}
-        {step === 3 && (
-          <div className="space-y-4">
-            <h2 className="font-semibold text-lg">Revisão da Proposta</h2>
-
-            <div className="grid gap-3 text-sm">
-              <div className="flex items-start gap-2">
-                <Building2 className="w-4 h-4 mt-0.5 text-primary" />
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="font-medium">{form.nome_condominio}</p>
-                  <p className="text-muted-foreground">{form.endereco}</p>
-                  <p className="text-muted-foreground">
-                    {unidadesNum} unidades ·{" "}
-                    {tipoLabel[form.tipo as keyof typeof tipoLabel]}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-2">
-                <Phone className="w-4 h-4 mt-0.5 text-primary" />
-                <div>
-                  <p className="font-medium">{form.nome_contato}</p>
-                  <p className="text-muted-foreground">
-                    {form.telefone} · {form.email}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-2">
-                <FileText className="w-4 h-4 mt-0.5 text-primary" />
-                <div>
-                  <p className="font-medium">Serviços selecionados</p>
-                  <div className="flex gap-2 mt-1">
-                    {incluiAdmin && (
-                      <Badge variant="secondary">Administração</Badge>
-                    )}
-                    {incluiSindico && (
-                      <Badge variant="secondary">
-                        Síndico Profissional
-                      </Badge>
-                    )}
-                    {incluiAdmin && incluiSindico && (
-                      <Badge variant="outline" className="text-xs">
-                        10% OFF Combo
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {calc && incluiAdmin && (
-                <div className="mt-2 rounded-lg border p-3 bg-muted/30 text-xs space-y-1">
-                  <p>
-                    <strong>Essencial:</strong> {formatPlano(calc.essencial)}
-                  </p>
-                  <p>
-                    <strong>Completo:</strong> {formatPlano(calc.completo)}
-                  </p>
-                  <p>
-                    <strong>Premium:</strong> {formatPlano(calc.premium)}
-                  </p>
-                  {incluiSindico && calc.sindico && (
-                    <>
-                      <p>
-                        <strong>Síndico:</strong>{" "}
-                        {formatSindico(calc.sindico)}
-                      </p>
-                      <p>
-                        <strong>
-                          Combo Completo + Síndico (10% OFF):
-                        </strong>{" "}
-                        {aplicarDescontoCombo(calc.completo, calc.sindico)}
-                      </p>
-                    </>
+                  <Label>Telefone *</Label>
+                  <Input
+                    value={form.telefone}
+                    onChange={(e) =>
+                      setForm({ ...form, telefone: maskTelefone(e.target.value) })
+                    }
+                    placeholder="(31) 99999-9999"
+                  />
+                  {errors.telefone && (
+                    <p className="text-sm text-destructive mt-1">
+                      {errors.telefone}
+                    </p>
                   )}
                 </div>
-              )}
 
-              {calc && !incluiAdmin && incluiSindico && (
-                <div className="mt-2 rounded-lg border p-3 bg-muted/30 text-xs space-y-1">
-                  <p>
-                    <strong>Síndico Profissional:</strong>{" "}
-                    {formatSindico(calc.sindico)}
-                  </p>
+                <div>
+                  <Label>E-mail *</Label>
+                  <Input
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    placeholder="contato@exemplo.com"
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-destructive mt-1">{errors.email}</p>
+                  )}
                 </div>
-              )}
-            </div>
-
-            {/* Campo Considerações Finais */}
-            <div className="space-y-2 pt-2">
-              <Label htmlFor="consideracoes">
-                Considerações Finais (opcional)
-              </Label>
-              <Textarea
-                id="consideracoes"
-                placeholder="Observações, condições especiais, informações extras que devem aparecer na proposta…"
-                value={consideracoesFinais}
-                onChange={(e) => setConsideracoesFinais(e.target.value)}
-                rows={4}
-                className="resize-y"
-              />
-              <p className="text-xs text-muted-foreground">
-                Se preenchido, será incluído como página dedicada no PDF.
-              </p>
+              </div>
             </div>
           </div>
         )}
 
-        {/* ===== Navegação ===== */}
-        <div className="flex justify-between mt-8">
-          {step > 0 ? (
+        {step === 3 && (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Revisão e Finalização
+              </h2>
+            </div>
+
+            <Card className="p-4 bg-muted/50">
+              <h3 className="font-bold mb-3">Condomínio</h3>
+              <dl className="grid grid-cols-2 gap-2 text-sm">
+                <dt className="text-muted-foreground">Nome:</dt>
+                <dd className="font-medium">{form.nome_condominio}</dd>
+                <dt className="text-muted-foreground">Endereço:</dt>
+                <dd className="font-medium">{form.endereco}</dd>
+                <dt className="text-muted-foreground">Unidades:</dt>
+                <dd className="font-medium">{form.unidades}</dd>
+                <dt className="text-muted-foreground">Tipo:</dt>
+                <dd className="font-medium capitalize">{form.tipo}</dd>
+              </dl>
+            </Card>
+
+            <Card className="p-4 bg-muted/50">
+              <h3 className="font-bold mb-3">Contato</h3>
+              <dl className="grid grid-cols-2 gap-2 text-sm">
+                <dt className="text-muted-foreground">Responsável:</dt>
+                <dd className="font-medium">{form.nome_contato}</dd>
+                <dt className="text-muted-foreground">Telefone:</dt>
+                <dd className="font-medium">{form.telefone}</dd>
+                <dt className="text-muted-foreground">E-mail:</dt>
+                <dd className="font-medium">{form.email}</dd>
+              </dl>
+            </Card>
+
+            <Card className="p-4 bg-muted/50">
+              <h3 className="font-bold mb-3">Serviços</h3>
+              <div className="space-y-2 text-sm">
+                {incluiAdmin && (
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-primary" />
+                    <span>Administração Condominial</span>
+                  </div>
+                )}
+                {incluiSindico && (
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-primary" />
+                    <span>Síndico Profissional</span>
+                  </div>
+                )}
+                {incluiAdmin && incluiSindico && (
+                  <Badge variant="secondary" className="mt-2">
+                    Combo com 10% OFF
+                  </Badge>
+                )}
+              </div>
+            </Card>
+
+            <div>
+              <Label>Considerações Finais (Opcional)</Label>
+              <Textarea
+                value={consideracoesFinais}
+                onChange={(e) => setConsideracoesFinais(e.target.value)}
+                placeholder="Adicione observações personalizadas que aparecerão na proposta..."
+                rows={4}
+              />
+            </div>
+
+            {propostaGerada && (
+              <Card className="p-6 bg-emerald-50 border-emerald-200">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <Check className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-emerald-900 mb-2">
+                      Proposta #{propostaGerada.numero} gerada com sucesso!
+                    </h3>
+                    <p className="text-sm text-emerald-700 mb-4">
+                      O PDF foi baixado automaticamente. Agora você pode compartilhar
+                      o resumo pelo WhatsApp.
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={compartilharWhatsApp}
+                      className="border-emerald-600 text-emerald-700 hover:bg-emerald-100"
+                    >
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Compartilhar Resumo no WhatsApp
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            )}
+          </div>
+        )}
+
+        <div className="flex justify-between mt-8 pt-6 border-t">
+          {step > 0 && (
             <Button variant="outline" onClick={() => setStep(step - 1)}>
-              <ArrowLeft className="w-4 h-4 mr-2" /> Voltar
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Voltar
             </Button>
-          ) : (
+          )}
+          {step < 3 && (
+            <Button onClick={avancar} className="ml-auto">
+              Avançar
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          )}
+          {step === 3 && !propostaGerada && (
+            <Button
+              onClick={gerarESalvar}
+              disabled={saving}
+              size="lg"
+              className="ml-auto"
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Gerando...
+                </>
+              ) : (
+                <>
+                  <FileText className="w-4 h-4 mr-2" />
+                  Gerar Proposta
+                </>
+              )}
+            </Button>
+          )}
+          {step === 3 && propostaGerada && (
             <Button
               variant="outline"
               onClick={() => navigate({ to: "/dashboard" })}
+              className="ml-auto"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" /> Cancelar
+              Voltar ao Dashboard
             </Button>
-          )}
-
-          {step < 3 ? (
-            <Button onClick={avancar}>
-              Avançar <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          ) : (
-            <div className="flex gap-2">
-              {/* Botão principal: Gerar Proposta */}
-              <Button onClick={gerarESalvar} disabled={saving || sharing}>
-                {saving ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <FileText className="w-4 h-4 mr-2" />
-                )}
-                {saving ? "Gerando…" : "Gerar Proposta"}
-              </Button>
-
-              {/* Botão WhatsApp — aparece após gerar */}
-              {propostaGerada && (
-                <Button
-                  variant="outline"
-                  className="border-green-500 text-green-600 hover:bg-green-50"
-                  onClick={enviarWhatsApp}
-                  disabled={sharing}
-                >
-                  {sharing ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : (
-                    <Share2 className="w-4 h-4 mr-2" />
-                  )}
-                  {sharing ? "Enviando…" : "Enviar WhatsApp"}
-                </Button>
-              )}
-
-              {/* Botão ir ao Dashboard — aparece após gerar */}
-              {propostaGerada && (
-                <Button variant="ghost" onClick={voltarAoDashboard}>
-                  Ir ao Dashboard
-                </Button>
-              )}
-            </div>
           )}
         </div>
       </Card>
     </div>
-  );
-}
-
-function ServiceCard({
-  icon,
-  title,
-  desc,
-  checked,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-  checked: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`relative rounded-xl border-2 p-4 text-left transition-all hover:shadow-md ${
-        checked
-          ? "border-primary bg-primary/5 shadow-sm"
-          : "border-muted bg-card hover:border-muted-foreground/30"
-      }`}
-    >
-      {checked && (
-        <span className="absolute top-2 right-2 rounded-full bg-primary p-0.5 text-white">
-          <Check className="w-3 h-3" />
-        </span>
-      )}
-      <div className="mb-2 text-primary">{icon}</div>
-      <p className="font-semibold text-sm">{title}</p>
-      <p className="text-xs text-muted-foreground mt-1">{desc}</p>
-    </button>
   );
 }
