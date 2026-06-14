@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,7 @@ import {
   formatSindico,
   aplicarDescontoCombo,
 } from "@/lib/calculations";
-import { gerarPDFProposta, type PDFHandle } from "@/lib/pdf";
+import { gerarPDFProposta } from "@/lib/pdf";
 import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/_authenticated/nova")({
@@ -80,15 +80,17 @@ function maskTelefone(v: string): string {
 }
 
 /* ================================================================
-   Monta texto do WhatsApp (com emojis — aqui estamos no navegador,
-   emojis funcionam normalmente em URLs)
+   Monta texto do WhatsApp — SOMENTE RESUMO (sem anexar PDF)
    ================================================================ */
 function montarTextoWhatsApp(params: {
   numero: string;
   nomeCondominio: string;
+  endereco: string;
   unidades: number;
   tipo: string;
   nomeContato: string;
+  telefone: string;
+  email: string;
   incluiAdmin: boolean;
   incluiSindico: boolean;
 }): string {
@@ -97,10 +99,12 @@ function montarTextoWhatsApp(params: {
     comercial: "Comercial",
     misto: "Misto",
   };
+
   const servicos: string[] = [];
   if (params.incluiAdmin) servicos.push("✅ Administração Condominial");
   if (params.incluiSindico) servicos.push("✅ Síndico Profissional");
-  if (params.incluiAdmin && params.incluiSindico) servicos.push("🎯 Combo com 10% OFF");
+  if (params.incluiAdmin && params.incluiSindico)
+    servicos.push("🎯 Combo com 10% de desconto");
 
   const lines = [
     "━━━━━━━━━━━━━━━━━━━━",
@@ -109,16 +113,17 @@ function montarTextoWhatsApp(params: {
     "━━━━━━━━━━━━━━━━━━━━",
     "",
     `🏢 *${params.nomeCondominio}*`,
-    `📍 ${params.unidades} unidades · ${tipoLabel[params.tipo] ?? params.tipo}`,
+    `📍 ${params.endereco}`,
+    `📊 ${params.unidades} unidades · ${tipoLabel[params.tipo] ?? params.tipo}`,
     "",
     `👤 *Responsável:* ${params.nomeContato}`,
+    `📞 ${params.telefone}`,
+    `✉️ ${params.email}`,
     "",
-    "🔹 *Serviços inclusos:*",
+    "🔹 *Serviços inclusos na proposta:*",
     ...servicos,
     "",
-    "📎 *Proposta completa em PDF anexa.*",
-    "",
-    "💬 Ficamos à disposição para esclarecer qualquer dúvida!",
+    "💬 Ficamos à disposição para esclarecer qualquer dúvida e enviar a proposta completa em PDF!",
     "",
     "━━━━━━━━━━━━━━━━━━━━",
     "*Alpha Facilities*",
@@ -139,8 +144,6 @@ function NovaProposta() {
   const [consideracoesFinais, setConsideracoesFinais] = useState("");
   const [propostaGerada, setPropostaGerada] = useState<{
     numero: string;
-    filename: string;
-    handle: PDFHandle;
   } | null>(null);
 
   const [form, setForm] = useState({
@@ -286,8 +289,8 @@ function NovaProposta() {
 
       await doc.save(filename);
 
-      // Salva referência para usar no botão WhatsApp
-      setPropostaGerada({ numero, filename, handle: doc });
+      // Salva referência para usar no botão WhatsApp (sem o handle do PDF)
+      setPropostaGerada({ numero });
 
       toast.success(`Proposta ${numero} criada com sucesso!`);
     } catch (e: any) {
@@ -297,52 +300,32 @@ function NovaProposta() {
     }
   }
 
-  async function enviarWhatsApp() {
+  function enviarWhatsApp() {
     if (!propostaGerada) return;
     setSharing(true);
     try {
       const texto = montarTextoWhatsApp({
         numero: propostaGerada.numero,
         nomeCondominio: form.nome_condominio,
+        endereco: form.endereco,
         unidades: unidadesNum,
         tipo: form.tipo as string,
         nomeContato: form.nome_contato,
+        telefone: form.telefone,
+        email: form.email,
         incluiAdmin,
         incluiSindico,
       });
 
-      // Tenta Web Share API com arquivo (mobile)
-      const isMobileShare =
-        typeof navigator !== "undefined" &&
-        typeof navigator.share === "function" &&
-        typeof File !== "undefined";
-
-      if (isMobileShare) {
-        try {
-          const blob = await propostaGerada.handle.toBlob();
-          const file = new File([blob], propostaGerada.filename, {
-            type: "application/pdf",
-          });
-          if (navigator.canShare?.({ files: [file] })) {
-            await navigator.share({
-              text: texto,
-              files: [file],
-            });
-            setSharing(false);
-            return;
-          }
-        } catch {
-          // fallback para link wa.me
-        }
-      }
-
-      // Fallback: abre WhatsApp Web/App com texto (sem arquivo)
+      // Abre WhatsApp Web/App com texto (sem anexar PDF)
       const telefoneContato = form.telefone.replace(/\D/g, "");
       const telComCodigo = telefoneContato.startsWith("55")
         ? telefoneContato
         : `55${telefoneContato}`;
       const url = `https://wa.me/${telComCodigo}?text=${encodeURIComponent(texto)}`;
       window.open(url, "_blank");
+
+      toast.success("WhatsApp aberto com o resumo da proposta!");
     } catch (e: any) {
       toast.error("Erro ao compartilhar: " + (e.message ?? ""));
     } finally {
