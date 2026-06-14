@@ -1093,10 +1093,6 @@ export function PropostaDocument({
               </View>
             </View>
 
-            <Text style={[s.paragraph, { fontSize: 9, textAlign: "center", marginTop: 8 }]}>
-              * Valores calculados para {condominio.unidades} unidades. Sujeitos a ajuste conforme
-              avaliacao tecnica.
-            </Text>
 
             <Footer page={pg()} total={pageCount} />
           </Page>
