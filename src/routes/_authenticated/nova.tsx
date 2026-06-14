@@ -314,7 +314,7 @@ function NovaProposta() {
       // Tenta Web Share API com arquivo (mobile)
       const isMobileShare =
         typeof navigator !== "undefined" &&
-        navigator.share &&
+        typeof navigator.share === "function" &&
         typeof File !== "undefined";
 
       if (isMobileShare) {
