@@ -1162,6 +1162,12 @@ export function PropostaDocument({
             </View>
           )}
 
+          <View style={{ marginTop: 16, backgroundColor: GRAY_50, padding: 12, borderRadius: 6 }}>
+            <Text style={{ fontSize: 9, color: GRAY_500, fontStyle: "italic", textAlign: "center" }}>
+              Valores calculados para {condominio.unidades} unidades. Sujeitos a ajuste conforme avaliacao tecnica.
+            </Text>
+          </View>
+
           <Footer page={pg()} total={pageCount} />
         </Page>
       )}
