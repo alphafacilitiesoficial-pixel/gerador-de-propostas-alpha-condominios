@@ -9,7 +9,7 @@ export interface PropostaPDFData {
   contato: { nome: string; telefone: string; email: string };
   incluiAdmin: boolean;
   incluiSindico: boolean;
-  consideracoesFinais?: string; // ALTERADO — nova prop opcional
+  consideracoesFinais?: string;
 }
 
 export interface PDFHandle {
@@ -36,16 +36,36 @@ export function gerarPDFProposta(data: PropostaPDFData): PDFHandle {
 
   return {
     toBlob: buildBlob,
+
     async save(filename: string) {
       const blob = await buildBlob();
+
+      // 1) Tenta Web Share API (funciona em mobile/PWA)
+      const file = new File([blob], filename, { type: "application/pdf" });
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: filename });
+          return;
+        } catch (_) {
+          // Usuário cancelou ou API falhou — segue pro fallback
+        }
+      }
+
+      // 2) Fallback: abre em nova aba
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      const newTab = window.open(url, "_blank");
+
+      if (!newTab) {
+        // 3) Se popup bloqueado, força download tradicional
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
     },
   };
 }
