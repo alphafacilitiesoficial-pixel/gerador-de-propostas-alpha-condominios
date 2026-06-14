@@ -801,6 +801,16 @@ export function PropostaDocument({
                     title: "Conformidade Legal",
                     desc: "Cumprimento rigoroso das obrigacoes fiscais, trabalhistas e condominiais.",
                   },
+                  {
+                    IconComp: IconChart,
+                    title: "Reducao de Custos",
+                    desc: "Gestao estrategica e negociacao qualificada com fornecedores, gerando economia real e sustentavel para o condominio.",
+                  },
+                  {
+                    IconComp: IconShield,
+                    title: "Excelencia Comprovada",
+                    desc: "Mais de 25 anos de experiencia em administracao condominial, com historico consistente de resultados e satisfacao dos clientes.",
+                  },
                 ].map((d, i) => (
                   <View key={i} style={s.card}>
                     <View style={s.cardInner}>
@@ -828,23 +838,43 @@ export function PropostaDocument({
               {[
                 {
                   IconComp: IconDocument,
-                  title: "Gestao Financeira",
-                  desc: "Emissao de boletos, cobrancas, balancetes e controle de inadimplencia.",
+                  title: "Administracao de Condominios",
+                  desc: "Gestao completa de todas as atividades administrativas, financeiras e operacionais do condominio, com foco em eficiencia e transparencia.",
                 },
                 {
-                  IconComp: IconCalendar,
-                  title: "Planejamento",
-                  desc: "Orcamento anual, previsao de despesas e fundo de reserva.",
+                  IconComp: IconPeople,
+                  title: "Sindico Profissional",
+                  desc: "Profissional qualificado e dedicado exclusivamente a gestao do condominio, garantindo cumprimento de todas as obrigacoes legais. Inclui Seguro de Responsabilidade Civil (RC) de Sindico, protegendo o profissional e o condominio.",
+                },
+                {
+                  IconComp: IconShield,
+                  title: "Certificado Digital",
+                  desc: "Emissao e gestao de certificados digitais para assinatura eletronica de documentos, atas e contratos, garantindo validade juridica e agilidade.",
+                },
+                {
+                  IconComp: IconShield,
+                  title: "Seguro Condominial",
+                  desc: "Contratacao e gestao de apolices de seguro patrimonial, incendio, responsabilidade civil e outros, com analise criteriosa de coberturas e custos.",
+                },
+                {
+                  IconComp: IconDocument,
+                  title: "AVCB",
+                  desc: "Assessoria completa para obtencao e renovacao do Auto de Vistoria do Corpo de Bombeiros, garantindo conformidade legal e seguranca dos moradores.",
+                },
+                {
+                  IconComp: IconDocument,
+                  title: "Assessoria Juridica",
+                  desc: "Suporte juridico especializado em direito condominial, com orientacao em assembleias, elaboracao de documentos e resolucao de conflitos.",
+                },
+                {
+                  IconComp: IconMoney,
+                  title: "Garantidora de Credito",
+                  desc: "Intermediacao com empresas garantidoras para locacao de unidades, facilitando a entrada de inquilinos e reduzindo inadimplencia.",
                 },
                 {
                   IconComp: IconWrench,
-                  title: "Gestao Operacional",
-                  desc: "Manutencoes preventivas, gestao de contratos e fornecedores.",
-                },
-                {
-                  IconComp: IconMegaphone,
-                  title: "Comunicacao",
-                  desc: "Portal do condomino, assembleias online e comunicados digitais.",
+                  title: "Dentre Outros",
+                  desc: "Solucoes personalizadas conforme necessidades especificas de cada condominio: manutencao predial, comunicacao visual, automacao, sustentabilidade e muito mais.",
                 },
               ].map((serv, i) => (
                 <View key={i} style={s.card}>
@@ -859,30 +889,7 @@ export function PropostaDocument({
               ))}
             </View>
 
-            {/* Seguro RC do Sindico */}
-            <View
-              style={{
-                marginTop: 20,
-                backgroundColor: GOLD,
-                borderRadius: 8,
-                padding: 16,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <View style={{ marginRight: 12 }}>
-                <IconShield color={NAVY} size={28} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 12, fontWeight: 700, color: NAVY, marginBottom: 2 }}>
-                  Seguro de Responsabilidade Civil (RC) do Sindico
-                </Text>
-                <Text style={{ fontSize: 9.5, color: NAVY_DARK, lineHeight: 1.4 }}>
-                  Todos os nossos planos incluem seguro RC, protegendo o sindico contra riscos
-                  inerentes a funcao.
-                </Text>
-              </View>
-            </View>
+
 
             <Footer page={pg()} total={pageCount} />
           </Page>
@@ -1086,10 +1093,6 @@ export function PropostaDocument({
               </View>
             </View>
 
-            <Text style={[s.paragraph, { fontSize: 9, textAlign: "center", marginTop: 8 }]}>
-              * Valores calculados para {condominio.unidades} unidades. Sujeitos a ajuste conforme
-              avaliacao tecnica.
-            </Text>
 
             <Footer page={pg()} total={pageCount} />
           </Page>
@@ -1158,6 +1161,12 @@ export function PropostaDocument({
               </Text>
             </View>
           )}
+
+          <View style={{ marginTop: 16, backgroundColor: GRAY_50, padding: 12, borderRadius: 6 }}>
+            <Text style={{ fontSize: 9, color: GRAY_500, fontStyle: "italic", textAlign: "center" }}>
+              Valores calculados para {condominio.unidades} unidades. Sujeitos a ajuste conforme avaliacao tecnica.
+            </Text>
+          </View>
 
           <Footer page={pg()} total={pageCount} />
         </Page>
