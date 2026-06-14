@@ -1,5 +1,4 @@
 // Geração de PDF profissional via @react-pdf/renderer
-// Mantém a API antiga: gerarPDFProposta(data).save(filename)
 
 export interface PropostaPDFData {
   numero: string;
@@ -36,7 +35,6 @@ export function gerarPDFProposta(data: PropostaPDFData): PDFHandle {
 
   return {
     toBlob: buildBlob,
-
     async save(filename: string) {
       const blob = await buildBlob();
 

@@ -159,7 +159,7 @@ function IconCancel({ color = GOLD, size = 24 }: { color?: string; size?: number
 function IconCheckCircle({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15l-5-5 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill={color} />
+      <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15l-5-5 1.41-1.41L9 14.17l7.59-7.59L18 8l-8 9z" fill={color} />
     </Svg>
   );
 }
