@@ -98,25 +98,33 @@ function montarTextoWhatsApp(params: {
     misto: "Misto",
   };
   const servicos: string[] = [];
-  if (params.incluiAdmin) servicos.push("Administração Condominial");
-  if (params.incluiSindico) servicos.push("Síndico Profissional");
-  if (params.incluiAdmin && params.incluiSindico) servicos.push("Combo 10% OFF");
+  if (params.incluiAdmin) servicos.push("✅ Administração Condominial");
+  if (params.incluiSindico) servicos.push("✅ Síndico Profissional");
+  if (params.incluiAdmin && params.incluiSindico) servicos.push("🎯 Combo com 10% OFF");
 
   const lines = [
-    `📋 *PROPOSTA ALPHA FACILITIES*`,
-    `Nº ${params.numero}`,
-    ``,
-    `🏢 *Condomínio:* ${params.nomeCondominio}`,
-    `📊 ${params.unidades} unidades · ${tipoLabel[params.tipo] ?? params.tipo}`,
-    `👤 *Contato:* ${params.nomeContato}`,
-    ``,
-    `✅ *Serviços:* ${servicos.join(" + ")}`,
-    ``,
-    `📎 Segue a proposta em PDF em anexo.`,
-    `Ficamos à disposição para quaisquer dúvidas!`,
-    ``,
-    `*Alpha Facilities*`,
-    `(31) 99778-7316 · comercial@alphafacilities.com.br`,
+    "━━━━━━━━━━━━━━━━━━━━",
+    "📋 *PROPOSTA COMERCIAL*",
+    `*Alpha Facilities* | Nº ${params.numero}`,
+    "━━━━━━━━━━━━━━━━━━━━",
+    "",
+    `🏢 *${params.nomeCondominio}*`,
+    `📍 ${params.unidades} unidades · ${tipoLabel[params.tipo] ?? params.tipo}`,
+    "",
+    `👤 *Responsável:* ${params.nomeContato}`,
+    "",
+    "🔹 *Serviços inclusos:*",
+    ...servicos,
+    "",
+    "📎 *Proposta completa em PDF anexa.*",
+    "",
+    "💬 Ficamos à disposição para esclarecer qualquer dúvida!",
+    "",
+    "━━━━━━━━━━━━━━━━━━━━",
+    "*Alpha Facilities*",
+    "📞 (31) 99778-7316",
+    "✉️ comercial@alphafacilities.com.br",
+    "🌐 www.alphafacilities.com.br",
   ];
   return lines.join("\n");
 }
@@ -306,7 +314,7 @@ function NovaProposta() {
       // Tenta Web Share API com arquivo (mobile)
       const isMobileShare =
         typeof navigator !== "undefined" &&
-        navigator.share &&
+        typeof navigator.share === "function" &&
         typeof File !== "undefined";
 
       if (isMobileShare) {
