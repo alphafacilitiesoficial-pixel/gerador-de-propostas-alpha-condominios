@@ -176,14 +176,12 @@ const s = StyleSheet.create({
     paddingBottom: 60,
     paddingHorizontal: 50,
     backgroundColor: WHITE,
-    justifyContent: "center",
   },
   pageNavy: {
     fontSize: 10,
     color: WHITE,
     backgroundColor: NAVY,
     padding: 0,
-    justifyContent: "center",
   },
 
   /* ----- Tipografia ----- */
