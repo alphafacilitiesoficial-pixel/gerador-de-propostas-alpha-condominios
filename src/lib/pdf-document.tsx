@@ -1139,26 +1139,23 @@ export function PropostaDocument({
             )}
           </View>
 
-          {incluiAdmin && (
-            <View
-              style={{
-                marginTop: 14,
-                backgroundColor: GOLD,
-                borderRadius: 8,
-                padding: 14,
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 9, color: NAVY, fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>
-                COMBO ADMINISTRACAO + SINDICO
+          <View
+            style={{
+              marginTop: 14,
+              backgroundColor: GOLD,
+              borderRadius: 8,
+              padding: 14,
+            }}
+          >
+            <Text style={{ fontSize: 10.5, color: NAVY_DARK, lineHeight: 1.5, textAlign: "center" }}>
+              A Alpha Condominios tem como diferencial no mercado o{" "}
+              <Text style={{ fontWeight: 700 }}>
+                Seguro de Responsabilidade Civil (RC) do Sindico INCLUSO
               </Text>
-              <Text style={{ fontSize: 10, color: NAVY_DARK, textAlign: "center", lineHeight: 1.4 }}>
-                Ao contratar administracao + sindico profissional, ganhe 10% de desconto no valor
-                total. Exemplo com Plano Completo:{" "}
-                {aplicarDescontoCombo(calc.completo, calc.sindico)}
-              </Text>
-            </View>
-          )}
+              . Protegemos o sindico contra riscos inerentes a funcao, sem custo adicional.
+            </Text>
+          </View>
+
 
           <View style={{ marginTop: 16, backgroundColor: GRAY_50, padding: 12, borderRadius: 6 }}>
             <Text style={{ fontSize: 9, color: GRAY_500, fontStyle: "italic", textAlign: "center" }}>
