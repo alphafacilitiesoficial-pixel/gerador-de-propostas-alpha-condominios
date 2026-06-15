@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Plus, FileText, TrendingUp, CheckCircle2, XCircle, Clock, MoreVertical, Eye, Copy, Trash2, FileDown } from "lucide-react";
+import { Plus, FileText, TrendingUp, CheckCircle2, XCircle, Clock, MoreVertical, Eye, Copy, Trash2, FileDown, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatBRL } from "@/lib/calculations";
 import { gerarPDFProposta } from "@/lib/pdf";
