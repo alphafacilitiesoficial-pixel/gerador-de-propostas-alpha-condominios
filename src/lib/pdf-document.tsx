@@ -810,7 +810,7 @@ export function PropostaDocument({
                     desc: "Mais de 25 anos de experiencia em administracao condominial, com historico consistente de resultados e satisfacao dos clientes.",
                   },
                 ].map((d, i) => (
-                  <View key={i} style={s.card}>
+                  <View key={i} style={s.card} wrap={false}>
                     <View style={s.cardInner}>
                       <View style={s.cardIconWrap}>
                         <d.IconComp color={GOLD} size={28} />
@@ -875,7 +875,7 @@ export function PropostaDocument({
                   desc: "Solucoes personalizadas conforme necessidades especificas de cada condominio: manutencao predial, comunicacao visual, automacao, sustentabilidade e muito mais.",
                 },
               ].map((serv, i) => (
-                <View key={i} style={s.card}>
+                <View key={i} style={s.card} wrap={false}>
                   <View style={s.cardInner}>
                     <View style={s.cardIconWrap}>
                       <serv.IconComp color={GOLD} size={28} />
@@ -1210,7 +1210,7 @@ export function PropostaDocument({
               text: "Esta proposta tem validade de 30 dias a partir da data de emissao.",
             },
           ].map((cond, i) => (
-            <View key={i} style={s.condCell}>
+            <View key={i} style={s.condCell} wrap={false}>
               <View style={s.condBox}>
                 <View style={s.condIconWrap}>
                   <cond.IconComp color={GOLD} size={26} />
@@ -1257,7 +1257,7 @@ export function PropostaDocument({
             desc: "Seu condominio passa a contar com toda a estrutura Alpha Condominios para uma gestao de excelencia.",
           },
         ].map((step, i) => (
-          <View key={i} style={s.stepRow}>
+          <View key={i} style={s.stepRow} wrap={false}>
             <View style={s.stepNumWrap}>
               <Text style={s.stepNum}>{step.num}</Text>
             </View>
