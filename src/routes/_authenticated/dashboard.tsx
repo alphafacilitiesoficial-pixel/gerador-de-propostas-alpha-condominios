@@ -229,6 +229,7 @@ function Dashboard() {
                         <DropdownMenuTrigger asChild><Button size="icon" variant="ghost"><MoreVertical className="w-4 h-4" /></Button></DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => baixarPDF(p)}><FileDown className="w-4 h-4 mr-2" />Baixar PDF</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => resumoWhatsApp(p)}><Share2 className="w-4 h-4 mr-2" />Resumo para WhatsApp</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => duplicar(p)}><Copy className="w-4 h-4 mr-2" />Duplicar</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => atualizarStatus(p.id, "negociacao")}><Clock className="w-4 h-4 mr-2" />Marcar Em negociação</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => atualizarStatus(p.id, "fechada")}><CheckCircle2 className="w-4 h-4 mr-2" />Marcar Fechada</DropdownMenuItem>
