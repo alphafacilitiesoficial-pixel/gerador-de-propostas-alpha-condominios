@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Plus, FileText, TrendingUp, CheckCircle2, XCircle, Clock, MoreVertical, Eye, Copy, Trash2, FileDown } from "lucide-react";
+import { Plus, FileText, TrendingUp, CheckCircle2, XCircle, Clock, MoreVertical, Eye, Copy, Trash2, FileDown, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatBRL } from "@/lib/calculations";
 import { gerarPDFProposta } from "@/lib/pdf";
@@ -108,6 +108,39 @@ function Dashboard() {
     qc.invalidateQueries({ queryKey: ["propostas"] });
   }
 
+  function resumoWhatsApp(p: Proposta) {
+    const tipoLabel: Record<string, string> = { residencial: "Residencial", comercial: "Comercial", misto: "Misto" };
+    const servicos: string[] = [];
+    if (p.incluiu_administracao) servicos.push("✅ Administração Condominial");
+    if (p.incluiu_sindico) servicos.push("✅ Síndico Profissional");
+    if (p.incluiu_administracao && p.incluiu_sindico) servicos.push("🎯 Combo com 10% de desconto");
+    const texto = [
+      "━━━━━━━━━━━━━━━━━━━━",
+      "📋 *PROPOSTA COMERCIAL*",
+      `*Alpha Facilities* | Nº ${p.numero_proposta}`,
+      "━━━━━━━━━━━━━━━━━━━━",
+      "",
+      `🏢 *${p.nome_condominio}*`,
+      `📍 ${p.endereco}`,
+      `📊 ${p.unidades} unidades · ${tipoLabel[p.tipo] ?? p.tipo}`,
+      "",
+      `👤 *Responsável:* ${p.nome_contato}`,
+      `📞 ${p.telefone}`,
+      `✉️ ${p.email}`,
+      "",
+      "🔹 *Serviços inclusos na proposta:*",
+      ...servicos,
+      "",
+      "💬 Ficamos à disposição para esclarecer qualquer dúvida e enviar a proposta completa em PDF!",
+      "",
+      "━━━━━━━━━━━━━━━━━━━━",
+      "*Alpha Facilities*",
+      "📞 (31) 99778-7316",
+      "✉️ comercial@alphafacilities.com.br",
+      "🌐 www.alphafacilities.com.br",
+    ].join("\n");
+    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank");
+  }
   function baixarPDF(p: Proposta) {
     const doc = gerarPDFProposta({
       numero: p.numero_proposta,
@@ -196,6 +229,7 @@ function Dashboard() {
                         <DropdownMenuTrigger asChild><Button size="icon" variant="ghost"><MoreVertical className="w-4 h-4" /></Button></DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => baixarPDF(p)}><FileDown className="w-4 h-4 mr-2" />Baixar PDF</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => resumoWhatsApp(p)}><Share2 className="w-4 h-4 mr-2" />Resumo para WhatsApp</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => duplicar(p)}><Copy className="w-4 h-4 mr-2" />Duplicar</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => atualizarStatus(p.id, "negociacao")}><Clock className="w-4 h-4 mr-2" />Marcar Em negociação</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => atualizarStatus(p.id, "fechada")}><CheckCircle2 className="w-4 h-4 mr-2" />Marcar Fechada</DropdownMenuItem>
