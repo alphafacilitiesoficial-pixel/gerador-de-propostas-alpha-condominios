@@ -771,7 +771,7 @@ export function PropostaDocument({
         <>
           {/* ------ NOSSOS DIFERENCIAIS (CORREÇÃO 3: ícones fill-only) ------ */}
           <Page size="A4" style={s.pageNavy}>
-            <View style={{ padding: 50, flex: 1, justifyContent: "center" }}>
+            <View style={{ paddingTop: 50, paddingBottom: 60, paddingHorizontal: 50 }}>
               <SectionTitle
                 badge="POR QUE NOS ESCOLHER"
                 title="Nossos Diferenciais"
