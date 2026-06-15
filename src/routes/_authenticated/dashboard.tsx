@@ -141,8 +141,8 @@ function Dashboard() {
     ].join("\n");
     window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank");
   }
-
-
+  function baixarPDF(p: Proposta) {
+    const doc = gerarPDFProposta({
       numero: p.numero_proposta,
       data: new Date(p.created_at),
       condominio: { nome: p.nome_condominio, endereco: p.endereco, unidades: p.unidades, tipo: p.tipo },
