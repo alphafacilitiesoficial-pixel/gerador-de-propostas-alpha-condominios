@@ -28,8 +28,10 @@ const GOLD_LIGHT = "#E5D4A1";
 const WHITE = "#FFFFFF";
 const GRAY_50 = "#F7F8FA";
 const GRAY_100 = "#EFF1F5";
+const GRAY_200 = "#E5E7EB";
 const GRAY_300 = "#CBD0DA";
 const GRAY_500 = "#6B7280";
+const GRAY_600 = "#4B5563";
 const GRAY_700 = "#374151";
 const TEXT_COLOR = "#111827";
 
@@ -68,66 +70,10 @@ function IconShield({ color = GOLD, size = 24 }: { color?: string; size?: number
   );
 }
 
-function IconDocument({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M6 2h8l6 6v14H6V2zm8 1.5V8h4.5L14 3.5zM9 13h8v1.5H9V13zm0 3h6v1.5H9V16z" fill={color} />
-    </Svg>
-  );
-}
-
-function IconCalendar({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zM5 10h14v10H5V10z" fill={color} />
-    </Svg>
-  );
-}
-
-function IconWrench({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z" fill={color} />
-    </Svg>
-  );
-}
-
-function IconMegaphone({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M18 3v18l-12-5V8l12-5zM2 9h4v6H2V9zm7 8.5l3 1.25V17l-3-1.25v1.75z" fill={color} />
-    </Svg>
-  );
-}
-
 function IconMoney({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
       <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-1c-1.5-.2-2.8-1-3.2-2.2l1.5-.6c.3.9 1.1 1.3 2.2 1.3 1.2 0 2-.5 2-1.3 0-.8-.5-1.2-2-1.6-1.8-.5-3.2-1-3.2-2.8 0-1.3 1-2.3 2.7-2.6V7h2v1c1.3.2 2.2.9 2.6 2l-1.5.6c-.3-.7-.9-1.1-1.8-1.1-1 0-1.7.5-1.7 1.2 0 .7.6 1 2 1.4 1.9.5 3.2 1.1 3.2 3 0 1.4-1.1 2.4-2.8 2.7V17z" fill={color} />
-    </Svg>
-  );
-}
-
-function IconEdit({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill={color} />
-    </Svg>
-  );
-}
-
-function IconClock({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 11h-2V7h2v4h3v2h-3z" fill={color} />
-    </Svg>
-  );
-}
-
-function IconCancel({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" fill={color} />
     </Svg>
   );
 }
@@ -236,7 +182,7 @@ const s = StyleSheet.create({
     borderColor: GRAY_100,
     borderRadius: 8,
     padding: 16,
-    height: 130,
+    minHeight: 130,
   },
   cardIconWrap: { marginBottom: 10 },
   cardTitle: { fontSize: 12, fontWeight: 700, color: NAVY, marginBottom: 6 },
@@ -251,14 +197,6 @@ const s = StyleSheet.create({
   },
   planoCardPremium: { borderColor: GOLD, borderWidth: 2 },
   planoHeader: { marginBottom: 16 },
-  planoBadge: {
-    alignSelf: "flex-start",
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    backgroundColor: GOLD_LIGHT,
-    borderRadius: 4,
-    marginBottom: 8,
-  },
   planoTitulo: { fontSize: 22, fontWeight: 800, color: NAVY, marginBottom: 4 },
   planoSubtitulo: { fontSize: 10, color: GRAY_500, marginBottom: 12 },
   planoIdealPara: { fontSize: 11, color: GRAY_700, fontWeight: 600, marginBottom: 4 },
@@ -275,25 +213,25 @@ const s = StyleSheet.create({
   servicoTitulo: { fontSize: 13, fontWeight: 700, color: NAVY, marginBottom: 6 },
   servicoTexto: { fontSize: 10, color: GRAY_700, lineHeight: 1.6 },
   tableRow: { flexDirection: "row", borderBottomWidth: 0.5, borderBottomColor: GRAY_300, paddingVertical: 10 },
-  tableHeaderRow: { backgroundColor: NAVY, paddingVertical: 12 },
+  tableHeaderRow: { backgroundColor: NAVY, paddingVertical: 12, flexDirection: "row" },
   tableCell: { flex: 1, fontSize: 9, color: TEXT_COLOR, paddingHorizontal: 8 },
   tableHeaderCell: { flex: 1, fontSize: 9, color: WHITE, fontWeight: 700, paddingHorizontal: 8 },
   tableCellCenter: { textAlign: "center" },
-  checkIcon: { color: GOLD, fontSize: 11 },
   condicoesGrid: { flexDirection: "row", flexWrap: "wrap", marginHorizontal: -8 },
   condicaoItem: { width: "50%", padding: 8 },
   condicaoCard: { backgroundColor: GRAY_50, padding: 16, borderRadius: 8, borderLeftWidth: 3, borderLeftColor: GOLD },
   condicaoTitulo: { fontSize: 11, fontWeight: 700, color: NAVY, marginBottom: 8 },
   condicaoTexto: { fontSize: 9.5, color: GRAY_700, lineHeight: 1.5 },
-  stepItem: { marginBottom: 20, paddingBottom: 20, borderBottomWidth: 1, borderBottomColor: GRAY_100 },
-  stepNumero: { fontSize: 32, fontWeight: 800, color: GOLD_LIGHT, marginBottom: 8 },
-  stepTitulo: { fontSize: 13, fontWeight: 700, color: NAVY, marginBottom: 6 },
+  stepItem: { flexDirection: "row", marginBottom: 24 },
+  stepNumero: { width: 40, fontSize: 24, fontWeight: 800, color: GOLD, marginRight: 16 },
+  stepConteudo: { flex: 1 },
+  stepTitulo: { fontSize: 12, fontWeight: 700, color: NAVY, marginBottom: 6 },
   stepTexto: { fontSize: 10, color: GRAY_700, lineHeight: 1.6 },
   ctaBox: {
     backgroundColor: NAVY,
     padding: 24,
     borderRadius: 8,
-    marginTop: 24,
+    marginTop: 32,
     alignItems: "center",
   },
   ctaText: { fontSize: 14, fontWeight: 700, color: WHITE, marginBottom: 12, textAlign: "center" },
@@ -347,11 +285,12 @@ export function PropostaDocument({
   const dataFormatada = new Date(data).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
 
   // Contagem de páginas
-  let totalPages = 4; // Capa + Sobre + Por Que + Condições
+  let totalPages = 4; // Capa + Sobre + Por Que + Condições + Próximos Passos
   if (incluiAdmin) totalPages += 4; // Serviços + 3 planos + Comparativo
   if (incluiSindico) totalPages += 1; // Síndico
-  totalPages += 1; // Próximos Passos
   if (consideracoesFinais?.trim()) totalPages += 1; // Considerações Finais
+
+  let currentPage = 1;
 
   return (
     <Document>
@@ -376,7 +315,7 @@ export function PropostaDocument({
             <Text style={{ fontSize: 11, color: WHITE }}>www.alphafacilities.com.br</Text>
           </View>
         </View>
-        <Footer pageNumber={1} totalPages={totalPages} />
+        <Footer pageNumber={currentPage++} totalPages={totalPages} />
       </Page>
 
       {/* ========== SOBRE NÓS ========== */}
@@ -409,7 +348,7 @@ export function PropostaDocument({
             moradores.
           </Text>
         </View>
-        <Footer pageNumber={2} totalPages={totalPages} />
+        <Footer pageNumber={currentPage++} totalPages={totalPages} />
       </Page>
 
       {/* ========== POR QUE NOS ESCOLHER ========== */}
@@ -485,7 +424,7 @@ export function PropostaDocument({
             </View>
           </View>
         </View>
-        <Footer pageNumber={3} totalPages={totalPages} />
+        <Footer pageNumber={currentPage++} totalPages={totalPages} />
       </Page>
 
       {/* ========== SERVIÇOS (se incluir administração) ========== */}
@@ -545,14 +484,14 @@ export function PropostaDocument({
               reduzindo inadimplência.
             </Text>
           </View>
-          <View style={s.servicoItem}>
+          <View style={{ marginBottom: 0 }}>
             <Text style={s.servicoTitulo}>Dentre Outros</Text>
             <Text style={s.servicoTexto}>
               Soluções personalizadas conforme necessidades específicas de cada condomínio: manutenção predial,
               comunicação visual, automação, sustentabilidade e muito mais.
             </Text>
           </View>
-          <Footer pageNumber={4} totalPages={totalPages} />
+          <Footer pageNumber={currentPage++} totalPages={totalPages} />
         </Page>
       )}
 
@@ -589,7 +528,7 @@ export function PropostaDocument({
                 </Text>
               </View>
             </View>
-            <Footer pageNumber={incluiAdmin ? 5 : 4} totalPages={totalPages} />
+            <Footer pageNumber={currentPage++} totalPages={totalPages} />
           </Page>
 
           {/* Plano Completo */}
@@ -623,7 +562,7 @@ export function PropostaDocument({
                 </Text>
               </View>
             </View>
-            <Footer pageNumber={incluiAdmin ? 6 : 5} totalPages={totalPages} />
+            <Footer pageNumber={currentPage++} totalPages={totalPages} />
           </Page>
 
           {/* Plano Premium */}
@@ -660,7 +599,7 @@ export function PropostaDocument({
                 )}
               </View>
             </View>
-            <Footer pageNumber={incluiAdmin ? 7 : 6} totalPages={totalPages} />
+            <Footer pageNumber={currentPage++} totalPages={totalPages} />
           </Page>
 
           {/* Comparativo de Planos */}
@@ -694,7 +633,7 @@ export function PropostaDocument({
             <Text style={{ fontSize: 8.5, color: GRAY_500, marginTop: 16, fontStyle: "italic" }}>
               Valores calculados para {unidades} unidades. Sujeitos a ajuste conforme avaliação técnica.
             </Text>
-            <Footer pageNumber={incluiAdmin ? 8 : 7} totalPages={totalPages} />
+            <Footer pageNumber={currentPage++} totalPages={totalPages} />
           </Page>
         </>
       )}
@@ -737,7 +676,7 @@ export function PropostaDocument({
               Protegemos o síndico contra riscos inerentes à função, sem custo adicional.
             </Text>
           </View>
-          <Footer pageNumber={incluiAdmin && incluiSindico ? 9 : incluiSindico ? 4 : 8} totalPages={totalPages} />
+          <Footer pageNumber={currentPage++} totalPages={totalPages} />
         </Page>
       )}
 
@@ -797,7 +736,7 @@ export function PropostaDocument({
             </View>
           </View>
         </View>
-        <Footer pageNumber={incluiAdmin && incluiSindico ? 10 : incluiAdmin ? 9 : incluiSindico ? 5 : 4} totalPages={totalPages} />
+        <Footer pageNumber={currentPage++} totalPages={totalPages} />
       </Page>
 
       {/* ========== PRÓXIMOS PASSOS ========== */}
@@ -806,51 +745,67 @@ export function PropostaDocument({
         <Text style={s.h1}>Como Contratar</Text>
         <View style={s.divider} />
         <Text style={s.subtitle}>Simples, rápido e sem burocracia.</Text>
+        
         <View style={s.stepItem}>
           <Text style={s.stepNumero}>1</Text>
-          <Text style={s.stepTitulo}>Aprovação da Proposta</Text>
-          <Text style={s.stepTexto}>
-            Analise esta proposta e, se aprovada, nos comunique para seguirmos com a formalização.
-          </Text>
+          <View style={s.stepConteudo}>
+            <Text style={s.stepTitulo}>Aprovação da Proposta</Text>
+            <Text style={s.stepTexto}>
+              Analise esta proposta e, se aprovada, nos comunique para seguirmos com a formalização.
+            </Text>
+          </View>
         </View>
+
         <View style={s.stepItem}>
           <Text style={s.stepNumero}>2</Text>
-          <Text style={s.stepTitulo}>Assinatura do Contrato</Text>
-          <Text style={s.stepTexto}>
-            Enviaremos o contrato digital para assinatura eletrônica. Rápido e seguro.
-          </Text>
+          <View style={s.stepConteudo}>
+            <Text style={s.stepTitulo}>Assinatura do Contrato</Text>
+            <Text style={s.stepTexto}>
+              Enviaremos o contrato digital para assinatura eletrônica. Rápido e seguro.
+            </Text>
+          </View>
         </View>
+
         <View style={s.stepItem}>
           <Text style={s.stepNumero}>3</Text>
-          <Text style={s.stepTitulo}>Implantação</Text>
-          <Text style={s.stepTexto}>
-            Nossa equipe inicia o processo de implantação em até 30 dias, com acompanhamento dedicado.
-          </Text>
+          <View style={s.stepConteudo}>
+            <Text style={s.stepTitulo}>Implantação</Text>
+            <Text style={s.stepTexto}>
+              Nossa equipe inicia o processo de implantação em até 30 dias, com acompanhamento dedicado.
+            </Text>
+          </View>
         </View>
-        <View style={s.stepItem}>
-          <Text style={s.stepNumero}>4</Text>
-          <Text style={s.stepTitulo}>Gestão Ativa</Text>
-          <Text style={s.stepTexto}>
-            Seu condomínio passa a contar com toda a estrutura Alpha Condomínios para uma gestão de excelência.
-          </Text>
+
+        <View style={{ marginBottom: 0 }}>
+          <View style={s.stepItem}>
+            <Text style={s.stepNumero}>4</Text>
+            <View style={s.stepConteudo}>
+              <Text style={s.stepTitulo}>Gestão Ativa</Text>
+              <Text style={s.stepTexto}>
+                Seu condomínio passa a contar com toda a estrutura Alpha Condomínios para uma gestão de excelência.
+              </Text>
+            </View>
+          </View>
         </View>
+
         <View style={s.ctaBox}>
           <Text style={s.ctaText}>Pronto para transformar a gestão do seu condomínio?</Text>
           <Text style={s.ctaContato}>
-            Entre em contato pelo telefone (31) 99778-7316 ou pelo e-mail comercial@alphafacilities.com.br
+            Entre em contato pelo telefone (31) 99778-7316{"\n"}ou pelo e-mail comercial@alphafacilities.com.br
           </Text>
         </View>
-        <Footer pageNumber={incluiAdmin && incluiSindico ? 11 : incluiAdmin ? 10 : incluiSindico ? 6 : 5} totalPages={totalPages} />
+
+        <Footer pageNumber={currentPage++} totalPages={totalPages} />
       </Page>
 
-      {/* ========== CONSIDERAÇÕES FINAIS (se houver) ========== */}
+      {/* ========== CONSIDERAÇÕES FINAIS (PÁGINA SEPARADA) ========== */}
       {consideracoesFinais?.trim() && (
         <Page size="A4" style={s.page}>
           <Text style={s.badge}>CONSIDERAÇÕES FINAIS</Text>
           <Text style={s.h1}>Observações Adicionais</Text>
           <View style={s.divider} />
           <Text style={[s.paragraph, { whiteSpace: "pre-wrap" }]}>{consideracoesFinais}</Text>
-          <Footer pageNumber={totalPages} totalPages={totalPages} />
+          <Footer pageNumber={currentPage} totalPages={totalPages} />
         </Page>
       )}
     </Document>
