@@ -108,8 +108,41 @@ function Dashboard() {
     qc.invalidateQueries({ queryKey: ["propostas"] });
   }
 
-  function baixarPDF(p: Proposta) {
-    const doc = gerarPDFProposta({
+  function resumoWhatsApp(p: Proposta) {
+    const tipoLabel: Record<string, string> = { residencial: "Residencial", comercial: "Comercial", misto: "Misto" };
+    const servicos: string[] = [];
+    if (p.incluiu_administracao) servicos.push("✅ Administração Condominial");
+    if (p.incluiu_sindico) servicos.push("✅ Síndico Profissional");
+    if (p.incluiu_administracao && p.incluiu_sindico) servicos.push("🎯 Combo com 10% de desconto");
+    const texto = [
+      "━━━━━━━━━━━━━━━━━━━━",
+      "📋 *PROPOSTA COMERCIAL*",
+      `*Alpha Facilities* | Nº ${p.numero_proposta}`,
+      "━━━━━━━━━━━━━━━━━━━━",
+      "",
+      `🏢 *${p.nome_condominio}*`,
+      `📍 ${p.endereco}`,
+      `📊 ${p.unidades} unidades · ${tipoLabel[p.tipo] ?? p.tipo}`,
+      "",
+      `👤 *Responsável:* ${p.nome_contato}`,
+      `📞 ${p.telefone}`,
+      `✉️ ${p.email}`,
+      "",
+      "🔹 *Serviços inclusos na proposta:*",
+      ...servicos,
+      "",
+      "💬 Ficamos à disposição para esclarecer qualquer dúvida e enviar a proposta completa em PDF!",
+      "",
+      "━━━━━━━━━━━━━━━━━━━━",
+      "*Alpha Facilities*",
+      "📞 (31) 99778-7316",
+      "✉️ comercial@alphafacilities.com.br",
+      "🌐 www.alphafacilities.com.br",
+    ].join("\n");
+    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank");
+  }
+
+
       numero: p.numero_proposta,
       data: new Date(p.created_at),
       condominio: { nome: p.nome_condominio, endereco: p.endereco, unidades: p.unidades, tipo: p.tipo },
