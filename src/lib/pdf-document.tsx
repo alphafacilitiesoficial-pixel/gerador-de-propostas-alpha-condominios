@@ -265,8 +265,8 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: GRAY_100,
     borderRadius: 8,
-    padding: 16,
-    height: 130,
+    padding: 14,
+    minHeight: 110,
   },
   cardIconWrap: { marginBottom: 8 },
   cardTitle: { fontSize: 11, fontWeight: 700, color: NAVY, marginBottom: 4 },
@@ -753,7 +753,7 @@ export function PropostaDocument({
           mesma excelencia.
         </Text>
 
-        <View style={s.idealBox}>
+        <View style={s.idealBox} wrap={false}>
           <Text style={s.idealLabel}>NOSSA MISSAO</Text>
           <Text style={s.idealText}>
             Entregar gestao condominial de excelencia, com transparencia, tecnologia e
@@ -771,7 +771,7 @@ export function PropostaDocument({
         <>
           {/* ------ NOSSOS DIFERENCIAIS (CORREÇÃO 3: ícones fill-only) ------ */}
           <Page size="A4" style={s.pageNavy}>
-            <View style={{ padding: 50, flex: 1, justifyContent: "center" }}>
+            <View style={{ paddingTop: 50, paddingBottom: 60, paddingHorizontal: 50 }}>
               <SectionTitle
                 badge="POR QUE NOS ESCOLHER"
                 title="Nossos Diferenciais"
@@ -810,7 +810,7 @@ export function PropostaDocument({
                     desc: "Mais de 25 anos de experiencia em administracao condominial, com historico consistente de resultados e satisfacao dos clientes.",
                   },
                 ].map((d, i) => (
-                  <View key={i} style={s.card}>
+                  <View key={i} style={s.card} wrap={false}>
                     <View style={s.cardInner}>
                       <View style={s.cardIconWrap}>
                         <d.IconComp color={GOLD} size={28} />
@@ -875,7 +875,7 @@ export function PropostaDocument({
                   desc: "Solucoes personalizadas conforme necessidades especificas de cada condominio: manutencao predial, comunicacao visual, automacao, sustentabilidade e muito mais.",
                 },
               ].map((serv, i) => (
-                <View key={i} style={s.card}>
+                <View key={i} style={s.card} wrap={false}>
                   <View style={s.cardInner}>
                     <View style={s.cardIconWrap}>
                       <serv.IconComp color={GOLD} size={28} />
@@ -894,13 +894,13 @@ export function PropostaDocument({
 
           {/* ------ PLANO ESSENCIAL ------ */}
           <Page size="A4" style={s.page}>
-            <View style={s.planHero}>
+            <View style={s.planHero} wrap={false}>
               <Text style={s.planHeroBadge}>PLANO</Text>
               <Text style={s.planHeroTitle}>Essencial</Text>
               <Text style={s.planHeroSub}>Gestao financeira objetiva e eficiente</Text>
             </View>
 
-            <View style={s.idealBox}>
+            <View style={s.idealBox} wrap={false}>
               <Text style={s.idealLabel}>IDEAL PARA</Text>
               <Text style={s.idealText}>
                 Condominios que buscam organizacao financeira com custo acessivel.
@@ -914,7 +914,7 @@ export function PropostaDocument({
               </View>
             ))}
 
-            <View style={s.invBox}>
+            <View style={s.invBox} wrap={false}>
               <Text style={s.invLabel}>INVESTIMENTO MENSAL</Text>
               {calc.essencial.tipo === "valor" ? (
                 <>
@@ -933,14 +933,14 @@ export function PropostaDocument({
 
           {/* ------ PLANO COMPLETO ------ */}
           <Page size="A4" style={s.page}>
-            <View style={s.planHero}>
+            <View style={s.planHero} wrap={false}>
               <Text style={s.planHeroBadge}>PLANO</Text>
               <Text style={s.planHeroTitle}>Completo</Text>
               <Text style={s.planHeroSub}>Administracao completa com gestao integrada</Text>
               <Text style={s.highlightBadge}>MAIS ESCOLHIDO</Text>
             </View>
 
-            <View style={s.idealBox}>
+            <View style={s.idealBox} wrap={false}>
               <Text style={s.idealLabel}>IDEAL PARA</Text>
               <Text style={s.idealText}>
                 Condominios que precisam de gestao financeira, operacional e de comunicacao integradas.
@@ -954,7 +954,7 @@ export function PropostaDocument({
               </View>
             ))}
 
-            <View style={s.invBox}>
+            <View style={s.invBox} wrap={false}>
               <Text style={s.invLabel}>INVESTIMENTO MENSAL</Text>
               {calc.completo.tipo === "valor" ? (
                 <>
@@ -973,13 +973,13 @@ export function PropostaDocument({
 
           {/* ------ PLANO PREMIUM ------ */}
           <Page size="A4" style={s.page}>
-            <View style={s.planHero}>
+            <View style={s.planHero} wrap={false}>
               <Text style={s.planHeroBadge}>PLANO</Text>
               <Text style={s.planHeroTitle}>Premium</Text>
               <Text style={s.planHeroSub}>Gestao completa com assessoria juridica e atendimento prioritario</Text>
             </View>
 
-            <View style={s.idealBox}>
+            <View style={s.idealBox} wrap={false}>
               <Text style={s.idealLabel}>IDEAL PARA</Text>
               <Text style={s.idealText}>
                 Condominios que desejam o mais alto nivel de gestao, com suporte juridico e SLA
@@ -994,7 +994,7 @@ export function PropostaDocument({
               </View>
             ))}
 
-            <View style={s.invBox}>
+            <View style={s.invBox} wrap={false}>
               <Text style={s.invLabel}>INVESTIMENTO MENSAL</Text>
               {calc.premium.tipo === "valor" ? (
                 <>
@@ -1102,7 +1102,7 @@ export function PropostaDocument({
           ================================================================ */}
       {incluiSindico && (
         <Page size="A4" style={s.page}>
-          <View style={s.planHero}>
+          <View style={s.planHero} wrap={false}>
             <Text style={s.planHeroBadge}>SERVICO</Text>
             <Text style={s.planHeroTitle}>Sindico Profissional</Text>
             <Text style={s.planHeroSub}>
@@ -1110,7 +1110,7 @@ export function PropostaDocument({
             </Text>
           </View>
 
-          <View style={s.idealBox}>
+          <View style={s.idealBox} wrap={false}>
             <Text style={s.idealLabel}>IDEAL PARA</Text>
             <Text style={s.idealText}>
               Condominios que desejam um sindico dedicado, com experiencia em gestao condominial
@@ -1125,7 +1125,7 @@ export function PropostaDocument({
             </View>
           ))}
 
-          <View style={s.invBox}>
+          <View style={s.invBox} wrap={false}>
             <Text style={s.invLabel}>INVESTIMENTO MENSAL — SINDICO</Text>
             {calc.sindico.tipo === "valor" ? (
               <>
@@ -1210,7 +1210,7 @@ export function PropostaDocument({
               text: "Esta proposta tem validade de 30 dias a partir da data de emissao.",
             },
           ].map((cond, i) => (
-            <View key={i} style={s.condCell}>
+            <View key={i} style={s.condCell} wrap={false}>
               <View style={s.condBox}>
                 <View style={s.condIconWrap}>
                   <cond.IconComp color={GOLD} size={26} />
@@ -1257,7 +1257,7 @@ export function PropostaDocument({
             desc: "Seu condominio passa a contar com toda a estrutura Alpha Condominios para uma gestao de excelencia.",
           },
         ].map((step, i) => (
-          <View key={i} style={s.stepRow}>
+          <View key={i} style={s.stepRow} wrap={false}>
             <View style={s.stepNumWrap}>
               <Text style={s.stepNum}>{step.num}</Text>
             </View>
