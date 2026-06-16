@@ -546,10 +546,12 @@ export function PropostaDocument({
               </View>
               <View style={s.planoFooter}>
                 <Text style={s.planoValorLabel}>INVESTIMENTO MENSAL</Text>
-                <Text style={s.planoValor}>R$ {formatBRL(calc.essencial.mensal)}</Text>
-                <Text style={s.planoValorPorUnidade}>
-                  R$ {formatBRL(calc.essencial.mensal / unidades)} por unidade/mês
-                </Text>
+                <Text style={s.planoValor}>{formatPlano(calc.essencial)}</Text>
+                {calc.essencial.tipo === "valor" && (
+                  <Text style={s.planoValorPorUnidade}>
+                    R$ {formatBRL(calc.essencial.mensal / unidades)} por unidade/mês
+                  </Text>
+                )}
               </View>
             </View>
             <Footer pageNumber={++pg} totalPages={totalPages} />
@@ -591,10 +593,12 @@ export function PropostaDocument({
               </View>
               <View style={s.planoFooter}>
                 <Text style={s.planoValorLabel}>INVESTIMENTO MENSAL</Text>
-                <Text style={s.planoValor}>R$ {formatBRL(calc.completo.mensal)}</Text>
-                <Text style={s.planoValorPorUnidade}>
-                  R$ {formatBRL(calc.completo.mensal / unidades)} por unidade/mês
-                </Text>
+                <Text style={s.planoValor}>{formatPlano(calc.completo)}</Text>
+                {calc.completo.tipo === "valor" && (
+                  <Text style={s.planoValorPorUnidade}>
+                    R$ {formatBRL(calc.completo.mensal / unidades)} por unidade/mês
+                  </Text>
+                )}
               </View>
             </View>
             <Footer pageNumber={++pg} totalPages={totalPages} />
@@ -657,40 +661,38 @@ export function PropostaDocument({
               <Text style={[s.tableHeaderCell, s.tableCellCenter]}>Completo</Text>
               <Text style={[s.tableHeaderCell, s.tableCellCenter]}>Premium</Text>
             </View>
-            {SERVICOS_PLANOS.map((srv, i) => (
-              <View key={i} style={s.tableRow} wrap={false}>
-                <Text
-                  style={[
-                    s.tableCell,
-                    {
-                      flex: 2,
-                      fontWeight: srv.categoria ? 700 : 400,
-                      color: srv.categoria ? NAVY : TEXT_COLOR,
-                    },
-                  ]}
-                >
-                  {srv.nome}
-                </Text>
-                <Text style={[s.tableCell, s.tableCellCenter]}>
-                  {srv.essencial ? "✓" : "—"}
-                </Text>
-                <Text style={[s.tableCell, s.tableCellCenter]}>
-                  {srv.completo ? "✓" : "—"}
-                </Text>
-                <Text style={[s.tableCell, s.tableCellCenter]}>
-                  {srv.premium ? "✓" : "—"}
-                </Text>
-              </View>
-            ))}
+            {(() => {
+              const allServices = Array.from(
+                new Set([
+                  ...SERVICOS_PLANOS.essencial,
+                  ...SERVICOS_PLANOS.completo,
+                  ...SERVICOS_PLANOS.premium,
+                ]),
+              );
+              return allServices.map((nome, i) => (
+                <View key={i} style={s.tableRow} wrap={false}>
+                  <Text style={[s.tableCell, { flex: 2 }]}>{nome}</Text>
+                  <Text style={[s.tableCell, s.tableCellCenter]}>
+                    {SERVICOS_PLANOS.essencial.includes(nome) ? "✓" : "—"}
+                  </Text>
+                  <Text style={[s.tableCell, s.tableCellCenter]}>
+                    {SERVICOS_PLANOS.completo.includes(nome) ? "✓" : "—"}
+                  </Text>
+                  <Text style={[s.tableCell, s.tableCellCenter]}>
+                    {SERVICOS_PLANOS.premium.includes(nome) ? "✓" : "—"}
+                  </Text>
+                </View>
+              ));
+            })()}
             <View style={[s.tableRow, { backgroundColor: GRAY_50 }]} wrap={false}>
               <Text style={[s.tableCell, { flex: 2, fontWeight: 700 }]}>
                 Investimento mensal
               </Text>
               <Text style={[s.tableCell, s.tableCellCenter]}>
-                R$ {formatBRL(calc.essencial.mensal)}/mês
+                {formatPlano(calc.essencial)}
               </Text>
               <Text style={[s.tableCell, s.tableCellCenter]}>
-                R$ {formatBRL(calc.completo.mensal)}/mês
+                {formatPlano(calc.completo)}
               </Text>
               <Text style={[s.tableCell, s.tableCellCenter]}>
                 {formatPlano(calc.premium)}
