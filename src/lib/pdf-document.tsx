@@ -21,6 +21,7 @@ import {
    ================================================================ */
 const NAVY       = "#1B2A4A";
 const GOLD       = "#C8A961";
+const GOLD_LIGHT = "#E5D4A1";
 const WHITE      = "#FFFFFF";
 const GRAY_50    = "#F7F8FA";
 const GRAY_100   = "#EFF1F5";
@@ -32,7 +33,7 @@ const GRAY_700   = "#374151";
 const TEXT_COLOR = "#111827";
 
 /* ================================================================
-   LOGO (placeholder 1x1 transparente – substitua pela base64 real)
+   LOGO
    ================================================================ */
 const LOGO_B64 =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
@@ -230,12 +231,12 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
   /* total de páginas */
   let total = 1; // capa
   total += 2;    // Sobre + Serviços
-  if (incluiAdmin) total += 5; // Essencial + Completo + Premium + Comparativo + (admin intro)
+  if (incluiAdmin) total += 4; // Essencial + Completo + Premium + Comparativo
   if (incluiSindico) total += 1;
   total += 2; // Condições + Como Contratar
   if (consideracoesFinais?.trim()) total += 1;
 
-  const planos = calcularPlanos(numeroUnidades);
+  const planos    = calcularPlanos(numeroUnidades);
   const essencial = formatPlano(planos.essencial);
   const completo  = formatPlano(planos.completo);
   const premium   = formatPlano(planos.premium);
@@ -246,10 +247,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
     day: "2-digit", month: "long", year: "numeric",
   });
 
-  let pg = 0;
-  const P = () => { pg += 1; return pg; };
-
-  /* ── serviços listados na pág 3 ─────────────────────────── */
+  /* ── Serviços — pág 3 ───────────────────────────────────── */
   const SERVICOS = [
     {
       titulo: "Administração de Condomínios",
@@ -293,35 +291,45 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
     },
   ];
 
-  /* ── linhas do comparativo ───────────────────────────────── */
-  type Row = { label: string; e: boolean | null; c: boolean | null; p: boolean | null; header?: boolean };
+  /* ── Tabela comparativa ─────────────────────────────────── */
+  type Row = {
+    label: string;
+    e: boolean | null;
+    c: boolean | null;
+    p: boolean | null;
+    header?: boolean;
+  };
+
   const TABLE: Row[] = [
     { label: "FINANCEIRO", e: null, c: null, p: null, header: true },
-    { label: "Emissão de boletos",              e: true,  c: true,  p: true  },
-    { label: "Cobrança de inadimplentes",       e: true,  c: true,  p: true  },
-    { label: "Balancete digital mensal",        e: true,  c: true,  p: true  },
-    { label: "Gestão de contas a pagar",        e: false, c: true,  p: true  },
-    { label: "Pagamentos online integrados",    e: false, c: true,  p: true  },
-    { label: "Planejamento orçamentário anual", e: false, c: true,  p: true  },
+    { label: "Emissão de boletos",               e: true,  c: true,  p: true  },
+    { label: "Cobrança de inadimplentes",        e: true,  c: true,  p: true  },
+    { label: "Balancete digital mensal",         e: true,  c: true,  p: true  },
+    { label: "Gestão de contas a pagar",         e: false, c: true,  p: true  },
+    { label: "Pagamentos online integrados",     e: false, c: true,  p: true  },
+    { label: "Planejamento orçamentário anual",  e: false, c: true,  p: true  },
     { label: "OPERACIONAL", e: null, c: null, p: null, header: true },
-    { label: "Portal do condômino",             e: true,  c: true,  p: true  },
-    { label: "Suporte via WhatsApp",            e: true,  c: true,  p: true  },
-    { label: "Rateio de água e gás",            e: false, c: true,  p: true  },
-    { label: "Elaboração de atas e convocações",e: false, c: true,  p: true  },
-    { label: "Relatórios gerenciais",           e: false, c: true,  p: true  },
+    { label: "Portal do condômino",              e: true,  c: true,  p: true  },
+    { label: "Suporte via WhatsApp",             e: true,  c: true,  p: true  },
+    { label: "Rateio de água e gás",             e: false, c: true,  p: true  },
+    { label: "Elaboração de atas e convocações", e: false, c: true,  p: true  },
+    { label: "Relatórios gerenciais",            e: false, c: true,  p: true  },
     { label: "PREMIUM", e: null, c: null, p: null, header: true },
-    { label: "Assessoria jurídica condominial", e: false, c: false, p: true  },
-    { label: "Cumprimento de obrigações fiscais",e: false,c: false, p: true  },
-    { label: "Gestão de obras e reformas",      e: false, c: false, p: true  },
-    { label: "Revisão anual da convenção",      e: false, c: false, p: true  },
-    { label: "Atendimento prioritário SLA 12h", e: false, c: false, p: true  },
-    { label: "Relatório trimestral de desempenho",e:false,c: false, p: true  },
+    { label: "Assessoria jurídica condominial",  e: false, c: false, p: true  },
+    { label: "Cumprimento de obrigações fiscais",e: false, c: false, p: true  },
+    { label: "Gestão de obras e reformas",       e: false, c: false, p: true  },
+    { label: "Revisão anual da convenção",       e: false, c: false, p: true  },
+    { label: "Atendimento prioritário SLA 12h",  e: false, c: false, p: true  },
+    { label: "Relatório trimestral de desempenho", e: false, c: false, p: true },
   ];
 
-  const cellVal = (v: boolean | null) =>
-    v === null ? "" : v ? "✓" : "–";
-  const cellColor = (v: boolean | null) =>
-    v === true ? NAVY : GRAY_500;
+  const cellVal   = (v: boolean | null) => (v === null ? "" : v ? "✓" : "–");
+  const cellColor = (v: boolean | null) => (v === true ? NAVY : GRAY_500);
+
+  /* ── Número de página corrente ──────────────────────────── */
+  const condPg  = 3 + (incluiAdmin ? 4 : 0) + (incluiSindico ? 1 : 0) + 1;
+  const contPg  = condPg + 1;
+  const finalPg = contPg + 1;
 
   return (
     <Document>
@@ -332,7 +340,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
       <Page size="A4" style={{ padding: 0, backgroundColor: WHITE }}>
         <View style={{ flexDirection: "row", flex: 1 }}>
 
-          {/* Coluna esquerda — conteúdo */}
+          {/* Coluna esquerda */}
           <View
             style={{
               width: "55%",
@@ -342,15 +350,11 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               justifyContent: "space-between",
             }}
           >
-            {/* Topo: logo + proposta */}
             <View>
-              {/* Logo */}
               <Image
                 src={LOGO_B64}
                 style={{ width: 110, height: 36, marginBottom: 40, objectFit: "contain" }}
               />
-
-              {/* Rótulo */}
               <Text
                 style={{
                   fontSize: 8,
@@ -363,8 +367,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               >
                 Proposta Comercial
               </Text>
-
-              {/* Nome do condomínio */}
               <Text
                 style={{
                   fontSize: 22,
@@ -376,24 +378,26 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               >
                 {nomeCondominio}
               </Text>
-
               {localidade ? (
                 <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 4 }}>
                   {localidade}
                 </Text>
               ) : null}
-
               {nomeContato ? (
                 <Text style={{ fontSize: 10, color: GRAY_600, marginBottom: 4 }}>
                   A/C: {nomeContato}
                   {cargoContato ? ` — ${cargoContato}` : ""}
                 </Text>
               ) : null}
-
-              {/* Linha dourada */}
-              <View style={{ height: 3, width: 48, backgroundColor: GOLD, marginTop: 16, marginBottom: 16 }} />
-
-              {/* Número e data */}
+              <View
+                style={{
+                  height: 3,
+                  width: 48,
+                  backgroundColor: GOLD,
+                  marginTop: 16,
+                  marginBottom: 16,
+                }}
+              />
               {numeroContrato ? (
                 <Text style={{ fontSize: 9, color: GRAY_500, marginBottom: 4 }}>
                   Nº {numeroContrato}
@@ -402,9 +406,22 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               <Text style={{ fontSize: 9, color: GRAY_500 }}>{dataHoje}</Text>
             </View>
 
-            {/* Rodapé esquerdo — contato */}
-            <View style={{ borderTopWidth: 0.5, borderTopColor: GRAY_200, paddingTop: 16 }}>
-              <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 1.5, fontWeight: 700, marginBottom: 8 }}>
+            <View
+              style={{
+                borderTopWidth: 0.5,
+                borderTopColor: GRAY_200,
+                paddingTop: 16,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 8,
+                  color: GOLD,
+                  letterSpacing: 1.5,
+                  fontWeight: 700,
+                  marginBottom: 8,
+                }}
+              >
                 ENTRE EM CONTATO
               </Text>
               <Text style={{ fontSize: 9, color: GRAY_600, marginBottom: 3 }}>
@@ -419,7 +436,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             </View>
           </View>
 
-          {/* Coluna direita — gradiente navy com prédios */}
+          {/* Coluna direita — navy */}
           <View
             style={{
               width: "45%",
@@ -429,17 +446,14 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               paddingBottom: 30,
             }}
           >
-            {/* Prédios estilizados em SVG */}
             <Svg width={160} height={200} viewBox="0 0 160 200">
-              {/* Prédio 1 */}
               <Path d="M10 140 h28 v60 h-28z" fill="rgba(255,255,255,0.12)" />
-              <Path d="M14 148 h8 v8 h-8z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M26 148 h8 v8 h-8z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M14 162 h8 v8 h-8z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M26 162 h8 v8 h-8z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M14 176 h8 v8 h-8z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M26 176 h8 v8 h-8z" fill="rgba(255,255,255,0.18)" />
-              {/* Prédio 2 */}
+              <Path d="M14 148 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M26 148 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M14 162 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M26 162 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M14 176 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M26 176 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
               <Path d="M46 100 h32 v100 h-32z" fill="rgba(255,255,255,0.15)" />
               <Path d="M50 108 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
               <Path d="M64 108 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
@@ -451,17 +465,15 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               <Path d="M64 156 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
               <Path d="M50 172 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
               <Path d="M64 172 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              {/* Prédio 3 */}
               <Path d="M86 118 h30 v82 h-30z" fill="rgba(255,255,255,0.13)" />
-              <Path d="M90 126 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
+              <Path d="M90 126 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
               <Path d="M103 126 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M90 141 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
+              <Path d="M90 141 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
               <Path d="M103 141 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M90 156 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
+              <Path d="M90 156 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
               <Path d="M103 156 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M90 171 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
+              <Path d="M90 171 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
               <Path d="M103 171 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
-              {/* Prédio 4 */}
               <Path d="M124 150 h26 v50 h-26z" fill="rgba(255,255,255,0.10)" />
               <Path d="M128 158 h8 v8 h-8z" fill="rgba(255,255,255,0.16)" />
               <Path d="M138 158 h8 v8 h-8z" fill="rgba(255,255,255,0.16)" />
@@ -470,9 +482,9 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               <Path d="M128 186 h8 v8 h-8z" fill="rgba(255,255,255,0.16)" />
               <Path d="M138 186 h8 v8 h-8z" fill="rgba(255,255,255,0.16)" />
             </Svg>
-
-            {/* Número de página */}
-            <Text style={{ fontSize: 7.5, color: "rgba(255,255,255,0.4)", marginTop: 12 }}>
+            <Text
+              style={{ fontSize: 7.5, color: "rgba(255,255,255,0.4)", marginTop: 12 }}
+            >
               Página 1 de {total}
             </Text>
           </View>
@@ -484,7 +496,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           ══════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
         <SectionBand label="Sobre Nós" />
-
         <View style={s.body}>
           <Text style={s.badge}>Quem Somos</Text>
           <Text style={s.h1}>Alpha Condomínios</Text>
@@ -492,7 +503,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           <Text style={s.subtitle}>
             Conheça a Alpha Condomínios e nossa missão de transformar a gestão condominial.
           </Text>
-
           <Text style={s.paragraph}>
             A Alpha Condomínios nasceu com o propósito de profissionalizar e modernizar a
             administração de condomínios, combinando tecnologia, transparência e atendimento
@@ -506,11 +516,10 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           </Text>
           <Text style={s.paragraph}>
             Acreditamos que cada condomínio é único. Por isso, oferecemos planos flexíveis que se
-            adaptam à realidade de cada empreendimento — do essencial ao premium, sempre com a mesma
-            excelência.
+            adaptam à realidade de cada empreendimento — do essencial ao premium, sempre com a
+            mesma excelência.
           </Text>
 
-          {/* Missão */}
           <View
             style={{
               backgroundColor: NAVY,
@@ -537,7 +546,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             </Text>
           </View>
 
-          {/* Diferenciais — grid 2×3 */}
           <Text
             style={{
               fontSize: 7.5,
@@ -571,16 +579,19 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   }}
                 >
                   <View style={{ marginBottom: 6 }}>{d.icon}</View>
-                  <Text style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}>
+                  <Text
+                    style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}
+                  >
                     {d.title}
                   </Text>
-                  <Text style={{ fontSize: 8.5, color: GRAY_700, lineHeight: 1.5 }}>{d.text}</Text>
+                  <Text style={{ fontSize: 8.5, color: GRAY_700, lineHeight: 1.5 }}>
+                    {d.text}
+                  </Text>
                 </View>
               </View>
             ))}
           </View>
         </View>
-
         <PageFooter current={2} total={total} />
       </Page>
 
@@ -589,7 +600,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           ══════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
         <SectionBand label="Serviços" />
-
         <View style={s.body}>
           <Text style={s.badge}>Nossos Serviços</Text>
           <Text style={s.h1}>Soluções Completas</Text>
@@ -597,7 +607,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           <Text style={s.subtitle}>
             Soluções completas para a administração do seu condomínio.
           </Text>
-
           {SERVICOS.map((sv, i) => (
             <View key={i}>
               <View style={s.sectionRule} />
@@ -612,25 +621,22 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             </View>
           ))}
         </View>
-
         <PageFooter current={3} total={total} />
       </Page>
 
       {/* ══════════════════════════════════════════
-          PÁGINAS DE PLANOS (condicional)
+          PLANOS (condicional)
           ══════════════════════════════════════════ */}
       {incluiAdmin && (
         <>
-          {/* PÁG 4 — PLANO ESSENCIAL */}
+          {/* PÁG 4 — ESSENCIAL */}
           <Page size="A4" style={s.page}>
             <SectionBand label="Plano" />
-
             <View style={s.body}>
               <Text style={s.badge}>Plano</Text>
               <Text style={s.h1}>Essencial</Text>
               <View style={s.divider} />
               <Text style={s.subtitle}>Gestão financeira objetiva e eficiente</Text>
-
               <View
                 style={{
                   backgroundColor: GRAY_50,
@@ -639,14 +645,15 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   marginBottom: 16,
                 }}
               >
-                <Text style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}>
+                <Text
+                  style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}
+                >
                   IDEAL PARA
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 }}>
                   Condomínios que buscam organização financeira com custo acessível.
                 </Text>
               </View>
-
               <View style={{ marginBottom: 20 }}>
                 {[
                   "Emissão de boletos",
@@ -654,9 +661,10 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   "Balancete digital mensal",
                   "Portal do condômino",
                   "Suporte via WhatsApp",
-                ].map((f, i) => <FeatureRow key={i} text={f} />)}
+                ].map((f, i) => (
+                  <FeatureRow key={i} text={f} />
+                ))}
               </View>
-
               <View
                 style={{
                   borderTopWidth: 1,
@@ -684,16 +692,13 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 </Text>
               </View>
             </View>
-
             <PageFooter current={4} total={total} />
           </Page>
 
-          {/* PÁG 5 — PLANO COMPLETO */}
+          {/* PÁG 5 — COMPLETO */}
           <Page size="A4" style={s.page}>
             <SectionBand label="Plano" />
-
             <View style={s.body}>
-              {/* Badge "Mais Escolhido" */}
               <View
                 style={{
                   alignSelf: "flex-start",
@@ -704,15 +709,20 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   marginBottom: 10,
                 }}
               >
-                <Text style={{ fontSize: 7.5, fontWeight: 700, color: NAVY, letterSpacing: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 7.5,
+                    fontWeight: 700,
+                    color: NAVY,
+                    letterSpacing: 1,
+                  }}
+                >
                   MAIS ESCOLHIDO
                 </Text>
               </View>
-
               <Text style={s.h1}>Completo</Text>
               <View style={s.divider} />
               <Text style={s.subtitle}>Administração completa com gestão integrada</Text>
-
               <View
                 style={{
                   backgroundColor: GRAY_50,
@@ -721,7 +731,9 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   marginBottom: 16,
                 }}
               >
-                <Text style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}>
+                <Text
+                  style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}
+                >
                   IDEAL PARA
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 }}>
@@ -729,7 +741,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   integradas.
                 </Text>
               </View>
-
               <View style={{ marginBottom: 20 }}>
                 {[
                   "Tudo do Plano Essencial",
@@ -739,9 +750,10 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   "Elaboração de atas e convocações",
                   "Pagamentos online integrados",
                   "Relatórios gerenciais",
-                ].map((f, i) => <FeatureRow key={i} text={f} />)}
+                ].map((f, i) => (
+                  <FeatureRow key={i} text={f} />
+                ))}
               </View>
-
               <View
                 style={{
                   borderTopWidth: 1,
@@ -769,14 +781,12 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 </Text>
               </View>
             </View>
-
             <PageFooter current={5} total={total} />
           </Page>
 
-          {/* PÁG 6 — PLANO PREMIUM */}
+          {/* PÁG 6 — PREMIUM */}
           <Page size="A4" style={s.page}>
             <SectionBand label="Plano" />
-
             <View style={s.body}>
               <Text style={s.badge}>Plano</Text>
               <Text style={s.h1}>Premium</Text>
@@ -784,7 +794,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               <Text style={s.subtitle}>
                 Gestão completa com assessoria jurídica e atendimento prioritário
               </Text>
-
               <View
                 style={{
                   backgroundColor: GRAY_50,
@@ -793,15 +802,16 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   marginBottom: 16,
                 }}
               >
-                <Text style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}>
+                <Text
+                  style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}
+                >
                   IDEAL PARA
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 }}>
-                  Condomínios que desejam o mais alto nível de gestão, com suporte jurídico e SLA
-                  de atendimento.
+                  Condomínios que desejam o mais alto nível de gestão, com suporte jurídico e
+                  SLA de atendimento.
                 </Text>
               </View>
-
               <View style={{ marginBottom: 20 }}>
                 {[
                   "Tudo do Plano Completo",
@@ -811,9 +821,10 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   "Revisão anual da convenção",
                   "Atendimento prioritário SLA 12h",
                   "Relatório trimestral de desempenho",
-                ].map((f, i) => <FeatureRow key={i} text={f} />)}
+                ].map((f, i) => (
+                  <FeatureRow key={i} text={f} />
+                ))}
               </View>
-
               <View
                 style={{
                   borderTopWidth: 1,
@@ -841,15 +852,20 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 </Text>
               </View>
             </View>
-
             <PageFooter current={6} total={total} />
           </Page>
 
           {/* PÁG 7 — COMPARATIVO */}
           <Page size="A4" style={s.page}>
             <SectionBand label="Comparativo" />
-
-            <View style={{ paddingHorizontal: 50, paddingTop: 30, flex: 1, justifyContent: "center" }}>
+            <View
+              style={{
+                paddingHorizontal: 50,
+                paddingTop: 30,
+                flex: 1,
+                justifyContent: "center",
+              }}
+            >
               <Text style={s.badge}>Comparativo</Text>
               <Text style={s.h1}>Comparativo de Planos</Text>
               <View style={s.divider} />
@@ -865,10 +881,11 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   paddingVertical: 9,
                   paddingHorizontal: 8,
                   borderRadius: 4,
-                  marginBottom: 0,
                 }}
               >
-                <Text style={{ flex: 3, fontSize: 8.5, color: WHITE, fontWeight: 700 }}>
+                <Text
+                  style={{ flex: 3, fontSize: 8.5, color: WHITE, fontWeight: 700 }}
+                >
                   Serviço
                 </Text>
                 {["Essencial", "Completo", "Premium"].map((h) => (
@@ -897,7 +914,14 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                       paddingHorizontal: 8,
                     }}
                   >
-                    <Text style={{ fontSize: 7.5, fontWeight: 700, color: NAVY, letterSpacing: 1 }}>
+                    <Text
+                      style={{
+                        fontSize: 7.5,
+                        fontWeight: 700,
+                        color: NAVY,
+                        letterSpacing: 1,
+                      }}
+                    >
                       {row.label}
                     </Text>
                   </View>
@@ -945,7 +969,9 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   marginTop: 2,
                 }}
               >
-                <Text style={{ flex: 3, fontSize: 8.5, fontWeight: 700, color: NAVY }}>
+                <Text
+                  style={{ flex: 3, fontSize: 8.5, fontWeight: 700, color: NAVY }}
+                >
                   Investimento mensal
                 </Text>
                 {[essencial.totalFmt, completo.totalFmt, premium.totalFmt].map((v, j) => (
@@ -964,19 +990,17 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 ))}
               </View>
             </View>
-
             <PageFooter current={7} total={total} />
           </Page>
         </>
       )}
 
       {/* ══════════════════════════════════════════
-          PÁG — SÍNDICO PROFISSIONAL (condicional)
+          PÁG — SÍNDICO (condicional)
           ══════════════════════════════════════════ */}
       {incluiSindico && sindico && (
         <Page size="A4" style={s.page}>
           <SectionBand label="Serviço" />
-
           <View style={s.body}>
             <Text style={s.badge}>Serviço</Text>
             <Text style={s.h1}>Síndico Profissional</Text>
@@ -984,7 +1008,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             <Text style={s.subtitle}>
               Gestão presencial com representação legal do condomínio
             </Text>
-
             <View
               style={{
                 backgroundColor: GRAY_50,
@@ -993,7 +1016,9 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 marginBottom: 16,
               }}
             >
-              <Text style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}>
+              <Text
+                style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}
+              >
                 IDEAL PARA
               </Text>
               <Text style={{ fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 }}>
@@ -1001,7 +1026,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 condominial e representação legal.
               </Text>
             </View>
-
             <View style={{ marginBottom: 20 }}>
               {[
                 "Representação legal do condomínio",
@@ -1011,9 +1035,10 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 "Fiscalização de contratos e obras",
                 "Atendimento aos condôminos",
                 "Aplicação do regimento interno",
-              ].map((f, i) => <FeatureRow key={i} text={f} />)}
+              ].map((f, i) => (
+                <FeatureRow key={i} text={f} />
+              ))}
             </View>
-
             <View
               style={{
                 borderTopWidth: 1,
@@ -1032,14 +1057,15 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               >
                 Investimento Mensal — Síndico
               </Text>
-              <Text style={{ fontSize: 18, fontWeight: 800, color: NAVY, marginBottom: 4 }}>
+              <Text
+                style={{ fontSize: 18, fontWeight: 800, color: NAVY, marginBottom: 4 }}
+              >
                 1 salário-mínimo/mês
               </Text>
               <Text style={{ fontSize: 9.5, color: GRAY_500, marginBottom: 14 }}>
-                Valores calculados para {numeroUnidades} unidades. Sujeitos a ajuste conforme
-                avaliação técnica.
+                Valores calculados para {numeroUnidades} unidades. Sujeitos a ajuste
+                conforme avaliação técnica.
               </Text>
-
               <View
                 style={{
                   backgroundColor: NAVY,
@@ -1047,18 +1073,21 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   padding: 14,
                 }}
               >
-                <Text style={{ fontSize: 9.5, color: color: "#E5D4A1", lineHeight: 1.6 }}>
+                <Text style={{ fontSize: 9.5, color: GOLD_LIGHT, lineHeight: 1.6 }}>
                   A Alpha Condomínios tem como diferencial no mercado o{" "}
                   <Text style={{ fontWeight: 700 }}>
                     Seguro de Responsabilidade Civil (RC) do Síndico INCLUSO
                   </Text>
-                  . Protegemos o síndico contra riscos inerentes à função, sem custo adicional.
+                  . Protegemos o síndico contra riscos inerentes à função, sem custo
+                  adicional.
                 </Text>
               </View>
             </View>
           </View>
-
-          <PageFooter current={incluiAdmin ? 8 : 4} total={total} />
+          <PageFooter
+            current={incluiAdmin ? 8 : 4}
+            total={total}
+          />
         </Page>
       )}
 
@@ -1067,7 +1096,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           ══════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
         <SectionBand label="Condições" />
-
         <View style={s.body}>
           <Text style={s.badge}>Condições</Text>
           <Text style={s.h1}>Condições Comerciais</Text>
@@ -1075,16 +1103,17 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           <Text style={s.subtitle}>
             Transparência em todos os termos da nossa proposta.
           </Text>
-
           <View style={{ flexDirection: "row", flexWrap: "wrap", marginHorizontal: -6 }}>
             {[
               {
                 titulo: "Vigência",
-                texto: "Contrato de 12 meses, renovável automaticamente por igual período.",
+                texto:
+                  "Contrato de 12 meses, renovável automaticamente por igual período.",
               },
               {
                 titulo: "Pagamento",
-                texto: "Faturamento mensal via boleto bancário, com vencimento todo dia 10.",
+                texto:
+                  "Faturamento mensal via boleto bancário, com vencimento todo dia 10.",
               },
               {
                 titulo: "Reajuste",
@@ -1092,7 +1121,8 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               },
               {
                 titulo: "Implantação",
-                texto: "Prazo de implantação de até 30 dias após assinatura do contrato.",
+                texto:
+                  "Prazo de implantação de até 30 dias após assinatura do contrato.",
               },
               {
                 titulo: "Rescisão",
@@ -1118,7 +1148,12 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   }}
                 >
                   <Text
-                    style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 5 }}
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      color: NAVY,
+                      marginBottom: 5,
+                    }}
                   >
                     {c.titulo}
                   </Text>
@@ -1130,16 +1165,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             ))}
           </View>
         </View>
-
-        <PageFooter
-          current={(() => {
-            let n = 3;
-            if (incluiAdmin) n += 4;
-            if (incluiSindico) n += 1;
-            return n + 1;
-          })()}
-          total={total}
-        />
+        <PageFooter current={condPg} total={total} />
       </Page>
 
       {/* ══════════════════════════════════════════
@@ -1147,13 +1173,11 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           ══════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
         <SectionBand label="Próximos Passos" />
-
         <View style={s.body}>
           <Text style={s.badge}>Próximos Passos</Text>
           <Text style={s.h1}>Como Contratar</Text>
           <View style={s.divider} />
           <Text style={s.subtitle}>Simples, rápido e sem burocracia.</Text>
-
           {[
             {
               n: "1",
@@ -1182,7 +1206,11 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           ].map((step, i) => (
             <View
               key={i}
-              style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 20 }}
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-start",
+                marginBottom: 20,
+              }}
             >
               <View
                 style={{
@@ -1202,7 +1230,12 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               </View>
               <View style={{ flex: 1 }}>
                 <Text
-                  style={{ fontSize: 12, fontWeight: 700, color: NAVY, marginBottom: 3 }}
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: NAVY,
+                    marginBottom: 3,
+                  }}
                 >
                   {step.titulo}
                 </Text>
@@ -1213,7 +1246,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             </View>
           ))}
 
-          {/* CTA final */}
           <View
             style={{
               backgroundColor: NAVY,
@@ -1234,22 +1266,20 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             >
               Pronto para transformar a gestão do seu condomínio?
             </Text>
-            <Text style={{ fontSize: 9.5, color: GOLD, textAlign: "center", lineHeight: 1.7 }}>
+            <Text
+              style={{
+                fontSize: 9.5,
+                color: GOLD,
+                textAlign: "center",
+                lineHeight: 1.7,
+              }}
+            >
               (31) 99778-7316{"\n"}
               comercial@alphafacilities.com.br
             </Text>
           </View>
         </View>
-
-        <PageFooter
-          current={(() => {
-            let n = 3;
-            if (incluiAdmin) n += 4;
-            if (incluiSindico) n += 1;
-            return n + 2;
-          })()}
-          total={total}
-        />
+        <PageFooter current={contPg} total={total} />
       </Page>
 
       {/* ══════════════════════════════════════════
@@ -1258,15 +1288,13 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
       {consideracoesFinais?.trim() && (
         <Page size="A4" style={s.page}>
           <SectionBand label="Considerações Finais" />
-
           <View style={s.body}>
             <Text style={s.badge}>Observações</Text>
             <Text style={s.h1}>Considerações Finais</Text>
             <View style={s.divider} />
             <Text style={s.paragraph}>{consideracoesFinais}</Text>
           </View>
-
-          <PageFooter current={total} total={total} />
+          <PageFooter current={finalPg} total={total} />
         </Page>
       )}
     </Document>
