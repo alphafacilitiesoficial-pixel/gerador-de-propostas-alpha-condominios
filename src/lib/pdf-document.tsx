@@ -118,7 +118,7 @@ function SectionBand({ label }: { label: string }) {
         marginBottom: 0,
       }}
     >
-      <Text style={{ fontSize: 7.5, color: GOLD, letterSpacing: 2.5, fontWeight: 700 }}>
+      <Text style={{ fontSize: 7.5, color: GOLD, letterSpacing: 2.5, fontWeight: "bold" }}>
         {label.toUpperCase()}
       </Text>
     </View>
@@ -141,7 +141,7 @@ function PageFooter({ current, total }: { current: number; total: number }) {
         alignItems: "center",
       }}
     >
-      <Text style={{ fontSize: 7.5, color: GOLD, letterSpacing: 1.5, fontWeight: 700 }}>
+      <Text style={{ fontSize: 7.5, color: GOLD, letterSpacing: 1.5, fontWeight: "bold" }}>
         ALPHA CONDOMÍNIOS
       </Text>
       <Text style={{ fontSize: 7.5, color: WHITE }}>
@@ -173,18 +173,17 @@ const s = StyleSheet.create({
     fontSize: 7.5,
     color: GOLD,
     letterSpacing: 2.5,
-    fontWeight: 700,
-    textTransform: "uppercase",
+    fontWeight: "bold",
     marginBottom: 6,
   },
   h1: {
     fontSize: 26,
-    fontWeight: 800,
+    fontWeight: "bold",
     color: NAVY,
     marginBottom: 6,
     letterSpacing: -0.5,
   },
-  h2: { fontSize: 14, fontWeight: 700, color: NAVY, marginBottom: 4 },
+  h2: { fontSize: 14, fontWeight: "bold", color: NAVY, marginBottom: 4 },
   divider: { height: 3, width: 44, backgroundColor: GOLD, marginBottom: 14 },
   paragraph: { fontSize: 10, color: GRAY_700, lineHeight: 1.65, marginBottom: 8 },
   subtitle: { fontSize: 10.5, color: GRAY_500, marginBottom: 18, lineHeight: 1.5 },
@@ -229,11 +228,11 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
   } = data;
 
   /* total de páginas */
-  let total = 1; // capa
-  total += 2;    // Sobre + Serviços
-  if (incluiAdmin) total += 4; // Essencial + Completo + Premium + Comparativo
+  let total = 1;
+  total += 2;
+  if (incluiAdmin) total += 4;
   if (incluiSindico) total += 1;
-  total += 2; // Condições + Como Contratar
+  total += 2;
   if (consideracoesFinais?.trim()) total += 1;
 
   const planos    = calcularPlanos(numeroUnidades);
@@ -247,51 +246,47 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
     day: "2-digit", month: "long", year: "numeric",
   });
 
-  /* ── Serviços — pág 3 ───────────────────────────────────── */
+  const condPg = 3 + (incluiAdmin ? 4 : 0) + (incluiSindico ? 1 : 0) + 1;
+  const contPg = condPg + 1;
+  const finalPg = contPg + 1;
+
+  /* ── Serviços — pág 3 ─────────────────────────────────── */
   const SERVICOS = [
     {
       titulo: "Administração de Condomínios",
-      texto:
-        "Gestão completa de todas as atividades administrativas, financeiras e operacionais do condomínio, com foco em eficiência e transparência.",
+      texto: "Gestão completa de todas as atividades administrativas, financeiras e operacionais do condomínio, com foco em eficiência e transparência.",
     },
     {
       titulo: "Síndico Profissional",
-      texto:
-        "Profissional qualificado e dedicado exclusivamente à gestão do condomínio, garantindo cumprimento de todas as obrigações legais. Inclui Seguro de Responsabilidade Civil (RC) de Síndico.",
+      texto: "Profissional qualificado e dedicado exclusivamente à gestão do condomínio, garantindo cumprimento de todas as obrigações legais. Inclui Seguro de Responsabilidade Civil (RC) de Síndico.",
     },
     {
       titulo: "Certificado Digital",
-      texto:
-        "Emissão e gestão de certificados digitais para assinatura eletrônica de documentos, atas e contratos, garantindo validade jurídica e agilidade.",
+      texto: "Emissão e gestão de certificados digitais para assinatura eletrônica de documentos, atas e contratos, garantindo validade jurídica e agilidade.",
     },
     {
       titulo: "Seguro Condominial",
-      texto:
-        "Contratação e gestão de apólices de seguro patrimonial, incêndio, responsabilidade civil e outros, com análise criteriosa de coberturas e custos.",
+      texto: "Contratação e gestão de apólices de seguro patrimonial, incêndio, responsabilidade civil e outros, com análise criteriosa de coberturas e custos.",
     },
     {
       titulo: "AVCB",
-      texto:
-        "Assessoria completa para obtenção e renovação do Auto de Vistoria do Corpo de Bombeiros, garantindo conformidade legal e segurança dos moradores.",
+      texto: "Assessoria completa para obtenção e renovação do Auto de Vistoria do Corpo de Bombeiros, garantindo conformidade legal e segurança dos moradores.",
     },
     {
       titulo: "Assessoria Jurídica",
-      texto:
-        "Suporte jurídico especializado em direito condominial, com orientação em assembleias, elaboração de documentos e resolução de conflitos.",
+      texto: "Suporte jurídico especializado em direito condominial, com orientação em assembleias, elaboração de documentos e resolução de conflitos.",
     },
     {
       titulo: "Garantidora de Crédito",
-      texto:
-        "Intermediação com empresas garantidoras para locação de unidades, facilitando a entrada de inquilinos e reduzindo inadimplência.",
+      texto: "Intermediação com empresas garantidoras para locação de unidades, facilitando a entrada de inquilinos e reduzindo inadimplência.",
     },
     {
       titulo: "Dentre Outros",
-      texto:
-        "Soluções personalizadas conforme necessidades específicas de cada condomínio: manutenção predial, comunicação visual, automação, sustentabilidade e muito mais.",
+      texto: "Soluções personalizadas conforme necessidades específicas de cada condomínio: manutenção predial, comunicação visual, automação, sustentabilidade e muito mais.",
     },
   ];
 
-  /* ── Tabela comparativa ─────────────────────────────────── */
+  /* ── Tabela comparativa ──────────────────────────────── */
   type Row = {
     label: string;
     e: boolean | null;
@@ -326,11 +321,6 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
   const cellVal   = (v: boolean | null) => (v === null ? "" : v ? "✓" : "–");
   const cellColor = (v: boolean | null) => (v === true ? NAVY : GRAY_500);
 
-  /* ── Número de página corrente ──────────────────────────── */
-  const condPg  = 3 + (incluiAdmin ? 4 : 0) + (incluiSindico ? 1 : 0) + 1;
-  const contPg  = condPg + 1;
-  const finalPg = contPg + 1;
-
   return (
     <Document>
 
@@ -360,17 +350,16 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   fontSize: 8,
                   color: GOLD,
                   letterSpacing: 3,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
+                  fontWeight: "bold",
                   marginBottom: 12,
                 }}
               >
-                Proposta Comercial
+                PROPOSTA COMERCIAL
               </Text>
               <Text
                 style={{
                   fontSize: 22,
-                  fontWeight: 800,
+                  fontWeight: "bold",
                   color: NAVY,
                   marginBottom: 6,
                   lineHeight: 1.2,
@@ -418,7 +407,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   fontSize: 8,
                   color: GOLD,
                   letterSpacing: 1.5,
-                  fontWeight: 700,
+                  fontWeight: "bold",
                   marginBottom: 8,
                 }}
               >
@@ -497,7 +486,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
       <Page size="A4" style={s.page}>
         <SectionBand label="Sobre Nós" />
         <View style={s.body}>
-          <Text style={s.badge}>Quem Somos</Text>
+          <Text style={s.badge}>QUEM SOMOS</Text>
           <Text style={s.h1}>Alpha Condomínios</Text>
           <View style={s.divider} />
           <Text style={s.subtitle}>
@@ -506,18 +495,18 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           <Text style={s.paragraph}>
             A Alpha Condomínios nasceu com o propósito de profissionalizar e modernizar a
             administração de condomínios, combinando tecnologia, transparência e atendimento
-            humanizado. Atuamos em Belo Horizonte e região metropolitana, atendendo condomínios
-            residenciais, comerciais e mistos.
+            humanizado. Atuamos em Belo Horizonte e região metropolitana, atendendo
+            condomínios residenciais, comerciais e mistos.
           </Text>
           <Text style={s.paragraph}>
-            Nossa equipe é formada por especialistas em gestão condominial, contabilidade, direito
-            imobiliário e tecnologia. Utilizamos sistemas de ponta para garantir controle financeiro
-            rigoroso, comunicação eficiente e total conformidade legal.
+            Nossa equipe é formada por especialistas em gestão condominial, contabilidade,
+            direito imobiliário e tecnologia. Utilizamos sistemas de ponta para garantir
+            controle financeiro rigoroso, comunicação eficiente e total conformidade legal.
           </Text>
           <Text style={s.paragraph}>
-            Acreditamos que cada condomínio é único. Por isso, oferecemos planos flexíveis que se
-            adaptam à realidade de cada empreendimento — do essencial ao premium, sempre com a
-            mesma excelência.
+            Acreditamos que cada condomínio é único. Por isso, oferecemos planos flexíveis
+            que se adaptam à realidade de cada empreendimento — do essencial ao premium,
+            sempre com a mesma excelência.
           </Text>
 
           <View
@@ -534,7 +523,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 fontSize: 7.5,
                 color: GOLD,
                 letterSpacing: 2,
-                fontWeight: 700,
+                fontWeight: "bold",
                 marginBottom: 6,
               }}
             >
@@ -551,7 +540,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               fontSize: 7.5,
               color: GOLD,
               letterSpacing: 2,
-              fontWeight: 700,
+              fontWeight: "bold",
               marginBottom: 10,
             }}
           >
@@ -580,7 +569,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 >
                   <View style={{ marginBottom: 6 }}>{d.icon}</View>
                   <Text
-                    style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}
+                    style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
                   >
                     {d.title}
                   </Text>
@@ -601,7 +590,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
       <Page size="A4" style={s.page}>
         <SectionBand label="Serviços" />
         <View style={s.body}>
-          <Text style={s.badge}>Nossos Serviços</Text>
+          <Text style={s.badge}>NOSSOS SERVIÇOS</Text>
           <Text style={s.h1}>Soluções Completas</Text>
           <View style={s.divider} />
           <Text style={s.subtitle}>
@@ -611,7 +600,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             <View key={i}>
               <View style={s.sectionRule} />
               <Text
-                style={{ fontSize: 11.5, fontWeight: 700, color: NAVY, marginBottom: 3 }}
+                style={{ fontSize: 11.5, fontWeight: "bold", color: NAVY, marginBottom: 3 }}
               >
                 {sv.titulo}
               </Text>
@@ -633,7 +622,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           <Page size="A4" style={s.page}>
             <SectionBand label="Plano" />
             <View style={s.body}>
-              <Text style={s.badge}>Plano</Text>
+              <Text style={s.badge}>PLANO</Text>
               <Text style={s.h1}>Essencial</Text>
               <View style={s.divider} />
               <Text style={s.subtitle}>Gestão financeira objetiva e eficiente</Text>
@@ -646,7 +635,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 }}
               >
                 <Text
-                  style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}
+                  style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
                 >
                   IDEAL PARA
                 </Text>
@@ -678,13 +667,12 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                     fontSize: 8,
                     color: GRAY_500,
                     letterSpacing: 1.5,
-                    textTransform: "uppercase",
                     marginBottom: 6,
                   }}
                 >
-                  Investimento Mensal
+                  INVESTIMENTO MENSAL
                 </Text>
-                <Text style={{ fontSize: 28, fontWeight: 800, color: NAVY }}>
+                <Text style={{ fontSize: 28, fontWeight: "bold", color: NAVY }}>
                   {essencial.totalFmt}
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_500, marginTop: 4 }}>
@@ -712,7 +700,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 <Text
                   style={{
                     fontSize: 7.5,
-                    fontWeight: 700,
+                    fontWeight: "bold",
                     color: NAVY,
                     letterSpacing: 1,
                   }}
@@ -732,13 +720,13 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 }}
               >
                 <Text
-                  style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}
+                  style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
                 >
                   IDEAL PARA
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 }}>
-                  Condomínios que precisam de gestão financeira, operacional e de comunicação
-                  integradas.
+                  Condomínios que precisam de gestão financeira, operacional e de
+                  comunicação integradas.
                 </Text>
               </View>
               <View style={{ marginBottom: 20 }}>
@@ -767,13 +755,12 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                     fontSize: 8,
                     color: GRAY_500,
                     letterSpacing: 1.5,
-                    textTransform: "uppercase",
                     marginBottom: 6,
                   }}
                 >
-                  Investimento Mensal
+                  INVESTIMENTO MENSAL
                 </Text>
-                <Text style={{ fontSize: 28, fontWeight: 800, color: NAVY }}>
+                <Text style={{ fontSize: 28, fontWeight: "bold", color: NAVY }}>
                   {completo.totalFmt}
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_500, marginTop: 4 }}>
@@ -788,7 +775,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
           <Page size="A4" style={s.page}>
             <SectionBand label="Plano" />
             <View style={s.body}>
-              <Text style={s.badge}>Plano</Text>
+              <Text style={s.badge}>PLANO</Text>
               <Text style={s.h1}>Premium</Text>
               <View style={s.divider} />
               <Text style={s.subtitle}>
@@ -803,13 +790,13 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 }}
               >
                 <Text
-                  style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}
+                  style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
                 >
                   IDEAL PARA
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 }}>
-                  Condomínios que desejam o mais alto nível de gestão, com suporte jurídico e
-                  SLA de atendimento.
+                  Condomínios que desejam o mais alto nível de gestão, com suporte jurídico
+                  e SLA de atendimento.
                 </Text>
               </View>
               <View style={{ marginBottom: 20 }}>
@@ -838,13 +825,12 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                     fontSize: 8,
                     color: GRAY_500,
                     letterSpacing: 1.5,
-                    textTransform: "uppercase",
                     marginBottom: 6,
                   }}
                 >
-                  Investimento Mensal
+                  INVESTIMENTO MENSAL
                 </Text>
-                <Text style={{ fontSize: 28, fontWeight: 800, color: NAVY }}>
+                <Text style={{ fontSize: 28, fontWeight: "bold", color: NAVY }}>
                   {premium.totalFmt}
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_500, marginTop: 4 }}>
@@ -866,7 +852,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 justifyContent: "center",
               }}
             >
-              <Text style={s.badge}>Comparativo</Text>
+              <Text style={s.badge}>COMPARATIVO</Text>
               <Text style={s.h1}>Comparativo de Planos</Text>
               <View style={s.divider} />
               <Text style={{ fontSize: 9.5, color: GRAY_500, marginBottom: 16 }}>
@@ -884,7 +870,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 }}
               >
                 <Text
-                  style={{ flex: 3, fontSize: 8.5, color: WHITE, fontWeight: 700 }}
+                  style={{ flex: 3, fontSize: 8.5, color: WHITE, fontWeight: "bold" }}
                 >
                   Serviço
                 </Text>
@@ -895,7 +881,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                       flex: 1,
                       fontSize: 8.5,
                       color: WHITE,
-                      fontWeight: 700,
+                      fontWeight: "bold",
                       textAlign: "center",
                     }}
                   >
@@ -917,7 +903,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                     <Text
                       style={{
                         fontSize: 7.5,
-                        fontWeight: 700,
+                        fontWeight: "bold",
                         color: NAVY,
                         letterSpacing: 1,
                       }}
@@ -945,7 +931,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                         style={{
                           flex: 1,
                           fontSize: 10,
-                          fontWeight: v ? 700 : 400,
+                          fontWeight: v ? "bold" : "normal",
                           color: cellColor(v),
                           textAlign: "center",
                         }}
@@ -970,7 +956,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 }}
               >
                 <Text
-                  style={{ flex: 3, fontSize: 8.5, fontWeight: 700, color: NAVY }}
+                  style={{ flex: 3, fontSize: 8.5, fontWeight: "bold", color: NAVY }}
                 >
                   Investimento mensal
                 </Text>
@@ -980,7 +966,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                     style={{
                       flex: 1,
                       fontSize: 8.5,
-                      fontWeight: 700,
+                      fontWeight: "bold",
                       color: NAVY,
                       textAlign: "center",
                     }}
@@ -1002,7 +988,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
         <Page size="A4" style={s.page}>
           <SectionBand label="Serviço" />
           <View style={s.body}>
-            <Text style={s.badge}>Serviço</Text>
+            <Text style={s.badge}>SERVIÇO</Text>
             <Text style={s.h1}>Síndico Profissional</Text>
             <View style={s.divider} />
             <Text style={s.subtitle}>
@@ -1017,7 +1003,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               }}
             >
               <Text
-                style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}
+                style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
               >
                 IDEAL PARA
               </Text>
@@ -1051,14 +1037,13 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   fontSize: 8,
                   color: GRAY_500,
                   letterSpacing: 1.5,
-                  textTransform: "uppercase",
                   marginBottom: 6,
                 }}
               >
-                Investimento Mensal — Síndico
+                INVESTIMENTO MENSAL — SÍNDICO
               </Text>
               <Text
-                style={{ fontSize: 18, fontWeight: 800, color: NAVY, marginBottom: 4 }}
+                style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
               >
                 1 salário-mínimo/mês
               </Text>
@@ -1075,7 +1060,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               >
                 <Text style={{ fontSize: 9.5, color: GOLD_LIGHT, lineHeight: 1.6 }}>
                   A Alpha Condomínios tem como diferencial no mercado o{" "}
-                  <Text style={{ fontWeight: 700 }}>
+                  <Text style={{ fontWeight: "bold" }}>
                     Seguro de Responsabilidade Civil (RC) do Síndico INCLUSO
                   </Text>
                   . Protegemos o síndico contra riscos inerentes à função, sem custo
@@ -1097,7 +1082,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
       <Page size="A4" style={s.page}>
         <SectionBand label="Condições" />
         <View style={s.body}>
-          <Text style={s.badge}>Condições</Text>
+          <Text style={s.badge}>CONDIÇÕES</Text>
           <Text style={s.h1}>Condições Comerciais</Text>
           <View style={s.divider} />
           <Text style={s.subtitle}>
@@ -1107,13 +1092,11 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             {[
               {
                 titulo: "Vigência",
-                texto:
-                  "Contrato de 12 meses, renovável automaticamente por igual período.",
+                texto: "Contrato de 12 meses, renovável automaticamente por igual período.",
               },
               {
                 titulo: "Pagamento",
-                texto:
-                  "Faturamento mensal via boleto bancário, com vencimento todo dia 10.",
+                texto: "Faturamento mensal via boleto bancário, com vencimento todo dia 10.",
               },
               {
                 titulo: "Reajuste",
@@ -1121,13 +1104,11 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               },
               {
                 titulo: "Implantação",
-                texto:
-                  "Prazo de implantação de até 30 dias após assinatura do contrato.",
+                texto: "Prazo de implantação de até 30 dias após assinatura do contrato.",
               },
               {
                 titulo: "Rescisão",
-                texto:
-                  "Rescisão sem multa após período mínimo de 12 meses, com aviso prévio de 60 dias.",
+                texto: "Rescisão sem multa após período mínimo de 12 meses, com aviso prévio de 60 dias.",
               },
               {
                 titulo: "Validade",
@@ -1150,7 +1131,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   <Text
                     style={{
                       fontSize: 10,
-                      fontWeight: 700,
+                      fontWeight: "bold",
                       color: NAVY,
                       marginBottom: 5,
                     }}
@@ -1174,7 +1155,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
       <Page size="A4" style={s.page}>
         <SectionBand label="Próximos Passos" />
         <View style={s.body}>
-          <Text style={s.badge}>Próximos Passos</Text>
+          <Text style={s.badge}>PRÓXIMOS PASSOS</Text>
           <Text style={s.h1}>Como Contratar</Text>
           <View style={s.divider} />
           <Text style={s.subtitle}>Simples, rápido e sem burocracia.</Text>
@@ -1182,26 +1163,22 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             {
               n: "1",
               titulo: "Aprovação da Proposta",
-              texto:
-                "Analise esta proposta e, se aprovada, nos comunique para seguirmos com a formalização.",
+              texto: "Analise esta proposta e, se aprovada, nos comunique para seguirmos com a formalização.",
             },
             {
               n: "2",
               titulo: "Assinatura do Contrato",
-              texto:
-                "Enviaremos o contrato digital para assinatura eletrônica. Rápido e seguro.",
+              texto: "Enviaremos o contrato digital para assinatura eletrônica. Rápido e seguro.",
             },
             {
               n: "3",
               titulo: "Implantação",
-              texto:
-                "Nossa equipe inicia o processo de implantação em até 30 dias, com acompanhamento dedicado.",
+              texto: "Nossa equipe inicia o processo de implantação em até 30 dias, com acompanhamento dedicado.",
             },
             {
               n: "4",
               titulo: "Gestão Ativa",
-              texto:
-                "Seu condomínio passa a contar com toda a estrutura Alpha Condomínios para uma gestão de excelência.",
+              texto: "Seu condomínio passa a contar com toda a estrutura Alpha Condomínios para uma gestão de excelência.",
             },
           ].map((step, i) => (
             <View
@@ -1224,7 +1201,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   flexShrink: 0,
                 }}
               >
-                <Text style={{ fontSize: 14, fontWeight: 800, color: WHITE }}>
+                <Text style={{ fontSize: 14, fontWeight: "bold", color: WHITE }}>
                   {step.n}
                 </Text>
               </View>
@@ -1232,7 +1209,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                 <Text
                   style={{
                     fontSize: 12,
-                    fontWeight: 700,
+                    fontWeight: "bold",
                     color: NAVY,
                     marginBottom: 3,
                   }}
@@ -1258,7 +1235,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
             <Text
               style={{
                 fontSize: 13,
-                fontWeight: 800,
+                fontWeight: "bold",
                 color: WHITE,
                 textAlign: "center",
                 marginBottom: 10,
@@ -1289,7 +1266,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
         <Page size="A4" style={s.page}>
           <SectionBand label="Considerações Finais" />
           <View style={s.body}>
-            <Text style={s.badge}>Observações</Text>
+            <Text style={s.badge}>OBSERVAÇÕES</Text>
             <Text style={s.h1}>Considerações Finais</Text>
             <View style={s.divider} />
             <Text style={s.paragraph}>{consideracoesFinais}</Text>
