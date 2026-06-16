@@ -16,6 +16,7 @@ import {
   formatBRL,
   SERVICOS_PLANOS,
 } from "./calculations";
+
 const logoAlpha =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
@@ -88,7 +89,7 @@ function IconCheckCircle({ color = GOLD, size = 24 }: { color?: string; size?: n
 }
 
 /* ================================================================
-   FOOTER — render fixo, recebe número da página como prop
+   FOOTER
    ================================================================ */
 function Footer({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) {
   return (
@@ -220,23 +221,63 @@ const s = StyleSheet.create({
   planoIdealTexto: { fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 },
   planoFeatures: { marginVertical: 12 },
   featureItem: { flexDirection: "row", alignItems: "flex-start", marginBottom: 6 },
-  featureCheck: { width: 14, height: 14, backgroundColor: GOLD, borderRadius: 7, marginRight: 8, marginTop: 2 },
+  featureCheck: {
+    width: 14,
+    height: 14,
+    backgroundColor: GOLD,
+    borderRadius: 7,
+    marginRight: 8,
+    marginTop: 2,
+  },
   featureText: { fontSize: 9.5, color: GRAY_700, flex: 1, lineHeight: 1.5 },
-  planoFooter: { marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: GRAY_200 },
-  planoValorLabel: { fontSize: 9, color: GRAY_500, marginBottom: 4, textTransform: "uppercase", letterSpacing: 1 },
+  planoFooter: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: GRAY_200,
+  },
+  planoValorLabel: {
+    fontSize: 9,
+    color: GRAY_500,
+    marginBottom: 4,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
   planoValor: { fontSize: 22, fontWeight: 800, color: NAVY },
   planoValorPorUnidade: { fontSize: 9.5, color: GRAY_500, marginTop: 4 },
-  servicoItem: { marginBottom: 14, paddingBottom: 14, borderBottomWidth: 1, borderBottomColor: GRAY_100 },
+  servicoItem: {
+    marginBottom: 14,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: GRAY_100,
+  },
   servicoTitulo: { fontSize: 12, fontWeight: 700, color: NAVY, marginBottom: 4 },
   servicoTexto: { fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 },
-  tableRow: { flexDirection: "row", borderBottomWidth: 0.5, borderBottomColor: GRAY_300, paddingVertical: 8 },
+  tableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 0.5,
+    borderBottomColor: GRAY_300,
+    paddingVertical: 8,
+  },
   tableHeaderRow: { backgroundColor: NAVY, paddingVertical: 10, flexDirection: "row" },
   tableCell: { flex: 1, fontSize: 8.5, color: TEXT_COLOR, paddingHorizontal: 6 },
-  tableHeaderCell: { flex: 1, fontSize: 8.5, color: WHITE, fontWeight: 700, paddingHorizontal: 6 },
+  tableHeaderCell: {
+    flex: 1,
+    fontSize: 8.5,
+    color: WHITE,
+    fontWeight: 700,
+    paddingHorizontal: 6,
+  },
   tableCellCenter: { textAlign: "center" },
   condicoesGrid: { flexDirection: "row", flexWrap: "wrap", marginHorizontal: -6 },
   condicaoItem: { width: "50%", padding: 6 },
-  condicaoCard: { backgroundColor: GRAY_50, padding: 14, borderRadius: 8, borderLeftWidth: 3, borderLeftColor: GOLD },
+  condicaoCard: {
+    backgroundColor: GRAY_50,
+    padding: 14,
+    borderRadius: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: GOLD,
+  },
   condicaoTitulo: { fontSize: 10.5, fontWeight: 700, color: NAVY, marginBottom: 6 },
   condicaoTexto: { fontSize: 9, color: GRAY_700, lineHeight: 1.5 },
   stepItem: { flexDirection: "row", marginBottom: 20 },
@@ -288,34 +329,38 @@ export function PropostaDocument({
   consideracoesFinais?: string;
 }) {
   const nomeCondominio = condominio.nome;
-  const endereco = condominio.endereco;
   const unidades = condominio.unidades;
   const tipo = condominio.tipo;
-  const nomeContato = contato.nome;
-  const telefone = contato.telefone;
-  const email = contato.email;
 
   const calc = calcularPlanos(unidades);
   const tipoLabel =
-    tipo === "residencial" ? "Residencial" : tipo === "comercial" ? "Comercial" : "Misto";
+    tipo === "residencial"
+      ? "Residencial"
+      : tipo === "comercial"
+        ? "Comercial"
+        : "Misto";
   const dataFormatada = new Date(data).toLocaleDateString("pt-BR", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
 
+  // ── Definir temConsideracoes ANTES da contagem de páginas ──
   const temConsideracoes = !!(consideracoesFinais && consideracoesFinais.trim());
 
-  // ── Contagem fixa de páginas ──
-  // Capa + Sobre + Diferenciais + Condições + Próximos Passos/CTA = 5
+  // ── Contagem correta de páginas ──
+  // Capa(1) + Sobre(1) + Diferenciais(1) + Condições(1) = 4
   let totalPages = 4;
   if (incluiAdmin) totalPages += 5; // Serviços + Essencial + Completo + Premium + Comparativo
   if (incluiSindico) totalPages += 1;
+  totalPages += 1; // Próximos Passos (sempre existe)
+  if (temConsideracoes) totalPages += 1; // Considerações Finais (página própria)
 
   let pg = 0;
 
   return (
     <Document>
+
       {/* ══════════ PÁG 1 — CAPA ══════════ */}
       <Page size="A4" style={s.pageNavy}>
         <View style={{ padding: 50 }}>
@@ -462,7 +507,7 @@ export function PropostaDocument({
       {/* ══════════ ADMINISTRAÇÃO (condicional) ══════════ */}
       {incluiAdmin && (
         <>
-          {/* ── Serviços (dividido em 2 colunas compactas p/ caber em 1 página) ── */}
+          {/* ── Serviços ── */}
           <Page size="A4" style={s.page} wrap={false}>
             <Text style={s.badge}>SERVIÇOS</Text>
             <Text style={s.h1}>Nossos Serviços</Text>
@@ -825,16 +870,7 @@ export function PropostaDocument({
         <View style={s.divider} />
         <Text style={s.subtitle}>Simples, rápido e sem burocracia.</Text>
 
-        <View style={s.ctaBox}>
-          <Text style={s.ctaText}>
-            Pronto para transformar a gestão do seu condomínio?
-          </Text>
-          <Text style={s.ctaContato}>
-            Entre em contato pelo telefone (31) 99778-7316{"\n"}ou pelo e-mail
-            comercial@alphafacilities.com.br
-          </Text>
-        </View>
-
+        {/* Steps primeiro */}
         {[
           {
             n: "1",
@@ -866,25 +902,39 @@ export function PropostaDocument({
           </View>
         ))}
 
-        {temConsideracoes && (
-          <>
-            <View style={{ marginTop: 40, marginBottom: 20 }}>
-              <Text style={s.badge}>CONSIDERAÇÕES FINAIS</Text>
-            </View>
-            {consideracoesFinais!
-              .trim()
-              .split("\n")
-              .filter((l) => l.trim())
-              .map((line, i) => (
-                <Text key={i} style={{ ...s.paragraph, marginBottom: 8 }}>
-                  {line}
-                </Text>
-              ))}
-          </>
-        )}
+        {/* CTA depois dos steps */}
+        <View style={s.ctaBox}>
+          <Text style={s.ctaText}>
+            Pronto para transformar a gestão do seu condomínio?
+          </Text>
+          <Text style={s.ctaContato}>
+            Entre em contato pelo telefone (31) 99778-7316{"\n"}ou pelo e-mail
+            comercial@alphafacilities.com.br
+          </Text>
+        </View>
 
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
+
+      {/* ══════════ CONSIDERAÇÕES FINAIS — página própria, sempre última ══════════ */}
+      {temConsideracoes && (
+        <Page size="A4" style={s.page}>
+          <Text style={s.badge}>ALPHA CONDOMÍNIOS</Text>
+          <Text style={s.h1}>Considerações Finais</Text>
+          <View style={s.divider} />
+          {consideracoesFinais!
+            .trim()
+            .split("\n")
+            .filter((l) => l.trim())
+            .map((line, i) => (
+              <Text key={i} style={{ ...s.paragraph, marginBottom: 8 }}>
+                {line}
+              </Text>
+            ))}
+          <Footer pageNumber={++pg} totalPages={totalPages} />
+        </Page>
+      )}
+
     </Document>
   );
 }
