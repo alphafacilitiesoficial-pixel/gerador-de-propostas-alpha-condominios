@@ -408,12 +408,11 @@ export function PropostaDocument({
   );
 
   // ── Contagem de páginas ──
-  // Capa(1) + Sobre(1) + Diferenciais(1) + Condições(1) = 4
   let totalPages = 4;
-  if (incluiAdmin) totalPages += 5; // Serviços + Essencial + Completo + Premium + Comparativo
+  if (incluiAdmin) totalPages += 5;
   if (incluiSindico) totalPages += 1;
-  totalPages += 1; // Próximos Passos
-  if (temConsideracoes) totalPages += 1; // Considerações Finais
+  totalPages += 1;
+  if (temConsideracoes) totalPages += 1;
 
   let pg = 0;
 
@@ -487,55 +486,58 @@ export function PropostaDocument({
           PÁG 2 — SOBRE NÓS
           ══════════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
-        <Text style={s.badge}>ALPHA CONDOMÍNIOS</Text>
-        <Text style={s.h1}>Sobre Nós</Text>
-        <View style={s.divider} />
-        <Text style={s.h2}>Quem Somos</Text>
-        <Text style={s.subtitle}>
-          Conheça a Alpha Condomínios e nossa missão de transformar a gestão
-          condominial.
-        </Text>
-        <Text style={s.paragraph}>
-          A Alpha Condomínios nasceu com o propósito de profissionalizar e
-          modernizar a administração de condomínios, combinando tecnologia,
-          transparência e atendimento humanizado. Atuamos em Belo Horizonte e
-          região metropolitana, atendendo condomínios residenciais, comerciais e
-          mistos.
-        </Text>
-        <Text style={s.paragraph}>
-          Nossa equipe é formada por especialistas em gestão condominial,
-          contabilidade, direito imobiliário e tecnologia. Utilizamos sistemas
-          de ponta para garantir controle financeiro rigoroso, comunicação
-          eficiente e total conformidade legal.
-        </Text>
-        <Text style={s.paragraph}>
-          Acreditamos que cada condomínio é único. Por isso, oferecemos planos
-          flexíveis que se adaptam à realidade de cada empreendimento — do
-          essencial ao premium, sempre com a mesma excelência.
-        </Text>
-        <View
-          style={{
-            marginTop: 24,
-            padding: 20,
-            backgroundColor: NAVY,
-            borderRadius: 8,
-          }}
-        >
-          <Text
+        {/* ▼ View com flex:1 + justifyContent:center centraliza verticalmente */}
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text style={s.badge}>ALPHA CONDOMÍNIOS</Text>
+          <Text style={s.h1}>Sobre Nós</Text>
+          <View style={s.divider} />
+          <Text style={s.h2}>Quem Somos</Text>
+          <Text style={s.subtitle}>
+            Conheça a Alpha Condomínios e nossa missão de transformar a gestão
+            condominial.
+          </Text>
+          <Text style={s.paragraph}>
+            A Alpha Condomínios nasceu com o propósito de profissionalizar e
+            modernizar a administração de condomínios, combinando tecnologia,
+            transparência e atendimento humanizado. Atuamos em Belo Horizonte e
+            região metropolitana, atendendo condomínios residenciais, comerciais
+            e mistos.
+          </Text>
+          <Text style={s.paragraph}>
+            Nossa equipe é formada por especialistas em gestão condominial,
+            contabilidade, direito imobiliário e tecnologia. Utilizamos sistemas
+            de ponta para garantir controle financeiro rigoroso, comunicação
+            eficiente e total conformidade legal.
+          </Text>
+          <Text style={s.paragraph}>
+            Acreditamos que cada condomínio é único. Por isso, oferecemos planos
+            flexíveis que se adaptam à realidade de cada empreendimento — do
+            essencial ao premium, sempre com a mesma excelência.
+          </Text>
+          <View
             style={{
-              fontSize: 10,
-              color: GOLD,
-              fontWeight: 700,
-              marginBottom: 8,
-              letterSpacing: 1,
+              marginTop: 24,
+              padding: 20,
+              backgroundColor: NAVY,
+              borderRadius: 8,
             }}
           >
-            NOSSA MISSÃO
-          </Text>
-          <Text style={{ fontSize: 11, color: WHITE, lineHeight: 1.6 }}>
-            Entregar gestão condominial de excelência, com transparência,
-            tecnologia e compromisso com o bem-estar dos moradores.
-          </Text>
+            <Text
+              style={{
+                fontSize: 10,
+                color: GOLD,
+                fontWeight: 700,
+                marginBottom: 8,
+                letterSpacing: 1,
+              }}
+            >
+              NOSSA MISSÃO
+            </Text>
+            <Text style={{ fontSize: 11, color: WHITE, lineHeight: 1.6 }}>
+              Entregar gestão condominial de excelência, com transparência,
+              tecnologia e compromisso com o bem-estar dos moradores.
+            </Text>
+          </View>
         </View>
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
@@ -544,50 +546,53 @@ export function PropostaDocument({
           PÁG 3 — DIFERENCIAIS
           ══════════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
-        <Text style={s.badge}>POR QUE NOS ESCOLHER</Text>
-        <Text style={s.h1}>Nossos Diferenciais</Text>
-        <View style={s.divider} />
-        <View style={s.cardGrid}>
-          {[
-            {
-              icon: <IconChart />,
-              t: "Transparência Total",
-              d: "Balancetes digitais mensais e acesso em tempo real às finanças do condomínio.",
-            },
-            {
-              icon: <IconMonitor />,
-              t: "Tecnologia de Ponta",
-              d: "Portal do condomínio, boletos digitais e aplicativo para gestão completa.",
-            },
-            {
-              icon: <IconPeople />,
-              t: "Atendimento Humanizado",
-              d: "Equipe dedicada com suporte ágil via WhatsApp, telefone e e-mail.",
-            },
-            {
-              icon: <IconShield />,
-              t: "Conformidade Legal",
-              d: "Cumprimento rigoroso das obrigações fiscais, trabalhistas e condominiais.",
-            },
-            {
-              icon: <IconMoney />,
-              t: "Redução de Custos",
-              d: "Gestão estratégica e negociação qualificada com fornecedores, gerando economia real.",
-            },
-            {
-              icon: <IconCheckCircle />,
-              t: "Excelência Comprovada",
-              d: "Mais de 25 anos de experiência com histórico consistente de resultados.",
-            },
-          ].map((c, i) => (
-            <View key={i} style={s.card}>
-              <View style={s.cardInner}>
-                <View style={s.cardIconWrap}>{c.icon}</View>
-                <Text style={s.cardTitle}>{c.t}</Text>
-                <Text style={s.cardText}>{c.d}</Text>
+        {/* ▼ View com flex:1 + justifyContent:center centraliza verticalmente */}
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text style={s.badge}>POR QUE NOS ESCOLHER</Text>
+          <Text style={s.h1}>Nossos Diferenciais</Text>
+          <View style={s.divider} />
+          <View style={s.cardGrid}>
+            {[
+              {
+                icon: <IconChart />,
+                t: "Transparência Total",
+                d: "Balancetes digitais mensais e acesso em tempo real às finanças do condomínio.",
+              },
+              {
+                icon: <IconMonitor />,
+                t: "Tecnologia de Ponta",
+                d: "Portal do condomínio, boletos digitais e aplicativo para gestão completa.",
+              },
+              {
+                icon: <IconPeople />,
+                t: "Atendimento Humanizado",
+                d: "Equipe dedicada com suporte ágil via WhatsApp, telefone e e-mail.",
+              },
+              {
+                icon: <IconShield />,
+                t: "Conformidade Legal",
+                d: "Cumprimento rigoroso das obrigações fiscais, trabalhistas e condominiais.",
+              },
+              {
+                icon: <IconMoney />,
+                t: "Redução de Custos",
+                d: "Gestão estratégica e negociação qualificada com fornecedores, gerando economia real.",
+              },
+              {
+                icon: <IconCheckCircle />,
+                t: "Excelência Comprovada",
+                d: "Mais de 25 anos de experiência com histórico consistente de resultados.",
+              },
+            ].map((c, i) => (
+              <View key={i} style={s.card}>
+                <View style={s.cardInner}>
+                  <View style={s.cardIconWrap}>{c.icon}</View>
+                  <Text style={s.cardTitle}>{c.t}</Text>
+                  <Text style={s.cardText}>{c.d}</Text>
+                </View>
               </View>
-            </View>
-          ))}
+            ))}
+          </View>
         </View>
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
@@ -599,66 +604,66 @@ export function PropostaDocument({
         <>
           {/* ── Serviços ── */}
           <Page size="A4" style={s.page} wrap={false}>
-            <Text style={s.badge}>SERVIÇOS</Text>
-            <Text style={s.h1}>Nossos Serviços</Text>
-            <View style={s.divider} />
-            <Text style={s.subtitle}>
-              Soluções completas para a administração do seu condomínio.
-            </Text>
-            <View style={s.cardGrid}>
-              {[
-                {
-                  t: "Administração de Condomínios",
-                  d: "Gestão completa das atividades administrativas, financeiras e operacionais.",
-                },
-                {
-                  t: "Gestão Financeira",
-                  d: "Controle de receitas e despesas, emissão de boletos e prestação de contas.",
-                },
-                {
-                  t: "Gestão de Pessoal",
-                  d: "Administração de funcionários, folha de pagamento e obrigações trabalhistas.",
-                },
-                {
-                  t: "Gestão de Manutenção",
-                  d: "Planejamento e acompanhamento de manutenções preventivas e corretivas.",
-                },
-                {
-                  t: "Assessoria Jurídica",
-                  d: "Suporte legal para questões condominiais, contratos e regulamentos.",
-                },
-                {
-                  t: "Assembleias",
-                  d: "Organização, convocação, condução e registro de atas de assembleias.",
-                },
-                {
-                  t: "Portal do Condômino",
-                  d: "Plataforma online para acesso a documentos, boletos e comunicados.",
-                },
-                {
-                  t: "Seguros",
-                  d: "Gestão de seguros obrigatórios e opcionais do condomínio.",
-                },
-              ].map((srv, i) => (
-                <View key={i} style={s.card}>
-                  <View style={[s.cardInner, { minHeight: 80, padding: 12 }]}>
-                    <Text style={[s.cardTitle, { fontSize: 10 }]}>
-                      {srv.t}
-                    </Text>
-                    <Text style={[s.cardText, { fontSize: 8 }]}>{srv.d}</Text>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Text style={s.badge}>SERVIÇOS</Text>
+              <Text style={s.h1}>Nossos Serviços</Text>
+              <View style={s.divider} />
+              <Text style={s.subtitle}>
+                Soluções completas para a administração do seu condomínio.
+              </Text>
+              <View style={s.cardGrid}>
+                {[
+                  {
+                    t: "Administração de Condomínios",
+                    d: "Gestão completa das atividades administrativas, financeiras e operacionais.",
+                  },
+                  {
+                    t: "Gestão Financeira",
+                    d: "Controle de receitas e despesas, emissão de boletos e prestação de contas.",
+                  },
+                  {
+                    t: "Gestão de Pessoal",
+                    d: "Administração de funcionários, folha de pagamento e obrigações trabalhistas.",
+                  },
+                  {
+                    t: "Gestão de Manutenção",
+                    d: "Planejamento e acompanhamento de manutenções preventivas e corretivas.",
+                  },
+                  {
+                    t: "Assessoria Jurídica",
+                    d: "Suporte legal para questões condominiais, contratos e regulamentos.",
+                  },
+                  {
+                    t: "Assembleias",
+                    d: "Organização, convocação, condução e registro de atas de assembleias.",
+                  },
+                  {
+                    t: "Portal do Condômino",
+                    d: "Plataforma online para acesso a documentos, boletos e comunicados.",
+                  },
+                  {
+                    t: "Seguros",
+                    d: "Gestão de seguros obrigatórios e opcionais do condomínio.",
+                  },
+                ].map((srv, i) => (
+                  <View key={i} style={s.card}>
+                    <View style={[s.cardInner, { minHeight: 80, padding: 12 }]}>
+                      <Text style={[s.cardTitle, { fontSize: 10 }]}>
+                        {srv.t}
+                      </Text>
+                      <Text style={[s.cardText, { fontSize: 8 }]}>
+                        {srv.d}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              ))}
+                ))}
+              </View>
             </View>
             <Footer pageNumber={++pg} totalPages={totalPages} />
           </Page>
 
           {/* ── Plano Essencial ── */}
-          {/* justifyContent: "center" centraliza o card verticalmente */}
-          <Page
-            size="A4"
-            style={[s.page, { justifyContent: "center" }]}
-          >
+          <Page size="A4" style={[s.page, { justifyContent: "center" }]}>
             <Text style={s.badge}>PLANO</Text>
             <View style={s.planoCard}>
               <View style={s.planoHeader}>
@@ -703,10 +708,7 @@ export function PropostaDocument({
           </Page>
 
           {/* ── Plano Completo ── */}
-          <Page
-            size="A4"
-            style={[s.page, { justifyContent: "center" }]}
-          >
+          <Page size="A4" style={[s.page, { justifyContent: "center" }]}>
             <Text style={s.badgeNavy}>MAIS ESCOLHIDO</Text>
             <Text style={s.badge}>PLANO</Text>
             <View style={s.planoCard}>
@@ -754,10 +756,7 @@ export function PropostaDocument({
           </Page>
 
           {/* ── Plano Premium ── */}
-          <Page
-            size="A4"
-            style={[s.page, { justifyContent: "center" }]}
-          >
+          <Page size="A4" style={[s.page, { justifyContent: "center" }]}>
             <Text style={s.badge}>PLANO</Text>
             <View style={[s.planoCard, s.planoCardPremium]}>
               <View style={s.planoHeader}>
@@ -806,75 +805,77 @@ export function PropostaDocument({
 
           {/* ── Comparativo ── */}
           <Page size="A4" style={s.page} wrap>
-            <Text style={s.badge}>COMPARATIVO</Text>
-            <Text style={s.h1}>Comparativo de Planos</Text>
-            <View style={s.divider} />
-            <Text style={s.subtitle}>
-              Veja lado a lado o que cada plano oferece.
-            </Text>
-            <View style={s.tableHeaderRow}>
-              <Text style={[s.tableHeaderCell, { flex: 2 }]}>Serviço</Text>
-              <Text style={[s.tableHeaderCell, s.tableCellCenter]}>
-                Essencial
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Text style={s.badge}>COMPARATIVO</Text>
+              <Text style={s.h1}>Comparativo de Planos</Text>
+              <View style={s.divider} />
+              <Text style={s.subtitle}>
+                Veja lado a lado o que cada plano oferece.
               </Text>
-              <Text style={[s.tableHeaderCell, s.tableCellCenter]}>
-                Completo
-              </Text>
-              <Text style={[s.tableHeaderCell, s.tableCellCenter]}>
-                Premium
+              <View style={s.tableHeaderRow}>
+                <Text style={[s.tableHeaderCell, { flex: 2 }]}>Serviço</Text>
+                <Text style={[s.tableHeaderCell, s.tableCellCenter]}>
+                  Essencial
+                </Text>
+                <Text style={[s.tableHeaderCell, s.tableCellCenter]}>
+                  Completo
+                </Text>
+                <Text style={[s.tableHeaderCell, s.tableCellCenter]}>
+                  Premium
+                </Text>
+              </View>
+              {(() => {
+                const allServices = Array.from(
+                  new Set([
+                    ...SERVICOS_PLANOS.essencial,
+                    ...SERVICOS_PLANOS.completo,
+                    ...SERVICOS_PLANOS.premium,
+                  ])
+                );
+                return allServices.map((nome, i) => (
+                  <View key={i} style={s.tableRow} wrap={false}>
+                    <Text style={[s.tableCell, { flex: 2 }]}>{nome}</Text>
+                    <Text style={[s.tableCell, s.tableCellCenter]}>
+                      {SERVICOS_PLANOS.essencial.includes(nome) ? "✓" : "—"}
+                    </Text>
+                    <Text style={[s.tableCell, s.tableCellCenter]}>
+                      {SERVICOS_PLANOS.completo.includes(nome) ? "✓" : "—"}
+                    </Text>
+                    <Text style={[s.tableCell, s.tableCellCenter]}>
+                      {SERVICOS_PLANOS.premium.includes(nome) ? "✓" : "—"}
+                    </Text>
+                  </View>
+                ));
+              })()}
+              <View
+                style={[s.tableRow, { backgroundColor: GRAY_50 }]}
+                wrap={false}
+              >
+                <Text style={[s.tableCell, { flex: 2, fontWeight: 700 }]}>
+                  Investimento mensal
+                </Text>
+                <Text style={[s.tableCell, s.tableCellCenter]}>
+                  {formatPlano(calc.essencial)}
+                </Text>
+                <Text style={[s.tableCell, s.tableCellCenter]}>
+                  {formatPlano(calc.completo)}
+                </Text>
+                <Text style={[s.tableCell, s.tableCellCenter]}>
+                  {formatPlano(calc.premium)}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: 8,
+                  color: GRAY_500,
+                  marginTop: 14,
+                  fontStyle: "italic",
+                }}
+              >
+                Valores calculados para {unidades} unidades. Sujeitos a ajuste
+                conforme avaliação técnica.
               </Text>
             </View>
-            {(() => {
-              const allServices = Array.from(
-                new Set([
-                  ...SERVICOS_PLANOS.essencial,
-                  ...SERVICOS_PLANOS.completo,
-                  ...SERVICOS_PLANOS.premium,
-                ])
-              );
-              return allServices.map((nome, i) => (
-                <View key={i} style={s.tableRow} wrap={false}>
-                  <Text style={[s.tableCell, { flex: 2 }]}>{nome}</Text>
-                  <Text style={[s.tableCell, s.tableCellCenter]}>
-                    {SERVICOS_PLANOS.essencial.includes(nome) ? "✓" : "—"}
-                  </Text>
-                  <Text style={[s.tableCell, s.tableCellCenter]}>
-                    {SERVICOS_PLANOS.completo.includes(nome) ? "✓" : "—"}
-                  </Text>
-                  <Text style={[s.tableCell, s.tableCellCenter]}>
-                    {SERVICOS_PLANOS.premium.includes(nome) ? "✓" : "—"}
-                  </Text>
-                </View>
-              ));
-            })()}
-            <View
-              style={[s.tableRow, { backgroundColor: GRAY_50 }]}
-              wrap={false}
-            >
-              <Text style={[s.tableCell, { flex: 2, fontWeight: 700 }]}>
-                Investimento mensal
-              </Text>
-              <Text style={[s.tableCell, s.tableCellCenter]}>
-                {formatPlano(calc.essencial)}
-              </Text>
-              <Text style={[s.tableCell, s.tableCellCenter]}>
-                {formatPlano(calc.completo)}
-              </Text>
-              <Text style={[s.tableCell, s.tableCellCenter]}>
-                {formatPlano(calc.premium)}
-              </Text>
-            </View>
-            <Text
-              style={{
-                fontSize: 8,
-                color: GRAY_500,
-                marginTop: 14,
-                fontStyle: "italic",
-              }}
-            >
-              Valores calculados para {unidades} unidades. Sujeitos a ajuste
-              conforme avaliação técnica.
-            </Text>
             <Footer pageNumber={++pg} totalPages={totalPages} />
           </Page>
         </>
@@ -959,46 +960,49 @@ export function PropostaDocument({
           CONDIÇÕES COMERCIAIS
           ══════════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
-        <Text style={s.badge}>CONDIÇÕES</Text>
-        <Text style={s.h1}>Condições Comerciais</Text>
-        <View style={s.divider} />
-        <Text style={s.subtitle}>
-          Transparência em todos os termos da nossa proposta.
-        </Text>
-        <View style={s.condicoesGrid}>
-          {[
-            {
-              t: "Vigência",
-              d: "Contrato de 12 meses, renovável automaticamente por igual período.",
-            },
-            {
-              t: "Pagamento",
-              d: "Faturamento mensal via boleto bancário, com vencimento todo dia 10.",
-            },
-            {
-              t: "Reajuste",
-              d: "Reajuste anual pelo IGPM/FGV ou índice equivalente.",
-            },
-            {
-              t: "Implantação",
-              d: "Prazo de implantação de até 30 dias após assinatura do contrato.",
-            },
-            {
-              t: "Rescisão",
-              d: "Rescisão sem multa após período mínimo de 12 meses, com aviso prévio de 60 dias.",
-            },
-            {
-              t: "Validade",
-              d: "Esta proposta tem validade de 30 dias a partir da data de emissão.",
-            },
-          ].map((c, i) => (
-            <View key={i} style={s.condicaoItem}>
-              <View style={s.condicaoCard}>
-                <Text style={s.condicaoTitulo}>{c.t}</Text>
-                <Text style={s.condicaoTexto}>{c.d}</Text>
+        {/* ▼ View com flex:1 + justifyContent:center centraliza verticalmente */}
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text style={s.badge}>CONDIÇÕES</Text>
+          <Text style={s.h1}>Condições Comerciais</Text>
+          <View style={s.divider} />
+          <Text style={s.subtitle}>
+            Transparência em todos os termos da nossa proposta.
+          </Text>
+          <View style={s.condicoesGrid}>
+            {[
+              {
+                t: "Vigência",
+                d: "Contrato de 12 meses, renovável automaticamente por igual período.",
+              },
+              {
+                t: "Pagamento",
+                d: "Faturamento mensal via boleto bancário, com vencimento todo dia 10.",
+              },
+              {
+                t: "Reajuste",
+                d: "Reajuste anual pelo IGPM/FGV ou índice equivalente.",
+              },
+              {
+                t: "Implantação",
+                d: "Prazo de implantação de até 30 dias após assinatura do contrato.",
+              },
+              {
+                t: "Rescisão",
+                d: "Rescisão sem multa após período mínimo de 12 meses, com aviso prévio de 60 dias.",
+              },
+              {
+                t: "Validade",
+                d: "Esta proposta tem validade de 30 dias a partir da data de emissão.",
+              },
+            ].map((c, i) => (
+              <View key={i} style={s.condicaoItem}>
+                <View style={s.condicaoCard}>
+                  <Text style={s.condicaoTitulo}>{c.t}</Text>
+                  <Text style={s.condicaoTexto}>{c.d}</Text>
+                </View>
               </View>
-            </View>
-          ))}
+            ))}
+          </View>
         </View>
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
@@ -1007,72 +1011,74 @@ export function PropostaDocument({
           PRÓXIMOS PASSOS
           ══════════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
-        <Text style={s.badge}>PRÓXIMOS PASSOS</Text>
-        <Text style={s.h1}>Como Contratar</Text>
-        <View style={s.divider} />
-        <Text style={s.subtitle}>Simples, rápido e sem burocracia.</Text>
-
-        {[
-          {
-            n: "1",
-            t: "Aprovação da Proposta",
-            d: "Analise esta proposta e, se aprovada, nos comunique para seguirmos com a formalização.",
-          },
-          {
-            n: "2",
-            t: "Assinatura do Contrato",
-            d: "Enviaremos o contrato digital para assinatura eletrônica. Rápido e seguro.",
-          },
-          {
-            n: "3",
-            t: "Implantação",
-            d: "Nossa equipe inicia o processo de implantação em até 30 dias, com acompanhamento dedicado.",
-          },
-          {
-            n: "4",
-            t: "Gestão Ativa",
-            d: "Seu condomínio passa a contar com toda a estrutura Alpha Condomínios para uma gestão de excelência.",
-          },
-        ].map((step, i) => (
-          <View key={i} style={s.stepItem}>
-            <Text style={s.stepNumero}>{step.n}</Text>
-            <View style={s.stepConteudo}>
-              <Text style={s.stepTitulo}>{step.t}</Text>
-              <Text style={s.stepTexto}>{step.d}</Text>
+        {/* ▼ View com flex:1 + justifyContent:center centraliza verticalmente */}
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text style={s.badge}>PRÓXIMOS PASSOS</Text>
+          <Text style={s.h1}>Como Contratar</Text>
+          <View style={s.divider} />
+          <Text style={s.subtitle}>Simples, rápido e sem burocracia.</Text>
+          {[
+            {
+              n: "1",
+              t: "Aprovação da Proposta",
+              d: "Analise esta proposta e, se aprovada, nos comunique para seguirmos com a formalização.",
+            },
+            {
+              n: "2",
+              t: "Assinatura do Contrato",
+              d: "Enviaremos o contrato digital para assinatura eletrônica. Rápido e seguro.",
+            },
+            {
+              n: "3",
+              t: "Implantação",
+              d: "Nossa equipe inicia o processo de implantação em até 30 dias, com acompanhamento dedicado.",
+            },
+            {
+              n: "4",
+              t: "Gestão Ativa",
+              d: "Seu condomínio passa a contar com toda a estrutura Alpha Condomínios para uma gestão de excelência.",
+            },
+          ].map((step, i) => (
+            <View key={i} style={s.stepItem}>
+              <Text style={s.stepNumero}>{step.n}</Text>
+              <View style={s.stepConteudo}>
+                <Text style={s.stepTitulo}>{step.t}</Text>
+                <Text style={s.stepTexto}>{step.d}</Text>
+              </View>
             </View>
+          ))}
+          <View style={s.ctaBox}>
+            <Text style={s.ctaText}>
+              Pronto para transformar a gestão do seu condomínio?
+            </Text>
+            <Text style={s.ctaContato}>
+              Entre em contato pelo telefone (31) 99778-7316{"\n"}ou pelo e-mail
+              comercial@alphafacilities.com.br
+            </Text>
           </View>
-        ))}
-
-        <View style={s.ctaBox}>
-          <Text style={s.ctaText}>
-            Pronto para transformar a gestão do seu condomínio?
-          </Text>
-          <Text style={s.ctaContato}>
-            Entre em contato pelo telefone (31) 99778-7316{"\n"}ou pelo e-mail
-            comercial@alphafacilities.com.br
-          </Text>
         </View>
-
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
 
       {/* ══════════════════════════════════════════════
-          CONSIDERAÇÕES FINAIS — última página, condicional
+          CONSIDERAÇÕES FINAIS
           ══════════════════════════════════════════════ */}
       {temConsideracoes && (
         <Page size="A4" style={s.page}>
-          <Text style={s.badge}>ALPHA CONDOMÍNIOS</Text>
-          <Text style={s.h1}>Considerações Finais</Text>
-          <View style={s.divider} />
-          {consideracoesFinais!
-            .trim()
-            .split("\n")
-            .filter((l) => l.trim())
-            .map((line, i) => (
-              <Text key={i} style={s.paragraph}>
-                {line}
-              </Text>
-            ))}
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Text style={s.badge}>ALPHA CONDOMÍNIOS</Text>
+            <Text style={s.h1}>Considerações Finais</Text>
+            <View style={s.divider} />
+            {consideracoesFinais!
+              .trim()
+              .split("\n")
+              .filter((l) => l.trim())
+              .map((line, i) => (
+                <Text key={i} style={s.paragraph}>
+                  {line}
+                </Text>
+              ))}
+          </View>
           <Footer pageNumber={++pg} totalPages={totalPages} />
         </Page>
       )}
