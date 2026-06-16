@@ -16,7 +16,8 @@ import {
   formatBRL,
   SERVICOS_PLANOS,
 } from "./calculations";
-import logoAlpha from "../assets/logo-alpha.png";
+const logoAlpha =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
 /* ================================================================
    CORES (Brand)
@@ -307,10 +308,9 @@ export function PropostaDocument({
 
   // ── Contagem fixa de páginas ──
   // Capa + Sobre + Diferenciais + Condições + Próximos Passos/CTA = 5
-  let totalPages = 5;
+  let totalPages = 4;
   if (incluiAdmin) totalPages += 5; // Serviços + Essencial + Completo + Premium + Comparativo
   if (incluiSindico) totalPages += 1;
-  if (temConsideracoes) totalPages += 1;
 
   let pg = 0;
 
@@ -318,7 +318,7 @@ export function PropostaDocument({
     <Document>
       {/* ══════════ PÁG 1 — CAPA ══════════ */}
       <Page size="A4" style={s.pageNavy}>
-        <View style={{ padding: 50, justifyContent: "space-between", height: "100%" }}>
+        <View style={{ padding: 50 }}>
           <View>
             <Image src={logoAlpha} style={{ width: 120, marginBottom: 40 }} />
             <Text
@@ -546,10 +546,12 @@ export function PropostaDocument({
               </View>
               <View style={s.planoFooter}>
                 <Text style={s.planoValorLabel}>INVESTIMENTO MENSAL</Text>
-                <Text style={s.planoValor}>R$ {formatBRL(calc.essencial.mensal)}</Text>
-                <Text style={s.planoValorPorUnidade}>
-                  R$ {formatBRL(calc.essencial.mensal / unidades)} por unidade/mês
-                </Text>
+                <Text style={s.planoValor}>{formatPlano(calc.essencial)}</Text>
+                {calc.essencial.tipo === "valor" && (
+                  <Text style={s.planoValorPorUnidade}>
+                    R$ {formatBRL(calc.essencial.mensal / unidades)} por unidade/mês
+                  </Text>
+                )}
               </View>
             </View>
             <Footer pageNumber={++pg} totalPages={totalPages} />
@@ -591,10 +593,12 @@ export function PropostaDocument({
               </View>
               <View style={s.planoFooter}>
                 <Text style={s.planoValorLabel}>INVESTIMENTO MENSAL</Text>
-                <Text style={s.planoValor}>R$ {formatBRL(calc.completo.mensal)}</Text>
-                <Text style={s.planoValorPorUnidade}>
-                  R$ {formatBRL(calc.completo.mensal / unidades)} por unidade/mês
-                </Text>
+                <Text style={s.planoValor}>{formatPlano(calc.completo)}</Text>
+                {calc.completo.tipo === "valor" && (
+                  <Text style={s.planoValorPorUnidade}>
+                    R$ {formatBRL(calc.completo.mensal / unidades)} por unidade/mês
+                  </Text>
+                )}
               </View>
             </View>
             <Footer pageNumber={++pg} totalPages={totalPages} />
@@ -657,40 +661,38 @@ export function PropostaDocument({
               <Text style={[s.tableHeaderCell, s.tableCellCenter]}>Completo</Text>
               <Text style={[s.tableHeaderCell, s.tableCellCenter]}>Premium</Text>
             </View>
-            {SERVICOS_PLANOS.map((srv, i) => (
-              <View key={i} style={s.tableRow} wrap={false}>
-                <Text
-                  style={[
-                    s.tableCell,
-                    {
-                      flex: 2,
-                      fontWeight: srv.categoria ? 700 : 400,
-                      color: srv.categoria ? NAVY : TEXT_COLOR,
-                    },
-                  ]}
-                >
-                  {srv.nome}
-                </Text>
-                <Text style={[s.tableCell, s.tableCellCenter]}>
-                  {srv.essencial ? "✓" : "—"}
-                </Text>
-                <Text style={[s.tableCell, s.tableCellCenter]}>
-                  {srv.completo ? "✓" : "—"}
-                </Text>
-                <Text style={[s.tableCell, s.tableCellCenter]}>
-                  {srv.premium ? "✓" : "—"}
-                </Text>
-              </View>
-            ))}
+            {(() => {
+              const allServices = Array.from(
+                new Set([
+                  ...SERVICOS_PLANOS.essencial,
+                  ...SERVICOS_PLANOS.completo,
+                  ...SERVICOS_PLANOS.premium,
+                ]),
+              );
+              return allServices.map((nome, i) => (
+                <View key={i} style={s.tableRow} wrap={false}>
+                  <Text style={[s.tableCell, { flex: 2 }]}>{nome}</Text>
+                  <Text style={[s.tableCell, s.tableCellCenter]}>
+                    {SERVICOS_PLANOS.essencial.includes(nome) ? "✓" : "—"}
+                  </Text>
+                  <Text style={[s.tableCell, s.tableCellCenter]}>
+                    {SERVICOS_PLANOS.completo.includes(nome) ? "✓" : "—"}
+                  </Text>
+                  <Text style={[s.tableCell, s.tableCellCenter]}>
+                    {SERVICOS_PLANOS.premium.includes(nome) ? "✓" : "—"}
+                  </Text>
+                </View>
+              ));
+            })()}
             <View style={[s.tableRow, { backgroundColor: GRAY_50 }]} wrap={false}>
               <Text style={[s.tableCell, { flex: 2, fontWeight: 700 }]}>
                 Investimento mensal
               </Text>
               <Text style={[s.tableCell, s.tableCellCenter]}>
-                R$ {formatBRL(calc.essencial.mensal)}/mês
+                {formatPlano(calc.essencial)}
               </Text>
               <Text style={[s.tableCell, s.tableCellCenter]}>
-                R$ {formatBRL(calc.completo.mensal)}/mês
+                {formatPlano(calc.completo)}
               </Text>
               <Text style={[s.tableCell, s.tableCellCenter]}>
                 {formatPlano(calc.premium)}
@@ -823,6 +825,16 @@ export function PropostaDocument({
         <View style={s.divider} />
         <Text style={s.subtitle}>Simples, rápido e sem burocracia.</Text>
 
+        <View style={s.ctaBox}>
+          <Text style={s.ctaText}>
+            Pronto para transformar a gestão do seu condomínio?
+          </Text>
+          <Text style={s.ctaContato}>
+            Entre em contato pelo telefone (31) 99778-7316{"\n"}ou pelo e-mail
+            comercial@alphafacilities.com.br
+          </Text>
+        </View>
+
         {[
           {
             n: "1",
@@ -854,37 +866,25 @@ export function PropostaDocument({
           </View>
         ))}
 
-        <View style={s.ctaBox}>
-          <Text style={s.ctaText}>
-            Pronto para transformar a gestão do seu condomínio?
-          </Text>
-          <Text style={s.ctaContato}>
-            Entre em contato pelo telefone (31) 99778-7316{"\n"}ou pelo e-mail
-            comercial@alphafacilities.com.br
-          </Text>
-        </View>
+        {temConsideracoes && (
+          <>
+            <View style={{ marginTop: 40, marginBottom: 20 }}>
+              <Text style={s.badge}>CONSIDERAÇÕES FINAIS</Text>
+            </View>
+            {consideracoesFinais!
+              .trim()
+              .split("\n")
+              .filter((l) => l.trim())
+              .map((line, i) => (
+                <Text key={i} style={{ ...s.paragraph, marginBottom: 8 }}>
+                  {line}
+                </Text>
+              ))}
+          </>
+        )}
 
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
-
-      {/* ══════════ CONSIDERAÇÕES FINAIS (ÚLTIMA PÁGINA SEPARADA) ══════════ */}
-      {temConsideracoes && (
-        <Page size="A4" style={s.page}>
-          <Text style={s.badge}>CONSIDERAÇÕES FINAIS</Text>
-          <Text style={s.h1}>Observações Adicionais</Text>
-          <View style={s.divider} />
-          {consideracoesFinais!
-            .trim()
-            .split("\n")
-            .filter((line) => line.trim() !== "")
-            .map((line, i) => (
-              <Text key={i} style={s.paragraph}>
-                {line}
-              </Text>
-            ))}
-          <Footer pageNumber={++pg} totalPages={totalPages} />
-        </Page>
-      )}
     </Document>
   );
 }
