@@ -1047,7 +1047,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
                   padding: 14,
                 }}
               >
-                <Text style={{ fontSize: 9.5, color: GOLD_LIGHT ?? GOLD, lineHeight: 1.6 }}>
+                <Text style={{ fontSize: 9.5, color: color: "#E5D4A1", lineHeight: 1.6 }}>
                   A Alpha Condomínios tem como diferencial no mercado o{" "}
                   <Text style={{ fontWeight: 700 }}>
                     Seguro de Responsabilidade Civil (RC) do Síndico INCLUSO
