@@ -59,7 +59,10 @@ function IconMonitor({ color = GOLD, size = 24 }: { color?: string; size?: numbe
 function IconPeople({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M9 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zM2 20c0-4 3.5-6 7-6s7 2 7 6H2zM17 6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM19 14c2 1 3 3 3 6h-4c0-2.5-1-4.5-3-5.5a6 6 0 0 1 4-.5z" fill={color} />
+      <Path
+        d="M9 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zM2 20c0-4 3.5-6 7-6s7 2 7 6H2zM17 6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM19 14c2 1 3 3 3 6h-4c0-2.5-1-4.5-3-5.5a6 6 0 0 1 4-.5z"
+        fill={color}
+      />
     </Svg>
   );
 }
@@ -67,7 +70,10 @@ function IconPeople({ color = GOLD, size = 24 }: { color?: string; size?: number
 function IconShield({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 15l-4-4 1.41-1.41L11 13.17l5.59-5.59L18 9l-7 7z" fill={color} />
+      <Path
+        d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 15l-4-4 1.41-1.41L11 13.17l5.59-5.59L18 9l-7 7z"
+        fill={color}
+      />
     </Svg>
   );
 }
@@ -75,7 +81,10 @@ function IconShield({ color = GOLD, size = 24 }: { color?: string; size?: number
 function IconMoney({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-1c-1.5-.2-2.8-1-3.2-2.2l1.5-.6c.3.9 1.1 1.3 2.2 1.3 1.2 0 2-.5 2-1.3 0-.8-.5-1.2-2-1.6-1.8-.5-3.2-1-3.2-2.8 0-1.3 1-2.3 2.7-2.6V7h2v1c1.3.2 2.2.9 2.6 2l-1.5.6c-.3-.7-.9-1.1-1.8-1.1-1 0-1.7.5-1.7 1.2 0 .7.6 1 2 1.4 1.9.5 3.2 1.1 3.2 3 0 1.4-1.1 2.4-2.8 2.7V17z" fill={color} />
+      <Path
+        d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-1c-1.5-.2-2.8-1-3.2-2.2l1.5-.6c.3.9 1.1 1.3 2.2 1.3 1.2 0 2-.5 2-1.3 0-.8-.5-1.2-2-1.6-1.8-.5-3.2-1-3.2-2.8 0-1.3 1-2.3 2.7-2.6V7h2v1c1.3.2 2.2.9 2.6 2l-1.5.6c-.3-.7-.9-1.1-1.8-1.1-1 0-1.7.5-1.7 1.2 0 .7.6 1 2 1.4 1.9.5 3.2 1.1 3.2 3 0 1.4-1.1 2.4-2.8 2.7V17z"
+        fill={color}
+      />
     </Svg>
   );
 }
@@ -83,7 +92,10 @@ function IconMoney({ color = GOLD, size = 24 }: { color?: string; size?: number 
 function IconCheckCircle({ color = GOLD, size = 24 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15l-5-5 1.41-1.41L9 14.17l7.59-7.59L18 8l-8 9z" fill={color} />
+      <Path
+        d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15l-5-5 1.41-1.41L9 14.17l7.59-7.59L18 8l-8 9z"
+        fill={color}
+      />
     </Svg>
   );
 }
@@ -91,7 +103,13 @@ function IconCheckCircle({ color = GOLD, size = 24 }: { color?: string; size?: n
 /* ================================================================
    FOOTER
    ================================================================ */
-function Footer({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) {
+function Footer({
+  pageNumber,
+  totalPages,
+}: {
+  pageNumber: number;
+  totalPages: number;
+}) {
   return (
     <View
       style={{
@@ -111,7 +129,9 @@ function Footer({ pageNumber, totalPages }: { pageNumber: number; totalPages: nu
       <Text style={{ fontSize: 8, color: GRAY_500 }}>
         Proposta Comercial · Alpha Condomínios
       </Text>
-      <Text style={{ fontSize: 8, color: NAVY, fontWeight: 700, letterSpacing: 1 }}>
+      <Text
+        style={{ fontSize: 8, color: NAVY, fontWeight: 700, letterSpacing: 1 }}
+      >
         {pageNumber} / {totalPages}
       </Text>
     </View>
@@ -217,10 +237,19 @@ const s = StyleSheet.create({
   planoHeader: { marginBottom: 12 },
   planoTitulo: { fontSize: 20, fontWeight: 800, color: NAVY, marginBottom: 4 },
   planoSubtitulo: { fontSize: 10, color: GRAY_500, marginBottom: 10 },
-  planoIdealPara: { fontSize: 10, color: GRAY_700, fontWeight: 600, marginBottom: 4 },
+  planoIdealPara: {
+    fontSize: 10,
+    color: GRAY_700,
+    fontWeight: 600,
+    marginBottom: 4,
+  },
   planoIdealTexto: { fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 },
   planoFeatures: { marginVertical: 12 },
-  featureItem: { flexDirection: "row", alignItems: "flex-start", marginBottom: 6 },
+  featureItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 6,
+  },
   featureCheck: {
     width: 14,
     height: 14,
@@ -251,7 +280,12 @@ const s = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: GRAY_100,
   },
-  servicoTitulo: { fontSize: 12, fontWeight: 700, color: NAVY, marginBottom: 4 },
+  servicoTitulo: {
+    fontSize: 12,
+    fontWeight: 700,
+    color: NAVY,
+    marginBottom: 4,
+  },
   servicoTexto: { fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 },
   tableRow: {
     flexDirection: "row",
@@ -259,8 +293,17 @@ const s = StyleSheet.create({
     borderBottomColor: GRAY_300,
     paddingVertical: 8,
   },
-  tableHeaderRow: { backgroundColor: NAVY, paddingVertical: 10, flexDirection: "row" },
-  tableCell: { flex: 1, fontSize: 8.5, color: TEXT_COLOR, paddingHorizontal: 6 },
+  tableHeaderRow: {
+    backgroundColor: NAVY,
+    paddingVertical: 10,
+    flexDirection: "row",
+  },
+  tableCell: {
+    flex: 1,
+    fontSize: 8.5,
+    color: TEXT_COLOR,
+    paddingHorizontal: 6,
+  },
   tableHeaderCell: {
     flex: 1,
     fontSize: 8.5,
@@ -269,7 +312,11 @@ const s = StyleSheet.create({
     paddingHorizontal: 6,
   },
   tableCellCenter: { textAlign: "center" },
-  condicoesGrid: { flexDirection: "row", flexWrap: "wrap", marginHorizontal: -6 },
+  condicoesGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginHorizontal: -6,
+  },
   condicaoItem: { width: "50%", padding: 6 },
   condicaoCard: {
     backgroundColor: GRAY_50,
@@ -278,10 +325,21 @@ const s = StyleSheet.create({
     borderLeftWidth: 3,
     borderLeftColor: GOLD,
   },
-  condicaoTitulo: { fontSize: 10.5, fontWeight: 700, color: NAVY, marginBottom: 6 },
+  condicaoTitulo: {
+    fontSize: 10.5,
+    fontWeight: 700,
+    color: NAVY,
+    marginBottom: 6,
+  },
   condicaoTexto: { fontSize: 9, color: GRAY_700, lineHeight: 1.5 },
   stepItem: { flexDirection: "row", marginBottom: 20 },
-  stepNumero: { width: 36, fontSize: 22, fontWeight: 800, color: GOLD, marginRight: 14 },
+  stepNumero: {
+    width: 36,
+    fontSize: 22,
+    fontWeight: 800,
+    color: GOLD,
+    marginRight: 14,
+  },
   stepConteudo: { flex: 1 },
   stepTitulo: { fontSize: 11, fontWeight: 700, color: NAVY, marginBottom: 4 },
   stepTexto: { fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 },
@@ -322,7 +380,12 @@ export function PropostaDocument({
   numero: string;
   data: Date | string;
   cidade?: string;
-  condominio: { nome: string; endereco: string; unidades: number; tipo: string };
+  condominio: {
+    nome: string;
+    endereco: string;
+    unidades: number;
+    tipo: string;
+  };
   contato: { nome: string; telefone: string; email: string };
   incluiAdmin: boolean;
   incluiSindico: boolean;
@@ -333,59 +396,68 @@ export function PropostaDocument({
   const tipo = condominio.tipo;
 
   const calc = calcularPlanos(unidades);
-  const tipoLabel =
-    tipo === "residencial"
-      ? "Residencial"
-      : tipo === "comercial"
-        ? "Comercial"
-        : "Misto";
+
   const dataFormatada = new Date(data).toLocaleDateString("pt-BR", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
 
-  // ── Definir temConsideracoes ANTES da contagem de páginas ──
-  const temConsideracoes = !!(consideracoesFinais && consideracoesFinais.trim());
+  const temConsideracoes = !!(
+    consideracoesFinais && consideracoesFinais.trim()
+  );
 
-  // ── Contagem correta de páginas ──
+  // ── Contagem de páginas ──
   // Capa(1) + Sobre(1) + Diferenciais(1) + Condições(1) = 4
   let totalPages = 4;
   if (incluiAdmin) totalPages += 5; // Serviços + Essencial + Completo + Premium + Comparativo
   if (incluiSindico) totalPages += 1;
-  totalPages += 1; // Próximos Passos (sempre existe)
-  if (temConsideracoes) totalPages += 1; // Considerações Finais (página própria)
+  totalPages += 1; // Próximos Passos
+  if (temConsideracoes) totalPages += 1; // Considerações Finais
 
   let pg = 0;
 
   return (
     <Document>
-
-      {/* ══════════ PÁG 1 — CAPA ══════════ */}
+      {/* ══════════════════════════════════════════════
+          PÁG 1 — CAPA
+          ══════════════════════════════════════════════ */}
       <Page size="A4" style={s.pageNavy}>
         <View style={{ padding: 50 }}>
-          <View>
-            <Image src={logoAlpha} style={{ width: 120, marginBottom: 40 }} />
-            <Text
-              style={{
-                fontSize: 11,
-                color: GOLD,
-                letterSpacing: 3,
-                fontWeight: 700,
-                marginBottom: 16,
-              }}
-            >
-              PROPOSTA COMERCIAL
-            </Text>
-            <Text style={s.h1White}>{nomeCondominio}</Text>
-            <Text style={{ fontSize: 13, color: GOLD_LIGHT, marginBottom: 32 }}>
-              Nº {numero}
-            </Text>
-            <Text style={{ fontSize: 11, color: WHITE, opacity: 0.9, marginBottom: 8 }}>
-              {dataFormatada}
-            </Text>
-          </View>
-          <View style={{ backgroundColor: NAVY_DARK, padding: 20, borderRadius: 8 }}>
+          <Image src={logoAlpha} style={{ width: 120, marginBottom: 40 }} />
+          <Text
+            style={{
+              fontSize: 11,
+              color: GOLD,
+              letterSpacing: 3,
+              fontWeight: 700,
+              marginBottom: 16,
+            }}
+          >
+            PROPOSTA COMERCIAL
+          </Text>
+          <Text style={s.h1White}>{nomeCondominio}</Text>
+          <Text style={{ fontSize: 13, color: GOLD_LIGHT, marginBottom: 32 }}>
+            Nº {numero}
+          </Text>
+          <Text
+            style={{
+              fontSize: 11,
+              color: WHITE,
+              opacity: 0.9,
+              marginBottom: 8,
+            }}
+          >
+            {dataFormatada}
+          </Text>
+          <View
+            style={{
+              backgroundColor: NAVY_DARK,
+              padding: 20,
+              borderRadius: 8,
+              marginTop: 24,
+            }}
+          >
             <Text
               style={{
                 fontSize: 10,
@@ -403,38 +475,52 @@ export function PropostaDocument({
             <Text style={{ fontSize: 11, color: WHITE, marginBottom: 6 }}>
               comercial@alphafacilities.com.br
             </Text>
-            <Text style={{ fontSize: 11, color: WHITE }}>www.alphafacilities.com.br</Text>
+            <Text style={{ fontSize: 11, color: WHITE }}>
+              www.alphafacilities.com.br
+            </Text>
           </View>
         </View>
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
 
-      {/* ══════════ PÁG 2 — SOBRE NÓS ══════════ */}
+      {/* ══════════════════════════════════════════════
+          PÁG 2 — SOBRE NÓS
+          ══════════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
         <Text style={s.badge}>ALPHA CONDOMÍNIOS</Text>
         <Text style={s.h1}>Sobre Nós</Text>
         <View style={s.divider} />
         <Text style={s.h2}>Quem Somos</Text>
         <Text style={s.subtitle}>
-          Conheça a Alpha Condomínios e nossa missão de transformar a gestão condominial.
+          Conheça a Alpha Condomínios e nossa missão de transformar a gestão
+          condominial.
         </Text>
         <Text style={s.paragraph}>
-          A Alpha Condomínios nasceu com o propósito de profissionalizar e modernizar a
-          administração de condomínios, combinando tecnologia, transparência e atendimento
-          humanizado. Atuamos em Belo Horizonte e região metropolitana, atendendo condomínios
-          residenciais, comerciais e mistos.
+          A Alpha Condomínios nasceu com o propósito de profissionalizar e
+          modernizar a administração de condomínios, combinando tecnologia,
+          transparência e atendimento humanizado. Atuamos em Belo Horizonte e
+          região metropolitana, atendendo condomínios residenciais, comerciais e
+          mistos.
         </Text>
         <Text style={s.paragraph}>
-          Nossa equipe é formada por especialistas em gestão condominial, contabilidade, direito
-          imobiliário e tecnologia. Utilizamos sistemas de ponta para garantir controle financeiro
-          rigoroso, comunicação eficiente e total conformidade legal.
+          Nossa equipe é formada por especialistas em gestão condominial,
+          contabilidade, direito imobiliário e tecnologia. Utilizamos sistemas
+          de ponta para garantir controle financeiro rigoroso, comunicação
+          eficiente e total conformidade legal.
         </Text>
         <Text style={s.paragraph}>
-          Acreditamos que cada condomínio é único. Por isso, oferecemos planos flexíveis que se
-          adaptam à realidade de cada empreendimento — do essencial ao premium, sempre com a mesma
-          excelência.
+          Acreditamos que cada condomínio é único. Por isso, oferecemos planos
+          flexíveis que se adaptam à realidade de cada empreendimento — do
+          essencial ao premium, sempre com a mesma excelência.
         </Text>
-        <View style={{ marginTop: 24, padding: 20, backgroundColor: NAVY, borderRadius: 8 }}>
+        <View
+          style={{
+            marginTop: 24,
+            padding: 20,
+            backgroundColor: NAVY,
+            borderRadius: 8,
+          }}
+        >
           <Text
             style={{
               fontSize: 10,
@@ -447,14 +533,16 @@ export function PropostaDocument({
             NOSSA MISSÃO
           </Text>
           <Text style={{ fontSize: 11, color: WHITE, lineHeight: 1.6 }}>
-            Entregar gestão condominial de excelência, com transparência, tecnologia e compromisso
-            com o bem-estar dos moradores.
+            Entregar gestão condominial de excelência, com transparência,
+            tecnologia e compromisso com o bem-estar dos moradores.
           </Text>
         </View>
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
 
-      {/* ══════════ PÁG 3 — DIFERENCIAIS ══════════ */}
+      {/* ══════════════════════════════════════════════
+          PÁG 3 — DIFERENCIAIS
+          ══════════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
         <Text style={s.badge}>POR QUE NOS ESCOLHER</Text>
         <Text style={s.h1}>Nossos Diferenciais</Text>
@@ -504,7 +592,9 @@ export function PropostaDocument({
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
 
-      {/* ══════════ ADMINISTRAÇÃO (condicional) ══════════ */}
+      {/* ══════════════════════════════════════════════
+          ADMINISTRAÇÃO (condicional)
+          ══════════════════════════════════════════════ */}
       {incluiAdmin && (
         <>
           {/* ── Serviços ── */}
@@ -552,7 +642,9 @@ export function PropostaDocument({
               ].map((srv, i) => (
                 <View key={i} style={s.card}>
                   <View style={[s.cardInner, { minHeight: 80, padding: 12 }]}>
-                    <Text style={[s.cardTitle, { fontSize: 10 }]}>{srv.t}</Text>
+                    <Text style={[s.cardTitle, { fontSize: 10 }]}>
+                      {srv.t}
+                    </Text>
                     <Text style={[s.cardText, { fontSize: 8 }]}>{srv.d}</Text>
                   </View>
                 </View>
@@ -562,17 +654,24 @@ export function PropostaDocument({
           </Page>
 
           {/* ── Plano Essencial ── */}
-          <Page size="A4" style={s.page}>
+          {/* justifyContent: "center" centraliza o card verticalmente */}
+          <Page
+            size="A4"
+            style={[s.page, { justifyContent: "center" }]}
+          >
             <Text style={s.badge}>PLANO</Text>
             <View style={s.planoCard}>
               <View style={s.planoHeader}>
                 <Text style={s.planoTitulo}>Essencial</Text>
-                <Text style={s.planoSubtitulo}>Gestão financeira objetiva e eficiente</Text>
+                <Text style={s.planoSubtitulo}>
+                  Gestão financeira objetiva e eficiente
+                </Text>
               </View>
               <View style={{ marginBottom: 12 }}>
                 <Text style={s.planoIdealPara}>IDEAL PARA</Text>
                 <Text style={s.planoIdealTexto}>
-                  Condomínios que buscam organização financeira com custo acessível.
+                  Condomínios que buscam organização financeira com custo
+                  acessível.
                 </Text>
               </View>
               <View style={s.planoFeatures}>
@@ -594,7 +693,8 @@ export function PropostaDocument({
                 <Text style={s.planoValor}>{formatPlano(calc.essencial)}</Text>
                 {calc.essencial.tipo === "valor" && (
                   <Text style={s.planoValorPorUnidade}>
-                    R$ {formatBRL(calc.essencial.mensal / unidades)} por unidade/mês
+                    R$ {formatBRL(calc.essencial.mensal / unidades)} por
+                    unidade/mês
                   </Text>
                 )}
               </View>
@@ -603,7 +703,10 @@ export function PropostaDocument({
           </Page>
 
           {/* ── Plano Completo ── */}
-          <Page size="A4" style={s.page}>
+          <Page
+            size="A4"
+            style={[s.page, { justifyContent: "center" }]}
+          >
             <Text style={s.badgeNavy}>MAIS ESCOLHIDO</Text>
             <Text style={s.badge}>PLANO</Text>
             <View style={s.planoCard}>
@@ -616,8 +719,8 @@ export function PropostaDocument({
               <View style={{ marginBottom: 12 }}>
                 <Text style={s.planoIdealPara}>IDEAL PARA</Text>
                 <Text style={s.planoIdealTexto}>
-                  Condomínios que precisam de gestão financeira, operacional e de comunicação
-                  integradas.
+                  Condomínios que precisam de gestão financeira, operacional e
+                  de comunicação integradas.
                 </Text>
               </View>
               <View style={s.planoFeatures}>
@@ -641,7 +744,8 @@ export function PropostaDocument({
                 <Text style={s.planoValor}>{formatPlano(calc.completo)}</Text>
                 {calc.completo.tipo === "valor" && (
                   <Text style={s.planoValorPorUnidade}>
-                    R$ {formatBRL(calc.completo.mensal / unidades)} por unidade/mês
+                    R$ {formatBRL(calc.completo.mensal / unidades)} por
+                    unidade/mês
                   </Text>
                 )}
               </View>
@@ -650,19 +754,24 @@ export function PropostaDocument({
           </Page>
 
           {/* ── Plano Premium ── */}
-          <Page size="A4" style={s.page}>
+          <Page
+            size="A4"
+            style={[s.page, { justifyContent: "center" }]}
+          >
             <Text style={s.badge}>PLANO</Text>
             <View style={[s.planoCard, s.planoCardPremium]}>
               <View style={s.planoHeader}>
                 <Text style={s.planoTitulo}>Premium</Text>
                 <Text style={s.planoSubtitulo}>
-                  Gestão completa com assessoria jurídica e atendimento prioritário
+                  Gestão completa com assessoria jurídica e atendimento
+                  prioritário
                 </Text>
               </View>
               <View style={{ marginBottom: 12 }}>
                 <Text style={s.planoIdealPara}>IDEAL PARA</Text>
                 <Text style={s.planoIdealTexto}>
-                  Condomínios que desejam o mais alto nível de gestão, com suporte jurídico e SLA.
+                  Condomínios que desejam o mais alto nível de gestão, com
+                  suporte jurídico e SLA.
                 </Text>
               </View>
               <View style={s.planoFeatures}>
@@ -686,7 +795,8 @@ export function PropostaDocument({
                 <Text style={s.planoValor}>{formatPlano(calc.premium)}</Text>
                 {calc.premium.tipo === "valor" && (
                   <Text style={s.planoValorPorUnidade}>
-                    R$ {formatBRL(calc.premium.mensal / unidades)} por unidade/mês
+                    R$ {formatBRL(calc.premium.mensal / unidades)} por
+                    unidade/mês
                   </Text>
                 )}
               </View>
@@ -699,12 +809,20 @@ export function PropostaDocument({
             <Text style={s.badge}>COMPARATIVO</Text>
             <Text style={s.h1}>Comparativo de Planos</Text>
             <View style={s.divider} />
-            <Text style={s.subtitle}>Veja lado a lado o que cada plano oferece.</Text>
+            <Text style={s.subtitle}>
+              Veja lado a lado o que cada plano oferece.
+            </Text>
             <View style={s.tableHeaderRow}>
               <Text style={[s.tableHeaderCell, { flex: 2 }]}>Serviço</Text>
-              <Text style={[s.tableHeaderCell, s.tableCellCenter]}>Essencial</Text>
-              <Text style={[s.tableHeaderCell, s.tableCellCenter]}>Completo</Text>
-              <Text style={[s.tableHeaderCell, s.tableCellCenter]}>Premium</Text>
+              <Text style={[s.tableHeaderCell, s.tableCellCenter]}>
+                Essencial
+              </Text>
+              <Text style={[s.tableHeaderCell, s.tableCellCenter]}>
+                Completo
+              </Text>
+              <Text style={[s.tableHeaderCell, s.tableCellCenter]}>
+                Premium
+              </Text>
             </View>
             {(() => {
               const allServices = Array.from(
@@ -712,7 +830,7 @@ export function PropostaDocument({
                   ...SERVICOS_PLANOS.essencial,
                   ...SERVICOS_PLANOS.completo,
                   ...SERVICOS_PLANOS.premium,
-                ]),
+                ])
               );
               return allServices.map((nome, i) => (
                 <View key={i} style={s.tableRow} wrap={false}>
@@ -729,7 +847,10 @@ export function PropostaDocument({
                 </View>
               ));
             })()}
-            <View style={[s.tableRow, { backgroundColor: GRAY_50 }]} wrap={false}>
+            <View
+              style={[s.tableRow, { backgroundColor: GRAY_50 }]}
+              wrap={false}
+            >
               <Text style={[s.tableCell, { flex: 2, fontWeight: 700 }]}>
                 Investimento mensal
               </Text>
@@ -744,19 +865,26 @@ export function PropostaDocument({
               </Text>
             </View>
             <Text
-              style={{ fontSize: 8, color: GRAY_500, marginTop: 14, fontStyle: "italic" }}
+              style={{
+                fontSize: 8,
+                color: GRAY_500,
+                marginTop: 14,
+                fontStyle: "italic",
+              }}
             >
-              Valores calculados para {unidades} unidades. Sujeitos a ajuste conforme avaliação
-              técnica.
+              Valores calculados para {unidades} unidades. Sujeitos a ajuste
+              conforme avaliação técnica.
             </Text>
             <Footer pageNumber={++pg} totalPages={totalPages} />
           </Page>
         </>
       )}
 
-      {/* ══════════ SÍNDICO PROFISSIONAL (condicional) ══════════ */}
+      {/* ══════════════════════════════════════════════
+          SÍNDICO PROFISSIONAL (condicional)
+          ══════════════════════════════════════════════ */}
       {incluiSindico && (
-        <Page size="A4" style={s.page}>
+        <Page size="A4" style={[s.page, { justifyContent: "center" }]}>
           <Text style={s.badge}>SERVIÇO</Text>
           <View style={s.planoCard}>
             <View style={s.planoHeader}>
@@ -768,8 +896,8 @@ export function PropostaDocument({
             <View style={{ marginBottom: 12 }}>
               <Text style={s.planoIdealPara}>IDEAL PARA</Text>
               <Text style={s.planoIdealTexto}>
-                Condomínios que desejam um síndico dedicado, com experiência em gestão condominial
-                e representação legal.
+                Condomínios que desejam um síndico dedicado, com experiência em
+                gestão condominial e representação legal.
               </Text>
             </View>
             <View style={s.planoFeatures}>
@@ -789,9 +917,18 @@ export function PropostaDocument({
               ))}
             </View>
             <View style={s.planoFooter}>
-              <Text style={s.planoValorLabel}>INVESTIMENTO MENSAL — SÍNDICO</Text>
-              <Text style={{ fontSize: 11, color: NAVY, fontWeight: 700, marginTop: 8 }}>
-                {formatSindico(calc.sindico)}
+              <Text style={s.planoValorLabel}>
+                INVESTIMENTO MENSAL — SÍNDICO
+              </Text>
+              <Text
+                style={{
+                  fontSize: 11,
+                  color: NAVY,
+                  fontWeight: 700,
+                  marginTop: 8,
+                }}
+              >
+                {formatSindico(unidades)}
               </Text>
             </View>
           </View>
@@ -810,14 +947,17 @@ export function PropostaDocument({
               <Text style={{ fontWeight: 700 }}>
                 Seguro de Responsabilidade Civil (RC) do Síndico INCLUSO
               </Text>
-              . Protegemos o síndico contra riscos inerentes à função, sem custo adicional.
+              . Protegemos o síndico contra riscos inerentes à função, sem
+              custo adicional.
             </Text>
           </View>
           <Footer pageNumber={++pg} totalPages={totalPages} />
         </Page>
       )}
 
-      {/* ══════════ CONDIÇÕES COMERCIAIS ══════════ */}
+      {/* ══════════════════════════════════════════════
+          CONDIÇÕES COMERCIAIS
+          ══════════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
         <Text style={s.badge}>CONDIÇÕES</Text>
         <Text style={s.h1}>Condições Comerciais</Text>
@@ -863,14 +1003,15 @@ export function PropostaDocument({
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
 
-      {/* ══════════ PRÓXIMOS PASSOS + CTA ══════════ */}
+      {/* ══════════════════════════════════════════════
+          PRÓXIMOS PASSOS
+          ══════════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
         <Text style={s.badge}>PRÓXIMOS PASSOS</Text>
         <Text style={s.h1}>Como Contratar</Text>
         <View style={s.divider} />
         <Text style={s.subtitle}>Simples, rápido e sem burocracia.</Text>
 
-        {/* Steps primeiro */}
         {[
           {
             n: "1",
@@ -902,7 +1043,6 @@ export function PropostaDocument({
           </View>
         ))}
 
-        {/* CTA depois dos steps */}
         <View style={s.ctaBox}>
           <Text style={s.ctaText}>
             Pronto para transformar a gestão do seu condomínio?
@@ -916,7 +1056,9 @@ export function PropostaDocument({
         <Footer pageNumber={++pg} totalPages={totalPages} />
       </Page>
 
-      {/* ══════════ CONSIDERAÇÕES FINAIS — página própria, sempre última ══════════ */}
+      {/* ══════════════════════════════════════════════
+          CONSIDERAÇÕES FINAIS — última página, condicional
+          ══════════════════════════════════════════════ */}
       {temConsideracoes && (
         <Page size="A4" style={s.page}>
           <Text style={s.badge}>ALPHA CONDOMÍNIOS</Text>
@@ -927,14 +1069,13 @@ export function PropostaDocument({
             .split("\n")
             .filter((l) => l.trim())
             .map((line, i) => (
-              <Text key={i} style={{ ...s.paragraph, marginBottom: 8 }}>
+              <Text key={i} style={s.paragraph}>
                 {line}
               </Text>
             ))}
           <Footer pageNumber={++pg} totalPages={totalPages} />
         </Page>
       )}
-
     </Document>
   );
 }
