@@ -10,10 +10,8 @@ import {
 } from "@react-pdf/renderer";
 import {
   calcularPlanos,
-  formatPlano,
   formatSindico,
   formatBRL,
-  SERVICOS_PLANOS,
 } from "./calculations";
 
 /* ================================================================
@@ -193,39 +191,49 @@ const s = StyleSheet.create({
 /* ================================================================
    TIPOS
    ================================================================ */
-interface ProposalData {
-  nomeCondominio: string;
-  numeroUnidades: number;
-  bairro?: string;
+interface PropostaPDFData {
+  numero: string;
+  data: Date;
   cidade?: string;
-  nomeContato?: string;
-  cargoContato?: string;
+  condominio: { nome: string; endereco: string; unidades: number; tipo: string };
+  contato: { nome: string; telefone: string; email: string };
   incluiAdmin: boolean;
   incluiSindico: boolean;
-  planoSelecionado?: "essencial" | "completo" | "premium";
-  descontoCombo?: number;
   consideracoesFinais?: string;
-  dataValidade?: string;
-  numeroContrato?: string;
+}
+
+function formatPlanoDetalhado(p: ReturnType<typeof calcularPlanos>["essencial"]) {
+  if (p.tipo === "valor") {
+    return {
+      totalFmt: formatBRL(p.mensal) + "/mês",
+      porUnidadeFmt: formatBRL(p.porUnidade),
+    };
+  }
+  return { totalFmt: p.texto, porUnidadeFmt: "Sob consulta" };
 }
 
 /* ================================================================
    DOCUMENTO PRINCIPAL
    ================================================================ */
-export default function ProposalDocument({ data }: { data: ProposalData }) {
+export function PropostaDocument(props: PropostaPDFData) {
   const {
-    nomeCondominio,
-    numeroUnidades,
-    bairro,
+    numero,
+    data,
     cidade,
-    nomeContato,
-    cargoContato,
+    condominio,
+    contato,
     incluiAdmin,
     incluiSindico,
     consideracoesFinais,
-    dataValidade,
-    numeroContrato,
-  } = data;
+  } = props;
+
+  const nomeCondominio = condominio?.nome || "Condomínio";
+  const numeroUnidades = Number(condominio?.unidades) || 0;
+  const bairro = condominio?.endereco || "";
+  const nomeContato = contato?.nome || "";
+  const cargoContato = "";
+  const numeroContrato = numero || "";
+  const dataValidade = "";
 
   /* total de páginas */
   let total = 1;
@@ -236,13 +244,13 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
   if (consideracoesFinais?.trim()) total += 1;
 
   const planos    = calcularPlanos(numeroUnidades);
-  const essencial = formatPlano(planos.essencial);
-  const completo  = formatPlano(planos.completo);
-  const premium   = formatPlano(planos.premium);
-  const sindico   = incluiSindico ? formatSindico(numeroUnidades) : null;
+  const essencial = formatPlanoDetalhado(planos.essencial);
+  const completo  = formatPlanoDetalhado(planos.completo);
+  const premium   = formatPlanoDetalhado(planos.premium);
+  const sindico   = incluiSindico ? formatSindico(planos.sindico) : null;
 
   const localidade = [bairro, cidade].filter(Boolean).join(" – ");
-  const dataHoje   = new Date().toLocaleDateString("pt-BR", {
+  const dataHoje   = (data instanceof Date ? data : new Date()).toLocaleDateString("pt-BR", {
     day: "2-digit", month: "long", year: "numeric",
   });
 
@@ -1045,7 +1053,7 @@ export default function ProposalDocument({ data }: { data: ProposalData }) {
               <Text
                 style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
               >
-                1 salário-mínimo/mês
+                {sindico || "Sob consulta"}
               </Text>
               <Text style={{ fontSize: 9.5, color: GRAY_500, marginBottom: 14 }}>
                 Valores calculados para {numeroUnidades} unidades. Sujeitos a ajuste
