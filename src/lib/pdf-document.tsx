@@ -1078,9 +1078,9 @@ export function PropostaDocument(props: PropostaPDFData) {
             </View>
           </View>
           <PageFooter
-            current={incluiAdmin ? 8 : 4}
-            total={total}
-          />
+  current={3 + (incluiAdmin ? 4 : 0) + 1}
+  total={total}
+/>
         </Page>
       )}
 
