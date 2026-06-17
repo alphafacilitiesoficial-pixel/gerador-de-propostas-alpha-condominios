@@ -26,7 +26,6 @@ const GREEN_CHECK = "#16A34A";
 const NAVY_MID    = "#2C3E6B";
 const NAVY_DARK   = "#0F1A30";
 
-/* Logo via URL pública — coloque o arquivo em /public/logo-alpha.png */
 const LOGO_URL = "/logo-alpha.png";
 
 /* ================================================================
@@ -44,7 +43,6 @@ function BuildingsSilhouette() {
       <Rect x="23"  y="168" width="8"  height="10"  fill="#7A8DA0" opacity="0.50" />
       <Rect x="11"  y="183" width="8"  height="10"  fill="#7A8DA0" opacity="0.55" />
       <Rect x="23"  y="183" width="8"  height="10"  fill="#7A8DA0" opacity="0.40" />
-
       <Rect x="48"  y="75"  width="40" height="155" fill="#B0C0D4" opacity="0.50" />
       <Rect x="53"  y="83"  width="10" height="12"  fill="#8090A8" opacity="0.60" />
       <Rect x="67"  y="83"  width="10" height="12"  fill="#8090A8" opacity="0.45" />
@@ -58,7 +56,6 @@ function BuildingsSilhouette() {
       <Rect x="67"  y="151" width="10" height="12"  fill="#8090A8" opacity="0.60" />
       <Rect x="53"  y="168" width="10" height="12"  fill="#8090A8" opacity="0.45" />
       <Rect x="67"  y="168" width="10" height="12"  fill="#8090A8" opacity="0.55" />
-
       <Rect x="97"  y="45"  width="44" height="185" fill="#BBC8DA" opacity="0.50" />
       <Rect x="102" y="53"  width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
       <Rect x="118" y="53"  width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
@@ -74,7 +71,6 @@ function BuildingsSilhouette() {
       <Rect x="118" y="143" width="11" height="13"  fill="#8A9AB0" opacity="0.55" />
       <Rect x="102" y="161" width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
       <Rect x="118" y="161" width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
-
       <Rect x="150" y="100" width="38" height="130" fill="#A8B8C8" opacity="0.45" />
       <Rect x="155" y="108" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
       <Rect x="168" y="108" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
@@ -86,7 +82,6 @@ function BuildingsSilhouette() {
       <Rect x="168" y="156" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
       <Rect x="155" y="172" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
       <Rect x="168" y="172" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
-
       <Rect x="196" y="115" width="30" height="115" fill="#A0B0C4" opacity="0.40" />
       <Rect x="200" y="122" width="8"  height="10"  fill="#708090" opacity="0.50" />
       <Rect x="212" y="122" width="8"  height="10"  fill="#708090" opacity="0.40" />
@@ -96,7 +91,6 @@ function BuildingsSilhouette() {
       <Rect x="212" y="152" width="8"  height="10"  fill="#708090" opacity="0.40" />
       <Rect x="200" y="167" width="8"  height="10"  fill="#708090" opacity="0.50" />
       <Rect x="212" y="167" width="8"  height="10"  fill="#708090" opacity="0.40" />
-
       <Rect x="0" y="226" width="230" height="4" fill={NAVY_DARK} opacity="0.5" />
     </Svg>
   );
@@ -339,22 +333,31 @@ export function PropostaDocument(props: PropostaPDFData) {
   const localidade = [bairro, cidade].filter(Boolean).join(" – ");
 
   /* Contagem de páginas */
-  let total = 1;  // capa
-  total += 1;     // quem somos
-  total += 1;     // diferenciais
-  total += 1;     // serviços
-  if (incluiAdmin)   total += 4; // 3 planos + comparativo
-  if (incluiSindico) total += 1; // síndico
-  total += 1;     // condições
-  total += 1;     // próximos passos
-  if (consideracoesFinais?.trim()) total += 1; // considerações finais
-  total += 1;     // contracapa
+  let total = 1;
+  total += 1;
+  total += 1;
+  total += 1;
+  if (incluiAdmin)   total += 4;
+  if (incluiSindico) total += 1;
+  total += 1;
+  total += 1;
+  if (consideracoesFinais?.trim()) total += 1;
+  total += 1;
 
   const planos    = calcularPlanos(numeroUnidades);
   const essencial = formatPlanoDetalhado(planos.essencial);
   const completo  = formatPlanoDetalhado(planos.completo);
   const premium   = formatPlanoDetalhado(planos.premium);
-  const sindico   = incluiSindico ? formatSindico(numeroUnidades) : null;
+
+  // ── CORREÇÃO PRINCIPAL ──────────────────────────────────────────
+  // formatSindico recebe PlanoSindico, não um número.
+  // formatPlanoDetalhado não existe para síndico — calculamos aqui.
+  const sindicoPlano      = incluiSindico ? planos.sindico : null;
+  const sindicoTotalFmt   = sindicoPlano ? formatSindico(sindicoPlano) : "";
+  const sindicoPorUnidade = (sindicoPlano?.tipo === "valor" && numeroUnidades > 0)
+    ? formatBRL(sindicoPlano.mensal / numeroUnidades) + "/unidade"
+    : "Sob consulta";
+  // ───────────────────────────────────────────────────────────────
 
   /* Índices de página */
   let pg = 0;
@@ -381,43 +384,35 @@ export function PropostaDocument(props: PropostaPDFData) {
   const SERVICOS = [
     {
       titulo: "Administração de Pessoal",
-      descricao:
-        "Gestão completa de funcionários do condomínio: admissão, demissão, folha de pagamento, férias, 13º salário, FGTS e encargos trabalhistas, garantindo conformidade legal.",
+      descricao: "Gestão completa de funcionários do condomínio: admissão, demissão, folha de pagamento, férias, 13º salário, FGTS e encargos trabalhistas, garantindo conformidade legal.",
     },
     {
       titulo: "Gestão Financeira",
-      descricao:
-        "Controle de receitas e despesas, emissão de boletos, prestação de contas mensal com demonstrativos detalhados, conciliação bancária e gestão do fundo de reserva.",
+      descricao: "Controle de receitas e despesas, emissão de boletos, prestação de contas mensal com demonstrativos detalhados, conciliação bancária e gestão do fundo de reserva.",
     },
     {
       titulo: "Assessoria Jurídica",
-      descricao:
-        "Suporte jurídico para cobranças de inadimplentes, análise de contratos, orientação em assembleias e resolução de conflitos condominiais.",
+      descricao: "Suporte jurídico para cobranças de inadimplentes, análise de contratos, orientação em assembleias e resolução de conflitos condominiais.",
     },
     {
       titulo: "Gestão de Contratos",
-      descricao:
-        "Administração de todos os contratos de prestadores de serviços, manutenção preventiva e corretiva, garantindo qualidade e economicidade.",
+      descricao: "Administração de todos os contratos de prestadores de serviços, manutenção preventiva e corretiva, garantindo qualidade e economicidade.",
     },
     {
       titulo: "Assembleias e Reuniões",
-      descricao:
-        "Organização, convocação e condução de assembleias ordinárias e extraordinárias, elaboração de atas e acompanhamento das deliberações.",
+      descricao: "Organização, convocação e condução de assembleias ordinárias e extraordinárias, elaboração de atas e acompanhamento das deliberações.",
     },
     {
       titulo: "Atendimento e Comunicação",
-      descricao:
-        "Canal de atendimento dedicado a condôminos e funcionários, comunicados, circulares e suporte em plataforma digital.",
+      descricao: "Canal de atendimento dedicado a condôminos e funcionários, comunicados, circulares e suporte em plataforma digital.",
     },
     {
       titulo: "Relatórios e Transparência",
-      descricao:
-        "Relatórios mensais completos com balancete, extrato de movimentações, inadimplência e previsão orçamentária disponíveis em portal exclusivo.",
+      descricao: "Relatórios mensais completos com balancete, extrato de movimentações, inadimplência e previsão orçamentária disponíveis em portal exclusivo.",
     },
     {
       titulo: "Suporte em Vistorias",
-      descricao:
-        "Acompanhamento de vistorias técnicas, levantamento de necessidades de manutenção e suporte na gestão de obras e reformas nas áreas comuns.",
+      descricao: "Acompanhamento de vistorias técnicas, levantamento de necessidades de manutenção e suporte na gestão de obras e reformas nas áreas comuns.",
     },
   ];
 
@@ -485,7 +480,6 @@ export function PropostaDocument(props: PropostaPDFData) {
      ================================================================ */
   const PageCapa = () => (
     <Page size="A4" style={{ flexDirection: "row", backgroundColor: WHITE }}>
-      {/* Coluna esquerda — branca */}
       <View style={{ width: "52%", backgroundColor: WHITE, padding: 48, justifyContent: "space-between" }}>
         <View>
           <Image
@@ -535,8 +529,6 @@ export function PropostaDocument(props: PropostaPDFData) {
           </Text>
         </View>
       </View>
-
-      {/* Coluna direita — azul com prédios */}
       <View
         style={{
           width: "48%",
@@ -853,75 +845,73 @@ export function PropostaDocument(props: PropostaPDFData) {
   /* ================================================================
      SÍNDICO PROFISSIONAL
      ================================================================ */
-  const PageSindico = () => {
-    const sindicoInfo = sindico!;
-    return (
-      <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
-        <PageHeader label="Serviço Adicional" />
-        <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
-            SÍNDICO PROFISSIONAL
-          </Text>
-          <Text style={{ fontSize: 24, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
-            Gestão com Responsabilidade Total
-          </Text>
-          <GoldDivider />
-          <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
-            Assuma a tranquilidade de ter um síndico profissional dedicado ao seu condomínio,
-            com experiência comprovada e total responsabilidade pela gestão.
-          </Text>
-          {[
-            "Representação legal do condomínio",
-            "Presidência de assembleias e reuniões",
-            "Gestão direta de funcionários e fornecedores",
-            "Atendimento presencial periódico no condomínio",
-            "Resolução de conflitos entre condôminos",
-            "Acompanhamento de obras e manutenções",
-            "Relatórios executivos mensais ao conselho",
-            "Disponibilidade para emergências",
-          ].map((f) => (
-            <FeatureRow key={f} text={f} />
-          ))}
-          <View
-            style={{
-              backgroundColor: GRAY_50,
-              borderRadius: 8,
-              padding: 16,
-              marginTop: 16,
-              marginBottom: 8,
-              borderLeftWidth: 3,
-              borderLeftColor: GOLD,
-              flexDirection: "row",
-              alignItems: "flex-start",
-            }}
-          >
-            <IShield />
-            <View style={{ flex: 1, marginLeft: 12 }}>
-              <Text style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
-                Seguro de Responsabilidade Civil Incluso
-              </Text>
-              <Text style={{ fontSize: 9, color: GRAY_700, lineHeight: 1.5 }}>
-                Proteção completa ao síndico profissional e ao condomínio contra eventuais
-                reclamações decorrentes do exercício da função.
-              </Text>
-            </View>
-          </View>
-          <View style={{ backgroundColor: NAVY, borderRadius: 8, padding: 20, marginTop: 8 }}>
-            <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, marginBottom: 8 }}>
-              INVESTIMENTO MENSAL
+  const PageSindico = () => (
+    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+      <PageHeader label="Serviço Adicional" />
+      <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
+          SÍNDICO PROFISSIONAL
+        </Text>
+        <Text style={{ fontSize: 24, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
+          Gestão com Responsabilidade Total
+        </Text>
+        <GoldDivider />
+        <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
+          Assuma a tranquilidade de ter um síndico profissional dedicado ao seu condomínio,
+          com experiência comprovada e total responsabilidade pela gestão.
+        </Text>
+        {[
+          "Representação legal do condomínio",
+          "Presidência de assembleias e reuniões",
+          "Gestão direta de funcionários e fornecedores",
+          "Atendimento presencial periódico no condomínio",
+          "Resolução de conflitos entre condôminos",
+          "Acompanhamento de obras e manutenções",
+          "Relatórios executivos mensais ao conselho",
+          "Disponibilidade para emergências",
+        ].map((f) => (
+          <FeatureRow key={f} text={f} />
+        ))}
+        <View
+          style={{
+            backgroundColor: GRAY_50,
+            borderRadius: 8,
+            padding: 16,
+            marginTop: 16,
+            marginBottom: 8,
+            borderLeftWidth: 3,
+            borderLeftColor: GOLD,
+            flexDirection: "row",
+            alignItems: "flex-start",
+          }}
+        >
+          <IShield />
+          <View style={{ flex: 1, marginLeft: 12 }}>
+            <Text style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
+              Seguro de Responsabilidade Civil Incluso
             </Text>
-            <Text style={{ fontSize: 32, fontWeight: "bold", color: WHITE, marginBottom: 4 }}>
-              {sindicoInfo.totalFmt}
-            </Text>
-            <Text style={{ fontSize: 9.5, color: GOLD_LIGHT }}>
-              {sindicoInfo.porUnidadeFmt} por unidade/mês
+            <Text style={{ fontSize: 9, color: GRAY_700, lineHeight: 1.5 }}>
+              Proteção completa ao síndico profissional e ao condomínio contra eventuais
+              reclamações decorrentes do exercício da função.
             </Text>
           </View>
         </View>
-        <PageFooter current={P_SINDICO} total={total} />
-      </Page>
-    );
-  };
+        {/* ── CORREÇÃO: usa sindicoTotalFmt e sindicoPorUnidade ── */}
+        <View style={{ backgroundColor: NAVY, borderRadius: 8, padding: 20, marginTop: 8 }}>
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, marginBottom: 8 }}>
+            INVESTIMENTO MENSAL
+          </Text>
+          <Text style={{ fontSize: 32, fontWeight: "bold", color: WHITE, marginBottom: 4 }}>
+            {sindicoTotalFmt}
+          </Text>
+          <Text style={{ fontSize: 9.5, color: GOLD_LIGHT }}>
+            {sindicoPorUnidade} por unidade/mês
+          </Text>
+        </View>
+      </View>
+      <PageFooter current={P_SINDICO} total={total} />
+    </Page>
+  );
 
   /* ================================================================
      CONDIÇÕES GERAIS
@@ -1051,7 +1041,7 @@ export function PropostaDocument(props: PropostaPDFData) {
   );
 
   /* ================================================================
-     CONSIDERAÇÕES FINAIS — só renderiza se houver conteúdo
+     CONSIDERAÇÕES FINAIS
      ================================================================ */
   const PageConsideracoesFinais = () => {
     if (!consideracoesFinais?.trim()) return null;
@@ -1086,7 +1076,7 @@ export function PropostaDocument(props: PropostaPDFData) {
   };
 
   /* ================================================================
-     CONTRACAPA — última página
+     CONTRACAPA
      ================================================================ */
   const PageContracapa = () => (
     <Page size="A4" style={{ backgroundColor: NAVY }}>
