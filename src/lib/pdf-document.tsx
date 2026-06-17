@@ -247,7 +247,7 @@ export function PropostaDocument(props: PropostaPDFData) {
   const essencial = formatPlanoDetalhado(planos.essencial);
   const completo  = formatPlanoDetalhado(planos.completo);
   const premium   = formatPlanoDetalhado(planos.premium);
-  const sindico   = incluiSindico ? formatSindico(planos.sindico) : null;
+  const sindico = incluiSindico ? formatSindico(numeroUnidades) : null;
 
   const localidade = [bairro, cidade].filter(Boolean).join(" – ");
   const dataHoje   = (data instanceof Date ? data : new Date()).toLocaleDateString("pt-BR", {
