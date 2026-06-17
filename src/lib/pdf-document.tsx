@@ -26,6 +26,8 @@ const GREEN_CHECK = "#16A34A";
 const NAVY_MID    = "#2C3E6B";
 const NAVY_DARK   = "#0F1A30";
 
+/* Logo via URL pública — coloque o arquivo em /public/logo-alpha.png */
+const LOGO_URL = "/logo-alpha.png";
 
 /* ================================================================
    SILHUETA DE PRÉDIOS
@@ -33,7 +35,6 @@ const NAVY_DARK   = "#0F1A30";
 function BuildingsSilhouette() {
   return (
     <Svg width="230" height="230" viewBox="0 0 230 230">
-      {/* Prédio 1 – esquerda baixo */}
       <Rect x="6"   y="130" width="34" height="100" fill="#A8B8CC" opacity="0.45" />
       <Rect x="11"  y="138" width="8"  height="10"  fill="#7A8DA0" opacity="0.55" />
       <Rect x="23"  y="138" width="8"  height="10"  fill="#7A8DA0" opacity="0.40" />
@@ -44,7 +45,6 @@ function BuildingsSilhouette() {
       <Rect x="11"  y="183" width="8"  height="10"  fill="#7A8DA0" opacity="0.55" />
       <Rect x="23"  y="183" width="8"  height="10"  fill="#7A8DA0" opacity="0.40" />
 
-      {/* Prédio 2 – centro-esquerda alto */}
       <Rect x="48"  y="75"  width="40" height="155" fill="#B0C0D4" opacity="0.50" />
       <Rect x="53"  y="83"  width="10" height="12"  fill="#8090A8" opacity="0.60" />
       <Rect x="67"  y="83"  width="10" height="12"  fill="#8090A8" opacity="0.45" />
@@ -59,7 +59,6 @@ function BuildingsSilhouette() {
       <Rect x="53"  y="168" width="10" height="12"  fill="#8090A8" opacity="0.45" />
       <Rect x="67"  y="168" width="10" height="12"  fill="#8090A8" opacity="0.55" />
 
-      {/* Prédio 3 – centro, o mais alto */}
       <Rect x="97"  y="45"  width="44" height="185" fill="#BBC8DA" opacity="0.50" />
       <Rect x="102" y="53"  width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
       <Rect x="118" y="53"  width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
@@ -76,7 +75,6 @@ function BuildingsSilhouette() {
       <Rect x="102" y="161" width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
       <Rect x="118" y="161" width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
 
-      {/* Prédio 4 – direita médio */}
       <Rect x="150" y="100" width="38" height="130" fill="#A8B8C8" opacity="0.45" />
       <Rect x="155" y="108" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
       <Rect x="168" y="108" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
@@ -89,7 +87,6 @@ function BuildingsSilhouette() {
       <Rect x="155" y="172" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
       <Rect x="168" y="172" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
 
-      {/* Prédio 5 – extrema direita */}
       <Rect x="196" y="115" width="30" height="115" fill="#A0B0C4" opacity="0.40" />
       <Rect x="200" y="122" width="8"  height="10"  fill="#708090" opacity="0.50" />
       <Rect x="212" y="122" width="8"  height="10"  fill="#708090" opacity="0.40" />
@@ -100,7 +97,6 @@ function BuildingsSilhouette() {
       <Rect x="200" y="167" width="8"  height="10"  fill="#708090" opacity="0.50" />
       <Rect x="212" y="167" width="8"  height="10"  fill="#708090" opacity="0.40" />
 
-      {/* Chão */}
       <Rect x="0" y="226" width="230" height="4" fill={NAVY_DARK} opacity="0.5" />
     </Svg>
   );
@@ -342,29 +338,30 @@ export function PropostaDocument(props: PropostaPDFData) {
   });
   const localidade = [bairro, cidade].filter(Boolean).join(" – ");
 
-  /* contagem de páginas */
-  let total = 1;   // capa
-  total += 1;      // quem somos
-  total += 1;      // diferenciais
-  total += 1;      // serviços
-  if (incluiAdmin) total += 4;   // 3 planos + comparativo
-  if (incluiSindico) total += 1; // síndico profissional
-  total += 1;      // condições
-  total += 1;      // próximos passos
-  total += 1;      // contracapa
+  /* Contagem de páginas */
+  let total = 1;  // capa
+  total += 1;     // quem somos
+  total += 1;     // diferenciais
+  total += 1;     // serviços
+  if (incluiAdmin)   total += 4; // 3 planos + comparativo
+  if (incluiSindico) total += 1; // síndico
+  total += 1;     // condições
+  total += 1;     // próximos passos
+  if (consideracoesFinais?.trim()) total += 1; // considerações finais
+  total += 1;     // contracapa
 
-  const planos   = calcularPlanos(numeroUnidades);
+  const planos    = calcularPlanos(numeroUnidades);
   const essencial = formatPlanoDetalhado(planos.essencial);
   const completo  = formatPlanoDetalhado(planos.completo);
   const premium   = formatPlanoDetalhado(planos.premium);
   const sindico   = incluiSindico ? formatSindico(numeroUnidades) : null;
 
-  /* índices de página */
+  /* Índices de página */
   let pg = 0;
-  const P_CAPA       = ++pg;
-  const P_QUEM       = ++pg;
+  const P_CAPA         = ++pg;
+  const P_QUEM         = ++pg;
   const P_DIFERENCIAIS = ++pg;
-  const P_SERVICOS   = ++pg;
+  const P_SERVICOS     = ++pg;
   let P_ESSENCIAL = 0, P_COMPLETO = 0, P_PREMIUM = 0, P_COMPARATIVO = 0;
   if (incluiAdmin) {
     P_ESSENCIAL   = ++pg;
@@ -374,11 +371,13 @@ export function PropostaDocument(props: PropostaPDFData) {
   }
   let P_SINDICO = 0;
   if (incluiSindico) P_SINDICO = ++pg;
-  const P_CONDICOES = ++pg;
-  const P_PASSOS    = ++pg;
-  const P_CONTRA    = ++pg;
+  const P_CONDICOES    = ++pg;
+  const P_PASSOS       = ++pg;
+  let P_CONSIDERACOES  = 0;
+  if (consideracoesFinais?.trim()) P_CONSIDERACOES = ++pg;
+  const P_CONTRA       = ++pg;
 
-  /* ── CONTEÚDO FIXO ────────────────────────────────────── */
+  /* ── CONTEÚDO FIXO ───────────────────────────────────────────── */
   const SERVICOS = [
     {
       titulo: "Administração de Pessoal",
@@ -455,24 +454,30 @@ export function PropostaDocument(props: PropostaPDFData) {
   ];
 
   const COMPARATIVO_ROWS = [
-    { categoria: "FINANCEIRO", itens: [
-      { item: "Gestão financeira completa",   e: true,  c: true,  p: true  },
-      { item: "Emissão de boletos",            e: true,  c: true,  p: true  },
-      { item: "Prestação de contas mensal",    e: true,  c: true,  p: true  },
-      { item: "Dashboard em tempo real",       e: false, c: false, p: true  },
-    ]},
-    { categoria: "OPERACIONAL", itens: [
-      { item: "Administração de pessoal",      e: false, c: true,  p: true  },
-      { item: "Gestão de contratos",           e: false, c: true,  p: true  },
-      { item: "Assembleias extraordinárias",   e: false, c: true,  p: true  },
-      { item: "Vistorias técnicas",            e: false, c: false, p: true  },
-    ]},
-    { categoria: "PREMIUM", itens: [
-      { item: "Assessoria jurídica completa",  e: false, c: false, p: true  },
-      { item: "Gestor exclusivo",              e: false, c: false, p: true  },
-      { item: "Atendimento 24h emergências",   e: false, c: false, p: true  },
-      { item: "Consultoria em obras",          e: false, c: false, p: true  },
-    ]},
+    {
+      categoria: "FINANCEIRO", itens: [
+        { item: "Gestão financeira completa",  e: true,  c: true,  p: true  },
+        { item: "Emissão de boletos",           e: true,  c: true,  p: true  },
+        { item: "Prestação de contas mensal",   e: true,  c: true,  p: true  },
+        { item: "Dashboard em tempo real",      e: false, c: false, p: true  },
+      ],
+    },
+    {
+      categoria: "OPERACIONAL", itens: [
+        { item: "Administração de pessoal",     e: false, c: true,  p: true  },
+        { item: "Gestão de contratos",          e: false, c: true,  p: true  },
+        { item: "Assembleias extraordinárias",  e: false, c: true,  p: true  },
+        { item: "Vistorias técnicas",           e: false, c: false, p: true  },
+      ],
+    },
+    {
+      categoria: "PREMIUM", itens: [
+        { item: "Assessoria jurídica completa", e: false, c: false, p: true  },
+        { item: "Gestor exclusivo",             e: false, c: false, p: true  },
+        { item: "Atendimento 24h emergências",  e: false, c: false, p: true  },
+        { item: "Consultoria em obras",         e: false, c: false, p: true  },
+      ],
+    },
   ];
 
   /* ================================================================
@@ -482,19 +487,15 @@ export function PropostaDocument(props: PropostaPDFData) {
     <Page size="A4" style={{ flexDirection: "row", backgroundColor: WHITE }}>
       {/* Coluna esquerda — branca */}
       <View style={{ width: "52%", backgroundColor: WHITE, padding: 48, justifyContent: "space-between" }}>
-        {/* Logo grande */}
         <View>
           <Image
-            src="/logo-alpha.png"
+            src={LOGO_URL}
             style={{ width: 160, height: 80, objectFit: "contain", marginBottom: 48 }}
           />
-          {/* Badge */}
           <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 3, fontWeight: "bold", marginBottom: 12 }}>
             PROPOSTA COMERCIAL
           </Text>
-          {/* Linha dourada */}
           <View style={{ height: 3, width: 44, backgroundColor: GOLD, marginBottom: 20 }} />
-          {/* Título condomínio */}
           <Text style={{ fontSize: 22, fontWeight: "bold", color: NAVY, marginBottom: 8, lineHeight: 1.2 }}>
             {nomeCondominio}
           </Text>
@@ -504,9 +505,7 @@ export function PropostaDocument(props: PropostaPDFData) {
           <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 32 }}>
             {numeroUnidades} unidades
           </Text>
-
-          {/* Dados da proposta */}
-          <View style={{ backgroundColor: GRAY_50, borderRadius: 6, padding: 16, marginBottom: 0 }}>
+          <View style={{ backgroundColor: GRAY_50, borderRadius: 6, padding: 16 }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
               <Text style={{ fontSize: 8.5, color: GRAY_500 }}>Proposta nº</Text>
               <Text style={{ fontSize: 8.5, fontWeight: "bold", color: NAVY }}>{numeroContrato}</Text>
@@ -523,8 +522,6 @@ export function PropostaDocument(props: PropostaPDFData) {
             </View>
           </View>
         </View>
-
-        {/* Rodapé contatos */}
         <View>
           <View style={{ height: 0.5, backgroundColor: GRAY_200, marginBottom: 14 }} />
           <Text style={{ fontSize: 8, color: GRAY_500, marginBottom: 4 }}>
@@ -550,29 +547,12 @@ export function PropostaDocument(props: PropostaPDFData) {
           overflow: "hidden",
         }}
       >
-        {/* Faixa dourada decorativa no topo */}
-        <View
-          style={{
-            position: "absolute",
-            top: 0, left: 0, right: 0,
-            height: 4,
-            backgroundColor: GOLD,
-          }}
-        />
-        {/* Texto decorativo vertical */}
-        <View
-          style={{
-            position: "absolute",
-            top: 60,
-            right: 24,
-            alignItems: "flex-end",
-          }}
-        >
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, backgroundColor: GOLD }} />
+        <View style={{ position: "absolute", top: 60, right: 24, alignItems: "flex-end" }}>
           <Text style={{ fontSize: 7, color: GOLD_LIGHT, letterSpacing: 2, opacity: 0.6 }}>
             GESTÃO · TRANSPARÊNCIA · CONFIANÇA
           </Text>
         </View>
-        {/* Silhueta prédios na base */}
         <BuildingsSilhouette />
       </View>
     </Page>
@@ -607,16 +587,7 @@ export function PropostaDocument(props: PropostaPDFData) {
           e atendimento humanizado — porque cada condomínio tem sua própria identidade e merece
           uma gestão à altura.
         </Text>
-
-        {/* Box Missão */}
-        <View
-          style={{
-            backgroundColor: NAVY,
-            borderRadius: 8,
-            padding: 22,
-            marginBottom: 24,
-          }}
-        >
+        <View style={{ backgroundColor: NAVY, borderRadius: 8, padding: 22, marginBottom: 24 }}>
           <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 8 }}>
             NOSSA MISSÃO
           </Text>
@@ -625,8 +596,6 @@ export function PropostaDocument(props: PropostaPDFData) {
             de uma gestão eficiente, transparente e focada em resultados.
           </Text>
         </View>
-
-        {/* Números */}
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           {[
             { num: "10+",  label: "Anos de experiência" },
@@ -677,39 +646,14 @@ export function PropostaDocument(props: PropostaPDFData) {
           Combinamos tecnologia, experiência e atendimento personalizado para oferecer
           a gestão condominial mais completa do mercado.
         </Text>
-
         <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
           {[
-            {
-              icon: <IChart />,
-              titulo: "Gestão Financeira Transparente",
-              texto: "Prestação de contas mensais detalhadas com acesso em tempo real pelo portal do condômino.",
-            },
-            {
-              icon: <IMonitor />,
-              titulo: "Tecnologia de Ponta",
-              texto: "Plataforma digital completa para comunicados, votações, reservas e acompanhamento financeiro.",
-            },
-            {
-              icon: <IPeople />,
-              titulo: "Equipe Especializada",
-              texto: "Profissionais certificados em direito condominial, contabilidade e gestão de pessoas.",
-            },
-            {
-              icon: <IShield />,
-              titulo: "Segurança Jurídica",
-              texto: "Assessoria jurídica dedicada para proteção legal do condomínio em todas as situações.",
-            },
-            {
-              icon: <IMoney />,
-              titulo: "Redução de Custos",
-              texto: "Negociação estratégica com fornecedores e controle rigoroso de despesas para economia real.",
-            },
-            {
-              icon: <IStar />,
-              titulo: "Atendimento Premium",
-              texto: "Canal de atendimento dedicado com resposta ágil e acompanhamento personalizado de cada demanda.",
-            },
+            { icon: <IChart />,   titulo: "Gestão Financeira Transparente", texto: "Prestação de contas mensais detalhadas com acesso em tempo real pelo portal do condômino." },
+            { icon: <IMonitor />, titulo: "Tecnologia de Ponta",            texto: "Plataforma digital completa para comunicados, votações, reservas e acompanhamento financeiro." },
+            { icon: <IPeople />,  titulo: "Equipe Especializada",           texto: "Profissionais certificados em direito condominial, contabilidade e gestão de pessoas." },
+            { icon: <IShield />,  titulo: "Segurança Jurídica",             texto: "Assessoria jurídica dedicada para proteção legal do condomínio em todas as situações." },
+            { icon: <IMoney />,   titulo: "Redução de Custos",              texto: "Negociação estratégica com fornecedores e controle rigoroso de despesas para economia real." },
+            { icon: <IStar />,    titulo: "Atendimento Premium",            texto: "Canal de atendimento dedicado com resposta ágil e acompanhamento personalizado de cada demanda." },
           ].map((d) => (
             <DiferencialCard key={d.titulo} icon={d.icon} titulo={d.titulo} texto={d.texto} />
           ))}
@@ -747,7 +691,7 @@ export function PropostaDocument(props: PropostaPDFData) {
   );
 
   /* ================================================================
-     PLANO helper
+     PLANO — helper reutilizável
      ================================================================ */
   function PagePlano({
     pg: pgNum,
@@ -774,7 +718,6 @@ export function PropostaDocument(props: PropostaPDFData) {
       <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
         <PageHeader label="Planos e Investimento" />
         <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
-          {/* Badge destaque */}
           {destaque && (
             <View
               style={{
@@ -791,7 +734,6 @@ export function PropostaDocument(props: PropostaPDFData) {
               </Text>
             </View>
           )}
-
           <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
             {badge}
           </Text>
@@ -802,8 +744,6 @@ export function PropostaDocument(props: PropostaPDFData) {
           <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 16, lineHeight: 1.5 }}>
             {subtitulo}
           </Text>
-
-          {/* Ideal para */}
           <View
             style={{
               backgroundColor: GRAY_50,
@@ -820,24 +760,13 @@ export function PropostaDocument(props: PropostaPDFData) {
             </Text>
             <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.5 }}>{idealPara}</Text>
           </View>
-
-          {/* Checklist */}
           <Text style={{ fontSize: 8.5, fontWeight: "bold", color: NAVY, marginBottom: 10, letterSpacing: 0.5 }}>
             O QUE ESTÁ INCLUÍDO
           </Text>
           {features.map((f) => (
             <FeatureRow key={f} text={f} />
           ))}
-
-          {/* Preço */}
-          <View
-            style={{
-              backgroundColor: NAVY,
-              borderRadius: 8,
-              padding: 20,
-              marginTop: 16,
-            }}
-          >
+          <View style={{ backgroundColor: NAVY, borderRadius: 8, padding: 20, marginTop: 16 }}>
             <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, marginBottom: 8 }}>
               INVESTIMENTO MENSAL
             </Text>
@@ -855,7 +784,7 @@ export function PropostaDocument(props: PropostaPDFData) {
   }
 
   /* ================================================================
-     COMPARATIVO — após planos
+     COMPARATIVO
      ================================================================ */
   const PageComparativo = () => (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
@@ -868,18 +797,14 @@ export function PropostaDocument(props: PropostaPDFData) {
           Escolha o plano ideal
         </Text>
         <GoldDivider />
-
-        {/* Cabeçalho tabela */}
         <View style={{ flexDirection: "row", backgroundColor: NAVY, borderRadius: 6, padding: 10, marginBottom: 0 }}>
           <Text style={{ flex: 2.5, fontSize: 8.5, fontWeight: "bold", color: WHITE }}>Recurso</Text>
           <Text style={{ flex: 1, fontSize: 8.5, fontWeight: "bold", color: GOLD, textAlign: "center" }}>Essencial</Text>
           <Text style={{ flex: 1, fontSize: 8.5, fontWeight: "bold", color: GOLD, textAlign: "center" }}>Completo</Text>
           <Text style={{ flex: 1, fontSize: 8.5, fontWeight: "bold", color: GOLD, textAlign: "center" }}>Premium</Text>
         </View>
-
         {COMPARATIVO_ROWS.map((cat) => (
           <View key={cat.categoria}>
-            {/* Categoria */}
             <View style={{ backgroundColor: GRAY_50, paddingHorizontal: 10, paddingVertical: 5 }}>
               <Text style={{ fontSize: 7.5, fontWeight: "bold", color: NAVY, letterSpacing: 1.5 }}>
                 {cat.categoria}
@@ -910,22 +835,14 @@ export function PropostaDocument(props: PropostaPDFData) {
             ))}
           </View>
         ))}
-
-        {/* Linha de investimento */}
         <View style={{ backgroundColor: NAVY, borderRadius: 6, padding: 10, marginTop: 10 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={{ flex: 2.5, fontSize: 9, fontWeight: "bold", color: WHITE }}>
               Investimento mensal
             </Text>
-            <Text style={{ flex: 1, fontSize: 8.5, color: GOLD, textAlign: "center" }}>
-              {essencial.totalFmt}
-            </Text>
-            <Text style={{ flex: 1, fontSize: 8.5, color: GOLD, textAlign: "center" }}>
-              {completo.totalFmt}
-            </Text>
-            <Text style={{ flex: 1, fontSize: 8.5, color: GOLD, textAlign: "center" }}>
-              {premium.totalFmt}
-            </Text>
+            <Text style={{ flex: 1, fontSize: 8.5, color: GOLD, textAlign: "center" }}>{essencial.totalFmt}</Text>
+            <Text style={{ flex: 1, fontSize: 8.5, color: GOLD, textAlign: "center" }}>{completo.totalFmt}</Text>
+            <Text style={{ flex: 1, fontSize: 8.5, color: GOLD, textAlign: "center" }}>{premium.totalFmt}</Text>
           </View>
         </View>
       </View>
@@ -953,7 +870,6 @@ export function PropostaDocument(props: PropostaPDFData) {
             Assuma a tranquilidade de ter um síndico profissional dedicado ao seu condomínio,
             com experiência comprovada e total responsabilidade pela gestão.
           </Text>
-
           {[
             "Representação legal do condomínio",
             "Presidência de assembleias e reuniões",
@@ -966,8 +882,6 @@ export function PropostaDocument(props: PropostaPDFData) {
           ].map((f) => (
             <FeatureRow key={f} text={f} />
           ))}
-
-          {/* Seguro RC destaque */}
           <View
             style={{
               backgroundColor: GRAY_50,
@@ -992,8 +906,6 @@ export function PropostaDocument(props: PropostaPDFData) {
               </Text>
             </View>
           </View>
-
-          {/* Preço */}
           <View style={{ backgroundColor: NAVY, borderRadius: 8, padding: 20, marginTop: 8 }}>
             <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, marginBottom: 8 }}>
               INVESTIMENTO MENSAL
@@ -1025,7 +937,6 @@ export function PropostaDocument(props: PropostaPDFData) {
           Condições da Proposta
         </Text>
         <GoldDivider />
-
         <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
           {[
             {
@@ -1092,7 +1003,6 @@ export function PropostaDocument(props: PropostaPDFData) {
         <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 24, lineHeight: 1.5 }}>
           Processo simples, rápido e sem burocracia para você ter a melhor gestão condominial.
         </Text>
-
         <StepRow
           n={1}
           titulo="Aprovação da Proposta"
@@ -1113,8 +1023,6 @@ export function PropostaDocument(props: PropostaPDFData) {
           titulo="Gestão em Pleno Funcionamento"
           texto="Com tudo implantado, você passa a contar com relatórios mensais, portal do condômino ativo e atendimento contínuo da nossa equipe."
         />
-
-        {/* CTA */}
         <View
           style={{
             backgroundColor: NAVY,
@@ -1143,13 +1051,48 @@ export function PropostaDocument(props: PropostaPDFData) {
   );
 
   /* ================================================================
+     CONSIDERAÇÕES FINAIS — só renderiza se houver conteúdo
+     ================================================================ */
+  const PageConsideracoesFinais = () => {
+    if (!consideracoesFinais?.trim()) return null;
+    return (
+      <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+        <PageHeader label="Considerações Finais" />
+        <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>
+            OBSERVAÇÕES
+          </Text>
+          <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 8 }}>
+            Considerações Finais
+          </Text>
+          <GoldDivider />
+          <View
+            style={{
+              backgroundColor: GRAY_50,
+              borderRadius: 8,
+              padding: 22,
+              borderLeftWidth: 3,
+              borderLeftColor: GOLD,
+            }}
+          >
+            <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.75 }}>
+              {consideracoesFinais}
+            </Text>
+          </View>
+        </View>
+        <PageFooter current={P_CONSIDERACOES} total={total} />
+      </Page>
+    );
+  };
+
+  /* ================================================================
      CONTRACAPA — última página
      ================================================================ */
   const PageContracapa = () => (
     <Page size="A4" style={{ backgroundColor: NAVY }}>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 60 }}>
         <Image
-          src={LOGO_B64}
+          src={LOGO_URL}
           style={{ width: 160, height: 80, objectFit: "contain", marginBottom: 32 }}
         />
         <View style={{ height: 2, width: 60, backgroundColor: GOLD, marginBottom: 24 }} />
@@ -1171,58 +1114,9 @@ export function PropostaDocument(props: PropostaPDFData) {
           {contato?.telefone || "(11) 99999-9999"}  ·  {contato?.email || "contato@alphacondominios.com.br"}
         </Text>
       </View>
-      {/* Faixa dourada inferior */}
       <View style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 6, backgroundColor: GOLD }} />
     </Page>
   );
-
-  /* ================================================================
-     HELPERS EXTRAS
-     ================================================================ */
-  function GoldDivider() {
-    return <View style={{ height: 3, width: 44, backgroundColor: GOLD, marginBottom: 16 }} />;
-  }
-
-  function DiferencialCard({ icon, titulo, texto }: { icon: React.ReactNode; titulo: string; texto: string }) {
-    return (
-      <View
-        style={{
-          width: "47%",
-          backgroundColor: GRAY_50,
-          borderRadius: 6,
-          padding: 14,
-          marginBottom: 10,
-          borderLeftWidth: 3,
-          borderLeftColor: GOLD,
-        }}
-      >
-        <View style={{ marginBottom: 6 }}>{icon}</View>
-        <Text style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>{titulo}</Text>
-        <Text style={{ fontSize: 8.5, color: GRAY_700, lineHeight: 1.5 }}>{texto}</Text>
-      </View>
-    );
-  }
-
-  function StepRow({ n, titulo, texto }: { n: number; titulo: string; texto: string }) {
-    return (
-      <View style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 22 }}>
-        <View
-          style={{
-            width: 32, height: 32, borderRadius: 16,
-            backgroundColor: GOLD,
-            justifyContent: "center", alignItems: "center",
-            marginRight: 16, flexShrink: 0,
-          }}
-        >
-          <Text style={{ fontSize: 14, fontWeight: "bold", color: NAVY }}>{n}</Text>
-        </View>
-        <View style={{ flex: 1, paddingTop: 2 }}>
-          <Text style={{ fontSize: 11, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>{titulo}</Text>
-          <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>{texto}</Text>
-        </View>
-      </View>
-    );
-  }
 
   /* ================================================================
      RENDER FINAL
@@ -1272,6 +1166,7 @@ export function PropostaDocument(props: PropostaPDFData) {
       {incluiSindico && <PageSindico />}
       <PageCondicoes />
       <PagePassos />
+      {consideracoesFinais?.trim() ? <PageConsideracoesFinais /> : null}
       <PageContracapa />
     </Document>
   );
