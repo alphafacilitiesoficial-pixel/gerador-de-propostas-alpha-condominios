@@ -33,8 +33,8 @@ const TEXT_COLOR = "#111827";
 /* ================================================================
    LOGO
    ================================================================ */
-const LOGO_B64 =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+import logoAlpha from "./assets/logo-alpha.png";
+const LOGO_B64 = logoAlpha;
 
 /* ================================================================
    ÍCONES SVG
