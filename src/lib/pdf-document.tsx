@@ -26,7 +26,6 @@ const GREEN_CHECK = "#16A34A";
 const NAVY_MID    = "#2C3E6B";
 const NAVY_DARK   = "#0F1A30";
 
-import logoAlpha from "../assets/logo-alpha.png";
 
 /* ================================================================
    SILHUETA DE PRÉDIOS
