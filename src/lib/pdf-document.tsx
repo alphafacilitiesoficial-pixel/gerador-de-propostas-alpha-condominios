@@ -10,10 +10,8 @@ import {
 } from "@react-pdf/renderer";
 import {
   calcularPlanos,
-  formatPlano,
   formatSindico,
   formatBRL,
-  SERVICOS_PLANOS,
 } from "./calculations";
 
 /* ================================================================
