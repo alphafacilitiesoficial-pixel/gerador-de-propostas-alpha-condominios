@@ -321,43 +321,44 @@ export function PropostaDocument(props: PropostaPDFData) {
     incluiAdmin, incluiSindico, consideracoesFinais,
   } = props;
 
-  const nomeCondominio  = condominio?.nome      || "Condomínio";
-  const numeroUnidades  = Number(condominio?.unidades) || 0;
-  const bairro          = condominio?.endereco  || "";
-  const nomeContato     = contato?.nome         || "";
-  const numeroContrato  = numero                || "";
+  const nomeCondominio = condominio?.nome      || "Condomínio";
+  const numeroUnidades = Number(condominio?.unidades) || 0;
+  const bairro         = condominio?.endereco  || "";
+  const nomeContato    = contato?.nome         || "";
+  const numeroContrato = numero                || "";
 
   const dataHoje = (data instanceof Date ? data : new Date()).toLocaleDateString("pt-BR", {
     day: "2-digit", month: "long", year: "numeric",
   });
   const localidade = [bairro, cidade].filter(Boolean).join(" – ");
 
-  /* Contagem de páginas */
-  let total = 1;
-  total += 1;
-  total += 1;
-  total += 1;
-  if (incluiAdmin)   total += 4;
-  if (incluiSindico) total += 1;
-  total += 1;
-  total += 1;
-  if (consideracoesFinais?.trim()) total += 1;
-  total += 1;
+  /* ── FIX 1: contagem de páginas correta ─────────────────────── */
+  const temConsideracoes = Boolean(consideracoesFinais?.trim());
+
+  let total = 0;
+  total += 1; // capa
+  total += 1; // quem somos
+  total += 1; // diferenciais
+  total += 1; // serviços
+  if (incluiAdmin)        total += 4; // essencial + completo + premium + comparativo
+  if (incluiSindico)      total += 1; // síndico
+  total += 1; // condições
+  total += 1; // próximos passos
+  if (temConsideracoes)   total += 1; // considerações finais
+  total += 1; // contracapa
 
   const planos    = calcularPlanos(numeroUnidades);
   const essencial = formatPlanoDetalhado(planos.essencial);
   const completo  = formatPlanoDetalhado(planos.completo);
   const premium   = formatPlanoDetalhado(planos.premium);
 
-  // ── CORREÇÃO PRINCIPAL ──────────────────────────────────────────
-  // formatSindico recebe PlanoSindico, não um número.
-  // formatPlanoDetalhado não existe para síndico — calculamos aqui.
-  const sindicoPlano      = incluiSindico ? planos.sindico : null;
-  const sindicoTotalFmt   = sindicoPlano ? formatSindico(sindicoPlano) : "";
-  const sindicoPorUnidade = (sindicoPlano?.tipo === "valor" && numeroUnidades > 0)
-    ? formatBRL(sindicoPlano.mensal / numeroUnidades) + "/unidade"
-    : "Sob consulta";
-  // ───────────────────────────────────────────────────────────────
+  /* ── FIX 2: síndico calculado corretamente ───────────────────── */
+  const sindicoPlano      = planos.sindico;
+  const sindicoTotalFmt   = formatSindico(sindicoPlano);
+  const sindicoPorUnidade =
+    sindicoPlano?.tipo === "valor" && numeroUnidades > 0
+      ? formatBRL(sindicoPlano.mensal / numeroUnidades)
+      : "Sob consulta";
 
   /* Índices de página */
   let pg = 0;
@@ -374,46 +375,22 @@ export function PropostaDocument(props: PropostaPDFData) {
   }
   let P_SINDICO = 0;
   if (incluiSindico) P_SINDICO = ++pg;
-  const P_CONDICOES    = ++pg;
-  const P_PASSOS       = ++pg;
-  let P_CONSIDERACOES  = 0;
-  if (consideracoesFinais?.trim()) P_CONSIDERACOES = ++pg;
-  const P_CONTRA       = ++pg;
+  const P_CONDICOES   = ++pg;
+  const P_PASSOS      = ++pg;
+  let P_CONSIDERACOES = 0;
+  if (temConsideracoes) P_CONSIDERACOES = ++pg;
+  const P_CONTRA      = ++pg;
 
   /* ── CONTEÚDO FIXO ───────────────────────────────────────────── */
   const SERVICOS = [
-    {
-      titulo: "Administração de Pessoal",
-      descricao: "Gestão completa de funcionários do condomínio: admissão, demissão, folha de pagamento, férias, 13º salário, FGTS e encargos trabalhistas, garantindo conformidade legal.",
-    },
-    {
-      titulo: "Gestão Financeira",
-      descricao: "Controle de receitas e despesas, emissão de boletos, prestação de contas mensal com demonstrativos detalhados, conciliação bancária e gestão do fundo de reserva.",
-    },
-    {
-      titulo: "Assessoria Jurídica",
-      descricao: "Suporte jurídico para cobranças de inadimplentes, análise de contratos, orientação em assembleias e resolução de conflitos condominiais.",
-    },
-    {
-      titulo: "Gestão de Contratos",
-      descricao: "Administração de todos os contratos de prestadores de serviços, manutenção preventiva e corretiva, garantindo qualidade e economicidade.",
-    },
-    {
-      titulo: "Assembleias e Reuniões",
-      descricao: "Organização, convocação e condução de assembleias ordinárias e extraordinárias, elaboração de atas e acompanhamento das deliberações.",
-    },
-    {
-      titulo: "Atendimento e Comunicação",
-      descricao: "Canal de atendimento dedicado a condôminos e funcionários, comunicados, circulares e suporte em plataforma digital.",
-    },
-    {
-      titulo: "Relatórios e Transparência",
-      descricao: "Relatórios mensais completos com balancete, extrato de movimentações, inadimplência e previsão orçamentária disponíveis em portal exclusivo.",
-    },
-    {
-      titulo: "Suporte em Vistorias",
-      descricao: "Acompanhamento de vistorias técnicas, levantamento de necessidades de manutenção e suporte na gestão de obras e reformas nas áreas comuns.",
-    },
+    { titulo: "Administração de Pessoal",   descricao: "Gestão completa de funcionários do condomínio: admissão, demissão, folha de pagamento, férias, 13º salário, FGTS e encargos trabalhistas, garantindo conformidade legal." },
+    { titulo: "Gestão Financeira",          descricao: "Controle de receitas e despesas, emissão de boletos, prestação de contas mensal com demonstrativos detalhados, conciliação bancária e gestão do fundo de reserva." },
+    { titulo: "Assessoria Jurídica",        descricao: "Suporte jurídico para cobranças de inadimplentes, análise de contratos, orientação em assembleias e resolução de conflitos condominiais." },
+    { titulo: "Gestão de Contratos",        descricao: "Administração de todos os contratos de prestadores de serviços, manutenção preventiva e corretiva, garantindo qualidade e economicidade." },
+    { titulo: "Assembleias e Reuniões",     descricao: "Organização, convocação e condução de assembleias ordinárias e extraordinárias, elaboração de atas e acompanhamento das deliberações." },
+    { titulo: "Atendimento e Comunicação",  descricao: "Canal de atendimento dedicado a condôminos e funcionários, comunicados, circulares e suporte em plataforma digital." },
+    { titulo: "Relatórios e Transparência", descricao: "Relatórios mensais completos com balancete, extrato de movimentações, inadimplência e previsão orçamentária disponíveis em portal exclusivo." },
+    { titulo: "Suporte em Vistorias",       descricao: "Acompanhamento de vistorias técnicas, levantamento de necessidades de manutenção e suporte na gestão de obras e reformas nas áreas comuns." },
   ];
 
   const ESSENCIAL_FEATURES = [
@@ -480,6 +457,7 @@ export function PropostaDocument(props: PropostaPDFData) {
      ================================================================ */
   const PageCapa = () => (
     <Page size="A4" style={{ flexDirection: "row", backgroundColor: WHITE }}>
+      {/* Coluna esquerda */}
       <View style={{ width: "52%", backgroundColor: WHITE, padding: 48, justifyContent: "space-between" }}>
         <View>
           <Image
@@ -529,6 +507,8 @@ export function PropostaDocument(props: PropostaPDFData) {
           </Text>
         </View>
       </View>
+
+      {/* Coluna direita — NAVY com silhueta */}
       <View
         style={{
           width: "48%",
@@ -896,7 +876,6 @@ export function PropostaDocument(props: PropostaPDFData) {
             </Text>
           </View>
         </View>
-        {/* ── CORREÇÃO: usa sindicoTotalFmt e sindicoPorUnidade ── */}
         <View style={{ backgroundColor: NAVY, borderRadius: 8, padding: 20, marginTop: 8 }}>
           <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, marginBottom: 8 }}>
             INVESTIMENTO MENSAL
@@ -929,30 +908,12 @@ export function PropostaDocument(props: PropostaPDFData) {
         <GoldDivider />
         <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
           {[
-            {
-              titulo: "Vigência da Proposta",
-              texto: "Esta proposta é válida por 30 dias a partir da data de emissão. Após este prazo, os valores poderão ser revisados conforme condições de mercado.",
-            },
-            {
-              titulo: "Contrato de Prestação",
-              texto: "O contrato tem vigência mínima de 12 meses, com renovação automática e rescisão mediante aviso prévio de 30 dias.",
-            },
-            {
-              titulo: "Reajuste Anual",
-              texto: "Os honorários são reajustados anualmente pelo IGPM ou índice acordado entre as partes, sempre com comunicação prévia.",
-            },
-            {
-              titulo: "Forma de Pagamento",
-              texto: "Pagamento mensal via boleto bancário, com vencimento no 5º dia útil. Aceita débito automático mediante solicitação.",
-            },
-            {
-              titulo: "Serviços Não Incluídos",
-              texto: "Despesas com cartório, taxas governamentais, honorários advocatícios litigiosos e perícias técnicas são cobrados à parte.",
-            },
-            {
-              titulo: "Transição e Onboarding",
-              texto: "Oferecemos suporte completo na transição da administração anterior, sem custo adicional, com prazo de até 60 dias.",
-            },
+            { titulo: "Vigência da Proposta",   texto: "Esta proposta é válida por 30 dias a partir da data de emissão. Após este prazo, os valores poderão ser revisados conforme condições de mercado." },
+            { titulo: "Contrato de Prestação",  texto: "O contrato tem vigência mínima de 12 meses, com renovação automática e rescisão mediante aviso prévio de 30 dias." },
+            { titulo: "Reajuste Anual",         texto: "Os honorários são reajustados anualmente pelo IGPM ou índice acordado entre as partes, sempre com comunicação prévia." },
+            { titulo: "Forma de Pagamento",     texto: "Pagamento mensal via boleto bancário, com vencimento no 5º dia útil. Aceita débito automático mediante solicitação." },
+            { titulo: "Serviços Não Incluídos", texto: "Despesas com cartório, taxas governamentais, honorários advocatícios litigiosos e perícias técnicas são cobrados à parte." },
+            { titulo: "Transição e Onboarding", texto: "Oferecemos suporte completo na transição da administração anterior, sem custo adicional, com prazo de até 60 dias." },
           ].map((c) => (
             <View
               key={c.titulo}
@@ -993,26 +954,10 @@ export function PropostaDocument(props: PropostaPDFData) {
         <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 24, lineHeight: 1.5 }}>
           Processo simples, rápido e sem burocracia para você ter a melhor gestão condominial.
         </Text>
-        <StepRow
-          n={1}
-          titulo="Aprovação da Proposta"
-          texto="Confirme sua escolha de plano e assine digitalmente o contrato de prestação de serviços. Todo o processo é 100% digital."
-        />
-        <StepRow
-          n={2}
-          titulo="Reunião de Onboarding"
-          texto="Agendamos uma reunião com síndico e conselho para mapear todas as necessidades, rotinas e particularidades do condomínio."
-        />
-        <StepRow
-          n={3}
-          titulo="Transição e Implantação"
-          texto="Nossa equipe cuida de toda a transição: documentos, contratos, funcionários e financeiro, com acompanhamento dedicado por 60 dias."
-        />
-        <StepRow
-          n={4}
-          titulo="Gestão em Pleno Funcionamento"
-          texto="Com tudo implantado, você passa a contar com relatórios mensais, portal do condômino ativo e atendimento contínuo da nossa equipe."
-        />
+        <StepRow n={1} titulo="Aprovação da Proposta"      texto="Confirme sua escolha de plano e assine digitalmente o contrato de prestação de serviços. Todo o processo é 100% digital." />
+        <StepRow n={2} titulo="Reunião de Onboarding"      texto="Agendamos uma reunião com síndico e conselho para mapear todas as necessidades, rotinas e particularidades do condomínio." />
+        <StepRow n={3} titulo="Transição e Implantação"    texto="Nossa equipe cuida de toda a transição: documentos, contratos, funcionários e financeiro, com acompanhamento dedicado por 60 dias." />
+        <StepRow n={4} titulo="Gestão em Pleno Funcionamento" texto="Com tudo implantado, você passa a contar com relatórios mensais, portal do condômino ativo e atendimento contínuo da nossa equipe." />
         <View
           style={{
             backgroundColor: NAVY,
@@ -1041,39 +986,37 @@ export function PropostaDocument(props: PropostaPDFData) {
   );
 
   /* ================================================================
-     CONSIDERAÇÕES FINAIS
+     CONSIDERAÇÕES FINAIS — FIX 3: renderizada como Page direta,
+     não como componente que retorna null (causava página em branco)
      ================================================================ */
-  const PageConsideracoesFinais = () => {
-    if (!consideracoesFinais?.trim()) return null;
-    return (
-      <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
-        <PageHeader label="Considerações Finais" />
-        <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>
-            OBSERVAÇÕES
+  const PageConsideracoesFinais = () => (
+    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+      <PageHeader label="Considerações Finais" />
+      <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>
+          OBSERVAÇÕES
+        </Text>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 8 }}>
+          Considerações Finais
+        </Text>
+        <GoldDivider />
+        <View
+          style={{
+            backgroundColor: GRAY_50,
+            borderRadius: 8,
+            padding: 22,
+            borderLeftWidth: 3,
+            borderLeftColor: GOLD,
+          }}
+        >
+          <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.75 }}>
+            {consideracoesFinais}
           </Text>
-          <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 8 }}>
-            Considerações Finais
-          </Text>
-          <GoldDivider />
-          <View
-            style={{
-              backgroundColor: GRAY_50,
-              borderRadius: 8,
-              padding: 22,
-              borderLeftWidth: 3,
-              borderLeftColor: GOLD,
-            }}
-          >
-            <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.75 }}>
-              {consideracoesFinais}
-            </Text>
-          </View>
         </View>
-        <PageFooter current={P_CONSIDERACOES} total={total} />
-      </Page>
-    );
-  };
+      </View>
+      <PageFooter current={P_CONSIDERACOES} total={total} />
+    </Page>
+  );
 
   /* ================================================================
      CONTRACAPA
@@ -1086,15 +1029,7 @@ export function PropostaDocument(props: PropostaPDFData) {
           style={{ width: 160, height: 80, objectFit: "contain", marginBottom: 32 }}
         />
         <View style={{ height: 2, width: 60, backgroundColor: GOLD, marginBottom: 24 }} />
-        <Text
-          style={{
-            fontSize: 11,
-            color: GOLD_LIGHT,
-            letterSpacing: 2,
-            textAlign: "center",
-            marginBottom: 10,
-          }}
-        >
+        <Text style={{ fontSize: 11, color: GOLD_LIGHT, letterSpacing: 2, textAlign: "center", marginBottom: 10 }}>
           GESTÃO · TRANSPARÊNCIA · CONFIANÇA
         </Text>
         <Text style={{ fontSize: 9.5, color: GRAY_500, textAlign: "center", marginBottom: 32 }}>
@@ -1156,7 +1091,8 @@ export function PropostaDocument(props: PropostaPDFData) {
       {incluiSindico && <PageSindico />}
       <PageCondicoes />
       <PagePassos />
-      {consideracoesFinais?.trim() ? <PageConsideracoesFinais /> : null}
+      {/* ── FIX 3: guard fora do componente, nunca retorna Page vazia ── */}
+      {temConsideracoes && <PageConsideracoesFinais />}
       <PageContracapa />
     </Document>
   );
