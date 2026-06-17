@@ -3,20 +3,12 @@ import {
   Page,
   Text,
   View,
-  StyleSheet,
   Image,
   Svg,
   Path,
   Rect,
-  Defs,
-  LinearGradient,
-  Stop,
 } from "@react-pdf/renderer";
-import {
-  calcularPlanos,
-  formatSindico,
-  formatBRL,
-} from "./calculations";
+import { calcularPlanos, formatSindico, formatBRL } from "./calculations";
 
 /* ================================================================
    CORES
@@ -33,78 +25,90 @@ const TEXT_COLOR  = "#111827";
 const GREEN_CHECK = "#16A34A";
 const NAVY_MID    = "#2C3E6B";
 const NAVY_DARK   = "#0F1A30";
-const BLUE_LIGHT  = "#C8D8F0";
 
 import logoAlpha from "../assets/logo-alpha.png";
-const LOGO_B64 = logoAlpha;
 
 /* ================================================================
-   SILHUETA DE PRÉDIOS SVG — igual ao Décimo Teste
+   SILHUETA DE PRÉDIOS
    ================================================================ */
 function BuildingsSilhouette() {
   return (
-    <Svg width="200" height="220" viewBox="0 0 200 220">
-      {/* Prédio 1 — mais baixo, esquerda */}
-      <Rect x="8"  y="120" width="36" height="100" fill="#B0BACA" opacity="0.55" rx="1" />
-      <Rect x="13" y="128" width="9"  height="11"  fill="#8A95A8" opacity="0.7" />
-      <Rect x="26" y="128" width="9"  height="11"  fill="#8A95A8" opacity="0.5" />
-      <Rect x="13" y="144" width="9"  height="11"  fill="#8A95A8" opacity="0.6" />
-      <Rect x="26" y="144" width="9"  height="11"  fill="#8A95A8" opacity="0.7" />
-      <Rect x="13" y="160" width="9"  height="11"  fill="#8A95A8" opacity="0.5" />
-      <Rect x="26" y="160" width="9"  height="11"  fill="#8A95A8" opacity="0.6" />
-      <Rect x="13" y="176" width="9"  height="11"  fill="#8A95A8" opacity="0.7" />
-      <Rect x="26" y="176" width="9"  height="11"  fill="#8A95A8" opacity="0.5" />
+    <Svg width="230" height="230" viewBox="0 0 230 230">
+      {/* Prédio 1 – esquerda baixo */}
+      <Rect x="6"   y="130" width="34" height="100" fill="#A8B8CC" opacity="0.45" />
+      <Rect x="11"  y="138" width="8"  height="10"  fill="#7A8DA0" opacity="0.55" />
+      <Rect x="23"  y="138" width="8"  height="10"  fill="#7A8DA0" opacity="0.40" />
+      <Rect x="11"  y="153" width="8"  height="10"  fill="#7A8DA0" opacity="0.50" />
+      <Rect x="23"  y="153" width="8"  height="10"  fill="#7A8DA0" opacity="0.55" />
+      <Rect x="11"  y="168" width="8"  height="10"  fill="#7A8DA0" opacity="0.40" />
+      <Rect x="23"  y="168" width="8"  height="10"  fill="#7A8DA0" opacity="0.50" />
+      <Rect x="11"  y="183" width="8"  height="10"  fill="#7A8DA0" opacity="0.55" />
+      <Rect x="23"  y="183" width="8"  height="10"  fill="#7A8DA0" opacity="0.40" />
 
-      {/* Prédio 2 — mais alto, centro-esquerda */}
-      <Rect x="52" y="70"  width="42" height="150" fill="#A8B4C8" opacity="0.6" rx="1" />
-      <Rect x="57" y="78"  width="10" height="12"  fill="#7A8799" opacity="0.65" />
-      <Rect x="71" y="78"  width="10" height="12"  fill="#7A8799" opacity="0.5"  />
-      <Rect x="57" y="95"  width="10" height="12"  fill="#7A8799" opacity="0.7"  />
-      <Rect x="71" y="95"  width="10" height="12"  fill="#7A8799" opacity="0.55" />
-      <Rect x="57" y="112" width="10" height="12"  fill="#7A8799" opacity="0.5"  />
-      <Rect x="71" y="112" width="10" height="12"  fill="#7A8799" opacity="0.65" />
-      <Rect x="57" y="129" width="10" height="12"  fill="#7A8799" opacity="0.7"  />
-      <Rect x="71" y="129" width="10" height="12"  fill="#7A8799" opacity="0.5"  />
-      <Rect x="57" y="146" width="10" height="12"  fill="#7A8799" opacity="0.6"  />
-      <Rect x="71" y="146" width="10" height="12"  fill="#7A8799" opacity="0.65" />
-      <Rect x="57" y="163" width="10" height="12"  fill="#7A8799" opacity="0.5"  />
-      <Rect x="71" y="163" width="10" height="12"  fill="#7A8799" opacity="0.7"  />
+      {/* Prédio 2 – centro-esquerda alto */}
+      <Rect x="48"  y="75"  width="40" height="155" fill="#B0C0D4" opacity="0.50" />
+      <Rect x="53"  y="83"  width="10" height="12"  fill="#8090A8" opacity="0.60" />
+      <Rect x="67"  y="83"  width="10" height="12"  fill="#8090A8" opacity="0.45" />
+      <Rect x="53"  y="100" width="10" height="12"  fill="#8090A8" opacity="0.55" />
+      <Rect x="67"  y="100" width="10" height="12"  fill="#8090A8" opacity="0.60" />
+      <Rect x="53"  y="117" width="10" height="12"  fill="#8090A8" opacity="0.45" />
+      <Rect x="67"  y="117" width="10" height="12"  fill="#8090A8" opacity="0.55" />
+      <Rect x="53"  y="134" width="10" height="12"  fill="#8090A8" opacity="0.60" />
+      <Rect x="67"  y="134" width="10" height="12"  fill="#8090A8" opacity="0.45" />
+      <Rect x="53"  y="151" width="10" height="12"  fill="#8090A8" opacity="0.55" />
+      <Rect x="67"  y="151" width="10" height="12"  fill="#8090A8" opacity="0.60" />
+      <Rect x="53"  y="168" width="10" height="12"  fill="#8090A8" opacity="0.45" />
+      <Rect x="67"  y="168" width="10" height="12"  fill="#8090A8" opacity="0.55" />
 
-      {/* Prédio 3 — alto, centro */}
-      <Rect x="102" y="50"  width="40" height="170" fill="#B8C4D4" opacity="0.55" rx="1" />
-      <Rect x="107" y="58"  width="10" height="12"  fill="#8C99AD" opacity="0.6"  />
-      <Rect x="121" y="58"  width="10" height="12"  fill="#8C99AD" opacity="0.45" />
-      <Rect x="107" y="75"  width="10" height="12"  fill="#8C99AD" opacity="0.65" />
-      <Rect x="121" y="75"  width="10" height="12"  fill="#8C99AD" opacity="0.5"  />
-      <Rect x="107" y="92"  width="10" height="12"  fill="#8C99AD" opacity="0.45" />
-      <Rect x="121" y="92"  width="10" height="12"  fill="#8C99AD" opacity="0.65" />
-      <Rect x="107" y="109" width="10" height="12"  fill="#8C99AD" opacity="0.6"  />
-      <Rect x="121" y="109" width="10" height="12"  fill="#8C99AD" opacity="0.45" />
-      <Rect x="107" y="126" width="10" height="12"  fill="#8C99AD" opacity="0.65" />
-      <Rect x="121" y="126" width="10" height="12"  fill="#8C99AD" opacity="0.5"  />
-      <Rect x="107" y="143" width="10" height="12"  fill="#8C99AD" opacity="0.45" />
-      <Rect x="121" y="143" width="10" height="12"  fill="#8C99AD" opacity="0.65" />
-      <Rect x="107" y="160" width="10" height="12"  fill="#8C99AD" opacity="0.6"  />
-      <Rect x="121" y="160" width="10" height="12"  fill="#8C99AD" opacity="0.45" />
+      {/* Prédio 3 – centro, o mais alto */}
+      <Rect x="97"  y="45"  width="44" height="185" fill="#BBC8DA" opacity="0.50" />
+      <Rect x="102" y="53"  width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
+      <Rect x="118" y="53"  width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
+      <Rect x="102" y="71"  width="11" height="13"  fill="#8A9AB0" opacity="0.55" />
+      <Rect x="118" y="71"  width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
+      <Rect x="102" y="89"  width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
+      <Rect x="118" y="89"  width="11" height="13"  fill="#8A9AB0" opacity="0.55" />
+      <Rect x="102" y="107" width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
+      <Rect x="118" y="107" width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
+      <Rect x="102" y="125" width="11" height="13"  fill="#8A9AB0" opacity="0.55" />
+      <Rect x="118" y="125" width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
+      <Rect x="102" y="143" width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
+      <Rect x="118" y="143" width="11" height="13"  fill="#8A9AB0" opacity="0.55" />
+      <Rect x="102" y="161" width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
+      <Rect x="118" y="161" width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
 
-      {/* Prédio 4 — médio, direita */}
-      <Rect x="150" y="100" width="38" height="120" fill="#A0AEBF" opacity="0.5" rx="1" />
-      <Rect x="155" y="108" width="9"  height="11"  fill="#7C8DA0" opacity="0.6"  />
-      <Rect x="168" y="108" width="9"  height="11"  fill="#7C8DA0" opacity="0.45" />
-      <Rect x="155" y="124" width="9"  height="11"  fill="#7C8DA0" opacity="0.65" />
-      <Rect x="168" y="124" width="9"  height="11"  fill="#7C8DA0" opacity="0.5"  />
-      <Rect x="155" y="140" width="9"  height="11"  fill="#7C8DA0" opacity="0.45" />
-      <Rect x="168" y="140" width="9"  height="11"  fill="#7C8DA0" opacity="0.6"  />
-      <Rect x="155" y="156" width="9"  height="11"  fill="#7C8DA0" opacity="0.65" />
-      <Rect x="168" y="156" width="9"  height="11"  fill="#7C8DA0" opacity="0.45" />
-      <Rect x="155" y="172" width="9"  height="11"  fill="#7C8DA0" opacity="0.6"  />
-      <Rect x="168" y="172" width="9"  height="11"  fill="#7C8DA0" opacity="0.5"  />
+      {/* Prédio 4 – direita médio */}
+      <Rect x="150" y="100" width="38" height="130" fill="#A8B8C8" opacity="0.45" />
+      <Rect x="155" y="108" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
+      <Rect x="168" y="108" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
+      <Rect x="155" y="124" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
+      <Rect x="168" y="124" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
+      <Rect x="155" y="140" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
+      <Rect x="168" y="140" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
+      <Rect x="155" y="156" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
+      <Rect x="168" y="156" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
+      <Rect x="155" y="172" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
+      <Rect x="168" y="172" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
+
+      {/* Prédio 5 – extrema direita */}
+      <Rect x="196" y="115" width="30" height="115" fill="#A0B0C4" opacity="0.40" />
+      <Rect x="200" y="122" width="8"  height="10"  fill="#708090" opacity="0.50" />
+      <Rect x="212" y="122" width="8"  height="10"  fill="#708090" opacity="0.40" />
+      <Rect x="200" y="137" width="8"  height="10"  fill="#708090" opacity="0.50" />
+      <Rect x="212" y="137" width="8"  height="10"  fill="#708090" opacity="0.40" />
+      <Rect x="200" y="152" width="8"  height="10"  fill="#708090" opacity="0.50" />
+      <Rect x="212" y="152" width="8"  height="10"  fill="#708090" opacity="0.40" />
+      <Rect x="200" y="167" width="8"  height="10"  fill="#708090" opacity="0.50" />
+      <Rect x="212" y="167" width="8"  height="10"  fill="#708090" opacity="0.40" />
+
+      {/* Chão */}
+      <Rect x="0" y="226" width="230" height="4" fill={NAVY_DARK} opacity="0.5" />
     </Svg>
   );
 }
 
 /* ================================================================
-   HELPERS GLOBAIS
+   HELPERS
    ================================================================ */
 function PageFooter({ current, total }: { current: number; total: number }) {
   return (
@@ -140,7 +144,7 @@ function PageHeader({ label }: { label: string }) {
   );
 }
 
-function Divider() {
+function GoldDivider() {
   return <View style={{ height: 3, width: 44, backgroundColor: GOLD, marginBottom: 16 }} />;
 }
 
@@ -155,7 +159,8 @@ function FeatureRow({ text }: { text: string }) {
         style={{
           width: 16, height: 16, borderRadius: 8,
           backgroundColor: GREEN_CHECK,
-          marginRight: 10, marginTop: 1, flexShrink: 0,
+          marginRight: 10, marginTop: 1,
+          flexShrink: 0,
           justifyContent: "center", alignItems: "center",
         }}
       >
@@ -176,7 +181,8 @@ function ServicoRow({ titulo, descricao }: { titulo: string; descricao: string }
           style={{
             width: 4, height: 4, borderRadius: 2,
             backgroundColor: GOLD,
-            marginRight: 12, marginTop: 5, flexShrink: 0,
+            marginRight: 12, marginTop: 5,
+            flexShrink: 0,
           }}
         />
         <View style={{ flex: 1 }}>
@@ -194,15 +200,24 @@ function ServicoRow({ titulo, descricao }: { titulo: string; descricao: string }
 }
 
 function DiferencialCard({
-  icon, titulo, texto,
-}: { icon: React.ReactNode; titulo: string; texto: string }) {
+  icon,
+  titulo,
+  texto,
+}: {
+  icon: React.ReactNode;
+  titulo: string;
+  texto: string;
+}) {
   return (
     <View
       style={{
         width: "47%",
         backgroundColor: GRAY_50,
-        borderRadius: 6, padding: 14, marginBottom: 10,
-        borderLeftWidth: 3, borderLeftColor: GOLD,
+        borderRadius: 6,
+        padding: 14,
+        marginBottom: 10,
+        borderLeftWidth: 3,
+        borderLeftColor: GOLD,
       }}
     >
       <View style={{ marginBottom: 6 }}>{icon}</View>
@@ -252,22 +267,34 @@ const IMonitor = () => (
 );
 const IPeople = () => (
   <Svg width={20} height={20} viewBox="0 0 24 24">
-    <Path d="M9 4a3 3 0 1 1 0 6A3 3 0 0 1 9 4zM2 20c0-4 3.5-6 7-6s7 2 7 6H2zM17 6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM19 14c2 1 3 3 3 6h-4c0-2.5-1-4.5-3-5.5a6 6 0 0 1 4-.5z" fill={GOLD} />
+    <Path
+      d="M9 4a3 3 0 1 1 0 6A3 3 0 0 1 9 4zM2 20c0-4 3.5-6 7-6s7 2 7 6H2zM17 6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM19 14c2 1 3 3 3 6h-4c0-2.5-1-4.5-3-5.5a6 6 0 0 1 4-.5z"
+      fill={GOLD}
+    />
   </Svg>
 );
 const IShield = () => (
   <Svg width={20} height={20} viewBox="0 0 24 24">
-    <Path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 15l-4-4 1.41-1.41L11 13.17l5.59-5.59L18 9l-7 7z" fill={GOLD} />
+    <Path
+      d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 15l-4-4 1.41-1.41L11 13.17l5.59-5.59L18 9l-7 7z"
+      fill={GOLD}
+    />
   </Svg>
 );
 const IMoney = () => (
   <Svg width={20} height={20} viewBox="0 0 24 24">
-    <Path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 15h-2v-1c-1.5-.2-2.8-1-3.2-2.2l1.5-.6c.3.9 1.1 1.3 2.2 1.3 1.2 0 2-.5 2-1.3 0-.8-.5-1.2-2-1.6-1.8-.5-3.2-1-3.2-2.8 0-1.3 1-2.3 2.7-2.6V7h2v1c1.3.2 2.2.9 2.6 2l-1.5.6c-.3-.7-.9-1.1-1.8-1.1-1 0-1.7.5-1.7 1.2 0 .7.6 1 2 1.4 1.9.5 3.2 1.1 3.2 3 0 1.4-1.1 2.4-2.8 2.7V17z" fill={GOLD} />
+    <Path
+      d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 15h-2v-1c-1.5-.2-2.8-1-3.2-2.2l1.5-.6c.3.9 1.1 1.3 2.2 1.3 1.2 0 2-.5 2-1.3 0-.8-.5-1.2-2-1.6-1.8-.5-3.2-1-3.2-2.8 0-1.3 1-2.3 2.7-2.6V7h2v1c1.3.2 2.2.9 2.6 2l-1.5.6c-.3-.7-.9-1.1-1.8-1.1-1 0-1.7.5-1.7 1.2 0 .7.6 1 2 1.4 1.9.5 3.2 1.1 3.2 3 0 1.4-1.1 2.4-2.8 2.7V17z"
+      fill={GOLD}
+    />
   </Svg>
 );
 const IStar = () => (
   <Svg width={20} height={20} viewBox="0 0 24 24">
-    <Path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill={GOLD} />
+    <Path
+      d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+      fill={GOLD}
+    />
   </Svg>
 );
 
@@ -300,7 +327,8 @@ function formatPlanoDetalhado(p: ReturnType<typeof calcularPlanos>["essencial"])
    ================================================================ */
 export function PropostaDocument(props: PropostaPDFData) {
   const {
-    numero, data, cidade, condominio, contato,
+    numero, data, cidade,
+    condominio, contato,
     incluiAdmin, incluiSindico, consideracoesFinais,
   } = props;
 
@@ -308,322 +336,422 @@ export function PropostaDocument(props: PropostaPDFData) {
   const numeroUnidades  = Number(condominio?.unidades) || 0;
   const bairro          = condominio?.endereco  || "";
   const nomeContato     = contato?.nome         || "";
-  const telefoneContato = contato?.telefone     || "(31) 98809-0800";
-  const emailContato    = contato?.email        || "contato@alphafacilities.com.br";
+  const numeroContrato  = numero                || "";
 
-  /* total de páginas */
-  let total = 1; // capa
-  total += 1;    // quem somos
-  total += 1;    // diferenciais
-  total += 1;    // serviços
-  if (incluiAdmin) total += 4; // 3 planos + comparativo
-  if (incluiSindico) total += 1;
-  total += 1;    // condições
-  total += 1;    // próximos passos
-  total += 1;    // contracapa
+  const dataHoje = (data instanceof Date ? data : new Date()).toLocaleDateString("pt-BR", {
+    day: "2-digit", month: "long", year: "numeric",
+  });
+  const localidade = [bairro, cidade].filter(Boolean).join(" – ");
 
-  const planos    = calcularPlanos(numeroUnidades);
+  /* contagem de páginas */
+  let total = 1;   // capa
+  total += 1;      // quem somos
+  total += 1;      // diferenciais
+  total += 1;      // serviços
+  if (incluiAdmin) total += 4;   // 3 planos + comparativo
+  if (incluiSindico) total += 1; // síndico profissional
+  total += 1;      // condições
+  total += 1;      // próximos passos
+  total += 1;      // contracapa
+
+  const planos   = calcularPlanos(numeroUnidades);
   const essencial = formatPlanoDetalhado(planos.essencial);
   const completo  = formatPlanoDetalhado(planos.completo);
   const premium   = formatPlanoDetalhado(planos.premium);
   const sindico   = incluiSindico ? formatSindico(numeroUnidades) : null;
 
-  const dataHoje = (data instanceof Date ? data : new Date()).toLocaleDateString("pt-BR", {
-    day: "2-digit", month: "long", year: "numeric",
-  });
+  /* índices de página */
+  let pg = 0;
+  const P_CAPA       = ++pg;
+  const P_QUEM       = ++pg;
+  const P_DIFERENCIAIS = ++pg;
+  const P_SERVICOS   = ++pg;
+  let P_ESSENCIAL = 0, P_COMPLETO = 0, P_PREMIUM = 0, P_COMPARATIVO = 0;
+  if (incluiAdmin) {
+    P_ESSENCIAL   = ++pg;
+    P_COMPLETO    = ++pg;
+    P_PREMIUM     = ++pg;
+    P_COMPARATIVO = ++pg;
+  }
+  let P_SINDICO = 0;
+  if (incluiSindico) P_SINDICO = ++pg;
+  const P_CONDICOES = ++pg;
+  const P_PASSOS    = ++pg;
+  const P_CONTRA    = ++pg;
 
-  /* numeração das páginas internas */
-  let pg = 1;
-  const capaPg        = pg++;
-  const quemSomosPg   = pg++;
-  const diferenciaisPg = pg++;
-  const servicosPg    = pg++;
-  const essencialPg   = incluiAdmin ? pg++ : 0;
-  const completoPg    = incluiAdmin ? pg++ : 0;
-  const premiumPg     = incluiAdmin ? pg++ : 0;
-  const comparativoPg = incluiAdmin ? pg++ : 0;
-  const sindicoPg     = incluiSindico ? pg++ : 0;
-  const condicoesPg   = pg++;
-  const passosPg      = pg++;
-  const contracapaPg  = pg++;
+  /* ── CONTEÚDO FIXO ────────────────────────────────────── */
+  const SERVICOS = [
+    {
+      titulo: "Administração de Pessoal",
+      descricao:
+        "Gestão completa de funcionários do condomínio: admissão, demissão, folha de pagamento, férias, 13º salário, FGTS e encargos trabalhistas, garantindo conformidade legal.",
+    },
+    {
+      titulo: "Gestão Financeira",
+      descricao:
+        "Controle de receitas e despesas, emissão de boletos, prestação de contas mensal com demonstrativos detalhados, conciliação bancária e gestão do fundo de reserva.",
+    },
+    {
+      titulo: "Assessoria Jurídica",
+      descricao:
+        "Suporte jurídico para cobranças de inadimplentes, análise de contratos, orientação em assembleias e resolução de conflitos condominiais.",
+    },
+    {
+      titulo: "Gestão de Contratos",
+      descricao:
+        "Administração de todos os contratos de prestadores de serviços, manutenção preventiva e corretiva, garantindo qualidade e economicidade.",
+    },
+    {
+      titulo: "Assembleias e Reuniões",
+      descricao:
+        "Organização, convocação e condução de assembleias ordinárias e extraordinárias, elaboração de atas e acompanhamento das deliberações.",
+    },
+    {
+      titulo: "Atendimento e Comunicação",
+      descricao:
+        "Canal de atendimento dedicado a condôminos e funcionários, comunicados, circulares e suporte em plataforma digital.",
+    },
+    {
+      titulo: "Relatórios e Transparência",
+      descricao:
+        "Relatórios mensais completos com balancete, extrato de movimentações, inadimplência e previsão orçamentária disponíveis em portal exclusivo.",
+    },
+    {
+      titulo: "Suporte em Vistorias",
+      descricao:
+        "Acompanhamento de vistorias técnicas, levantamento de necessidades de manutenção e suporte na gestão de obras e reformas nas áreas comuns.",
+    },
+  ];
 
-  /* ── PÁGINA 1 — CAPA ──────────────────────────────────────────── */
-  const CoverPage = () => (
+  const ESSENCIAL_FEATURES = [
+    "Gestão financeira completa",
+    "Emissão e controle de boletos",
+    "Prestação de contas mensal",
+    "Gestão de inadimplência",
+    "Assembleias ordinárias",
+    "Atendimento em horário comercial",
+    "Relatórios mensais básicos",
+    "Portal do condômino",
+  ];
+
+  const COMPLETO_FEATURES = [
+    ...ESSENCIAL_FEATURES,
+    "Administração de pessoal",
+    "Gestão de contratos de terceiros",
+    "Assessoria jurídica básica",
+    "Assembleias extraordinárias inclusas",
+    "Relatórios gerenciais avançados",
+    "Atendimento estendido",
+  ];
+
+  const PREMIUM_FEATURES = [
+    ...COMPLETO_FEATURES,
+    "Assessoria jurídica completa",
+    "Gestor de contas exclusivo",
+    "Vistorias técnicas periódicas",
+    "Consultoria em obras e reformas",
+    "Atendimento 24h emergências",
+    "Dashboard financeiro em tempo real",
+    "Planejamento orçamentário anual",
+  ];
+
+  const COMPARATIVO_ROWS = [
+    { categoria: "FINANCEIRO", itens: [
+      { item: "Gestão financeira completa",   e: true,  c: true,  p: true  },
+      { item: "Emissão de boletos",            e: true,  c: true,  p: true  },
+      { item: "Prestação de contas mensal",    e: true,  c: true,  p: true  },
+      { item: "Dashboard em tempo real",       e: false, c: false, p: true  },
+    ]},
+    { categoria: "OPERACIONAL", itens: [
+      { item: "Administração de pessoal",      e: false, c: true,  p: true  },
+      { item: "Gestão de contratos",           e: false, c: true,  p: true  },
+      { item: "Assembleias extraordinárias",   e: false, c: true,  p: true  },
+      { item: "Vistorias técnicas",            e: false, c: false, p: true  },
+    ]},
+    { categoria: "PREMIUM", itens: [
+      { item: "Assessoria jurídica completa",  e: false, c: false, p: true  },
+      { item: "Gestor exclusivo",              e: false, c: false, p: true  },
+      { item: "Atendimento 24h emergências",   e: false, c: false, p: true  },
+      { item: "Consultoria em obras",          e: false, c: false, p: true  },
+    ]},
+  ];
+
+  /* ================================================================
+     CAPA — pág 1
+     ================================================================ */
+  const PageCapa = () => (
     <Page size="A4" style={{ flexDirection: "row", backgroundColor: WHITE }}>
       {/* Coluna esquerda — branca */}
-      <View style={{ width: "52%", backgroundColor: WHITE, padding: 40, justifyContent: "space-between" }}>
+      <View style={{ width: "52%", backgroundColor: WHITE, padding: 48, justifyContent: "space-between" }}>
         {/* Logo grande */}
         <View>
           <Image
             src={LOGO_B64}
-            style={{ width: 160, height: "auto", marginBottom: 48 }}
+            style={{ width: 160, height: 80, objectFit: "contain", marginBottom: 48 }}
           />
-
-          {/* Textos da proposta */}
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 10 }}>
+          {/* Badge */}
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 3, fontWeight: "bold", marginBottom: 12 }}>
             PROPOSTA COMERCIAL
           </Text>
-          <Text style={{ fontSize: 22, fontWeight: "bold", color: NAVY, marginBottom: 4, lineHeight: 1.2 }}>
+          {/* Linha dourada */}
+          <View style={{ height: 3, width: 44, backgroundColor: GOLD, marginBottom: 20 }} />
+          {/* Título condomínio */}
+          <Text style={{ fontSize: 22, fontWeight: "bold", color: NAVY, marginBottom: 8, lineHeight: 1.2 }}>
             {nomeCondominio}
           </Text>
-          <Text style={{ fontSize: 11, color: GRAY_500, marginBottom: 2 }}>
+          {localidade ? (
+            <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 6 }}>{localidade}</Text>
+          ) : null}
+          <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 32 }}>
             {numeroUnidades} unidades
           </Text>
-          {bairro ? (
-            <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 24 }}>{bairro}</Text>
-          ) : null}
 
-          <Text style={{ fontSize: 9, color: GRAY_700, marginBottom: 4 }}>
-            Preparado para: <Text style={{ fontWeight: "bold", color: NAVY }}>{nomeContato || nomeCondominio}</Text>
-          </Text>
-
-          {/* Box número/data */}
-          <View
-            style={{
-              flexDirection: "row", marginTop: 20,
-              borderTopWidth: 1, borderTopColor: GRAY_200,
-              paddingTop: 16, gap: 24,
-            }}
-          >
-            <View>
-              <Text style={{ fontSize: 7.5, color: GRAY_500, letterSpacing: 1.2, marginBottom: 4 }}>
-                N° DA PROPOSTA
-              </Text>
-              <Text style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY }}>
-                PROP-{numero || "2026-001"}
-              </Text>
+          {/* Dados da proposta */}
+          <View style={{ backgroundColor: GRAY_50, borderRadius: 6, padding: 16, marginBottom: 0 }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
+              <Text style={{ fontSize: 8.5, color: GRAY_500 }}>Proposta nº</Text>
+              <Text style={{ fontSize: 8.5, fontWeight: "bold", color: NAVY }}>{numeroContrato}</Text>
             </View>
-            <View>
-              <Text style={{ fontSize: 7.5, color: GRAY_500, letterSpacing: 1.2, marginBottom: 4 }}>
-                DATA
-              </Text>
-              <Text style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY }}>{dataHoje}</Text>
+            <View style={{ height: 0.5, backgroundColor: GRAY_200, marginBottom: 8 }} />
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
+              <Text style={{ fontSize: 8.5, color: GRAY_500 }}>Data</Text>
+              <Text style={{ fontSize: 8.5, color: NAVY }}>{dataHoje}</Text>
+            </View>
+            <View style={{ height: 0.5, backgroundColor: GRAY_200, marginBottom: 8 }} />
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <Text style={{ fontSize: 8.5, color: GRAY_500 }}>Responsável</Text>
+              <Text style={{ fontSize: 8.5, color: NAVY }}>{nomeContato || "—"}</Text>
             </View>
           </View>
         </View>
 
-        {/* Rodapé esquerdo — contatos */}
-        <View style={{ borderTopWidth: 1, borderTopColor: GRAY_200, paddingTop: 14 }}>
-          <Text style={{ fontSize: 8, color: GRAY_500, marginBottom: 3 }}>{telefoneContato}</Text>
-          <Text style={{ fontSize: 8, color: GRAY_500, marginBottom: 3 }}>{emailContato}</Text>
-          <Text style={{ fontSize: 8, color: GRAY_500 }}>www.alphafacilities.com.br</Text>
+        {/* Rodapé contatos */}
+        <View>
+          <View style={{ height: 0.5, backgroundColor: GRAY_200, marginBottom: 14 }} />
+          <Text style={{ fontSize: 8, color: GRAY_500, marginBottom: 4 }}>
+            📞  {contato?.telefone || "(11) 99999-9999"}
+          </Text>
+          <Text style={{ fontSize: 8, color: GRAY_500, marginBottom: 4 }}>
+            ✉   {contato?.email || "contato@alphacondominios.com.br"}
+          </Text>
+          <Text style={{ fontSize: 8, color: GRAY_500 }}>
+            🌐  www.alphacondominios.com.br
+          </Text>
         </View>
       </View>
 
-      {/* Coluna direita — gradiente azul + prédios */}
-      <View style={{ width: "48%", position: "relative", overflow: "hidden" }}>
-        {/* Fundo gradiente simulado em camadas */}
-        <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: BLUE_LIGHT }} />
+      {/* Coluna direita — azul com prédios */}
+      <View
+        style={{
+          width: "48%",
+          backgroundColor: NAVY,
+          justifyContent: "flex-end",
+          alignItems: "center",
+          paddingBottom: 0,
+          overflow: "hidden",
+        }}
+      >
+        {/* Faixa dourada decorativa no topo */}
         <View
           style={{
-            position: "absolute", bottom: 0, left: 0, right: 0,
-            height: "75%",
-            backgroundColor: NAVY_MID,
-            opacity: 0.85,
+            position: "absolute",
+            top: 0, left: 0, right: 0,
+            height: 4,
+            backgroundColor: GOLD,
           }}
         />
+        {/* Texto decorativo vertical */}
         <View
           style={{
-            position: "absolute", bottom: 0, left: 0, right: 0,
-            height: "55%",
-            backgroundColor: NAVY,
-            opacity: 0.9,
-          }}
-        />
-        <View
-          style={{
-            position: "absolute", bottom: 0, left: 0, right: 0,
-            height: "35%",
-            backgroundColor: NAVY_DARK,
-            opacity: 0.95,
-          }}
-        />
-
-        {/* Silhueta de prédios na base */}
-        <View style={{ position: "absolute", bottom: 8, left: 0, right: 0, alignItems: "center" }}>
-          <BuildingsSilhouette />
-        </View>
-
-        {/* Rodapé pág 1 */}
-        <View
-          style={{
-            position: "absolute", bottom: 0, left: 0, right: 0,
-            backgroundColor: NAVY_DARK,
-            paddingVertical: 8, paddingHorizontal: 20,
-            flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+            position: "absolute",
+            top: 60,
+            right: 24,
+            alignItems: "flex-end",
           }}
         >
-          <Text style={{ fontSize: 7, color: GOLD, letterSpacing: 1.2, fontWeight: "bold" }}>
-            ALPHA CONDOMÍNIOS
-          </Text>
-          <Text style={{ fontSize: 7, color: WHITE }}>
-            Página 1 de {total}
+          <Text style={{ fontSize: 7, color: GOLD_LIGHT, letterSpacing: 2, opacity: 0.6 }}>
+            GESTÃO · TRANSPARÊNCIA · CONFIANÇA
           </Text>
         </View>
+        {/* Silhueta prédios na base */}
+        <BuildingsSilhouette />
       </View>
     </Page>
   );
 
-  /* ── PÁGINA 2 — QUEM SOMOS ────────────────────────────────────── */
-  const QuemSomosPage = () => (
-    <Page size="A4" style={{ fontSize: 10, color: TEXT_COLOR, paddingBottom: 40, backgroundColor: WHITE }}>
+  /* ================================================================
+     QUEM SOMOS — pág 2
+     ================================================================ */
+  const PageQuemSomos = () => (
+    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
       <PageHeader label="Sobre Nós" />
       <View style={{ paddingHorizontal: 50, paddingTop: 32 }}>
-        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>
           QUEM SOMOS
         </Text>
-        <Text style={{ fontSize: 22, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
-          Conheça a Alpha Condomínios
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 8 }}>
+          Especialistas em Gestão Condominial
         </Text>
-        <Divider />
-        <Text style={{ fontSize: 10, color: GRAY_500, lineHeight: 1.6, marginBottom: 6 }}>
-          e nossa missão de transformar a gestão condominial.
+        <GoldDivider />
+        <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.7, marginBottom: 10 }}>
+          A Alpha Condomínios é uma administradora especializada na gestão de condomínios residenciais
+          e comerciais, fundada com o propósito de transformar a experiência de morar e conviver em
+          ambientes coletivos.
         </Text>
-
-        <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.65, marginBottom: 10 }}>
-          A Alpha Condomínios nasceu com o propósito de profissionalizar e modernizar a
-          administração de condomínios, combinando tecnologia, transparência e atendimento
-          humanizado. Atuamos em Belo Horizonte e região metropolitana, atendendo
-          condomínios residenciais, comerciais e mistos.
+        <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.7, marginBottom: 10 }}>
+          Nossa equipe é formada por profissionais experientes nas áreas de administração, direito
+          condominial, contabilidade e tecnologia, prontos para oferecer soluções completas e
+          personalizadas para cada condomínio.
         </Text>
-        <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.65, marginBottom: 10 }}>
-          Nossa equipe é formada por especialistas em gestão condominial, contabilidade,
-          direito imobiliário e tecnologia. Utilizamos sistemas de ponta para garantir
-          controle financeiro rigoroso, comunicação eficiente e total conformidade legal.
-        </Text>
-        <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.65, marginBottom: 24 }}>
-          Acreditamos que cada condomínio é único. Por isso, oferecemos planos flexíveis que
-          se adaptam à realidade de cada empreendimento — do essencial ao premium, sempre
-          com a mesma excelência.
+        <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.7, marginBottom: 24 }}>
+          Trabalhamos com total transparência, entregando relatórios detalhados, comunicação ágil
+          e atendimento humanizado — porque cada condomínio tem sua própria identidade e merece
+          uma gestão à altura.
         </Text>
 
         {/* Box Missão */}
         <View
           style={{
             backgroundColor: NAVY,
-            borderRadius: 6, padding: 20,
-            borderLeftWidth: 4, borderLeftColor: GOLD,
+            borderRadius: 8,
+            padding: 22,
+            marginBottom: 24,
           }}
         >
           <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 8 }}>
             NOSSA MISSÃO
           </Text>
-          <Text style={{ fontSize: 11, color: WHITE, lineHeight: 1.6 }}>
-            Entregar gestão condominial de excelência, com transparência, tecnologia e
-            compromisso com o bem-estar dos moradores.
+          <Text style={{ fontSize: 11, color: WHITE, lineHeight: 1.65 }}>
+            Proporcionar tranquilidade, segurança e valorização patrimonial aos condôminos por meio
+            de uma gestão eficiente, transparente e focada em resultados.
           </Text>
         </View>
-      </View>
-      <PageFooter current={quemSomosPg} total={total} />
-    </Page>
-  );
 
-  /* ── PÁGINA 3 — DIFERENCIAIS ──────────────────────────────────── */
-  const DiferenciaisPage = () => (
-    <Page size="A4" style={{ fontSize: 10, color: TEXT_COLOR, paddingBottom: 40, backgroundColor: WHITE }}>
-      <PageHeader label="Por Que Nos Escolher" />
-      <View style={{ paddingHorizontal: 50, paddingTop: 32 }}>
-        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
-          NOSSOS DIFERENCIAIS
-        </Text>
-        <Text style={{ fontSize: 22, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
-          Por Que Escolher a Alpha?
-        </Text>
-        <Divider />
-
-        <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", marginTop: 8 }}>
-          <DiferencialCard
-            icon={<IChart />}
-            titulo="Transparência Total"
-            texto="Balancetes digitais mensais e acesso em tempo real às finanças do condomínio."
-          />
-          <DiferencialCard
-            icon={<IMonitor />}
-            titulo="Tecnologia de Ponta"
-            texto="Portal do condomínio, boletos digitais e aplicativo para gestão completa."
-          />
-          <DiferencialCard
-            icon={<IPeople />}
-            titulo="Atendimento Humanizado"
-            texto="Equipe dedicada com suporte ágil via WhatsApp, telefone e e-mail."
-          />
-          <DiferencialCard
-            icon={<IShield />}
-            titulo="Conformidade Legal"
-            texto="Cumprimento rigoroso das obrigações fiscais, trabalhistas e condominiais."
-          />
-          <DiferencialCard
-            icon={<IMoney />}
-            titulo="Redução de Custos"
-            texto="Gestão estratégica e negociação qualificada com fornecedores, gerando economia real e sustentável para o condomínio."
-          />
-          <DiferencialCard
-            icon={<IStar />}
-            titulo="Excelência Comprovada"
-            texto="Mais de 25 anos de experiência em administração condominial, com histórico consistente de resultados."
-          />
+        {/* Números */}
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          {[
+            { num: "10+",  label: "Anos de experiência" },
+            { num: "200+", label: "Condomínios atendidos" },
+            { num: "98%",  label: "Índice de satisfação" },
+          ].map((item) => (
+            <View
+              key={item.label}
+              style={{
+                width: "31%",
+                backgroundColor: GRAY_50,
+                borderRadius: 6,
+                padding: 14,
+                alignItems: "center",
+                borderTopWidth: 3,
+                borderTopColor: GOLD,
+              }}
+            >
+              <Text style={{ fontSize: 22, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
+                {item.num}
+              </Text>
+              <Text style={{ fontSize: 8.5, color: GRAY_500, textAlign: "center" }}>
+                {item.label}
+              </Text>
+            </View>
+          ))}
         </View>
       </View>
-      <PageFooter current={diferenciaisPg} total={total} />
+      <PageFooter current={P_QUEM} total={total} />
     </Page>
   );
 
-  /* ── PÁGINA 4 — SERVIÇOS ─────────────────────────────────────── */
-  const ServicosPage = () => (
-    <Page size="A4" style={{ fontSize: 10, color: TEXT_COLOR, paddingBottom: 40, backgroundColor: WHITE }}>
-      <PageHeader label="Serviços" />
+  /* ================================================================
+     DIFERENCIAIS — pág 3
+     ================================================================ */
+  const PageDiferenciais = () => (
+    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+      <PageHeader label="Por Que Nos Escolher" />
       <View style={{ paddingHorizontal: 50, paddingTop: 32 }}>
-        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>
+          NOSSOS DIFERENCIAIS
+        </Text>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 8 }}>
+          O que nos torna a melhor escolha
+        </Text>
+        <GoldDivider />
+        <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 24, lineHeight: 1.5 }}>
+          Combinamos tecnologia, experiência e atendimento personalizado para oferecer
+          a gestão condominial mais completa do mercado.
+        </Text>
+
+        <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
+          {[
+            {
+              icon: <IChart />,
+              titulo: "Gestão Financeira Transparente",
+              texto: "Prestação de contas mensais detalhadas com acesso em tempo real pelo portal do condômino.",
+            },
+            {
+              icon: <IMonitor />,
+              titulo: "Tecnologia de Ponta",
+              texto: "Plataforma digital completa para comunicados, votações, reservas e acompanhamento financeiro.",
+            },
+            {
+              icon: <IPeople />,
+              titulo: "Equipe Especializada",
+              texto: "Profissionais certificados em direito condominial, contabilidade e gestão de pessoas.",
+            },
+            {
+              icon: <IShield />,
+              titulo: "Segurança Jurídica",
+              texto: "Assessoria jurídica dedicada para proteção legal do condomínio em todas as situações.",
+            },
+            {
+              icon: <IMoney />,
+              titulo: "Redução de Custos",
+              texto: "Negociação estratégica com fornecedores e controle rigoroso de despesas para economia real.",
+            },
+            {
+              icon: <IStar />,
+              titulo: "Atendimento Premium",
+              texto: "Canal de atendimento dedicado com resposta ágil e acompanhamento personalizado de cada demanda.",
+            },
+          ].map((d) => (
+            <DiferencialCard key={d.titulo} icon={d.icon} titulo={d.titulo} texto={d.texto} />
+          ))}
+        </View>
+      </View>
+      <PageFooter current={P_DIFERENCIAIS} total={total} />
+    </Page>
+  );
+
+  /* ================================================================
+     SERVIÇOS — pág 4
+     ================================================================ */
+  const PageServicos = () => (
+    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+      <PageHeader label="Soluções Completas" />
+      <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>
           NOSSOS SERVIÇOS
         </Text>
-        <Text style={{ fontSize: 22, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
-          Soluções Completas
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 8 }}>
+          Tudo que seu condomínio precisa
         </Text>
-        <Divider />
-        <Text style={{ fontSize: 10, color: GRAY_500, lineHeight: 1.6, marginBottom: 16 }}>
-          para a administração do seu condomínio.
+        <GoldDivider />
+        <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 16, lineHeight: 1.5 }}>
+          Oferecemos um portfólio completo de serviços para garantir a gestão eficiente
+          e tranquila do seu condomínio.
         </Text>
-
-        <ServicoRow
-          titulo="Administração de Condomínios"
-          descricao="Gestão completa de todas as atividades administrativas, financeiras e operacionais do condomínio, com foco em eficiência e transparência."
-        />
-        <ServicoRow
-          titulo="Síndico Profissional"
-          descricao="Profissional qualificado e dedicado exclusivamente à gestão do condomínio, garantindo cumprimento de todas as obrigações legais. Inclui Seguro de Responsabilidade Civil (RC) de Síndico."
-        />
-        <ServicoRow
-          titulo="Certificado Digital"
-          descricao="Emissão e gestão de certificados digitais para assinatura eletrônica de documentos, atas e contratos, garantindo validade jurídica e agilidade."
-        />
-        <ServicoRow
-          titulo="Seguro Condominial"
-          descricao="Contratação e gestão de apólices de seguro patrimonial, incêndio, responsabilidade civil e outros, com análise criteriosa de coberturas e custos."
-        />
-        <ServicoRow
-          titulo="AVCB"
-          descricao="Assessoria completa para obtenção e renovação do Auto de Vistoria do Corpo de Bombeiros, garantindo conformidade legal e segurança dos moradores."
-        />
-        <ServicoRow
-          titulo="Assessoria Jurídica"
-          descricao="Suporte jurídico especializado em direito condominial, com orientação em assembleias, elaboração de documentos e resolução de conflitos."
-        />
-        <ServicoRow
-          titulo="Garantidora de Crédito"
-          descricao="Intermediação com empresas garantidoras para locação de unidades, facilitando a entrada de inquilinos e reduzindo inadimplência."
-        />
-        <ServicoRow
-          titulo="Dentre Outros"
-          descricao="Soluções personalizadas conforme necessidades específicas de cada condomínio: manutenção predial, comunicação visual, automação, sustentabilidade e muito mais."
-        />
+        <SectionRule />
+        {SERVICOS.map((s) => (
+          <ServicoRow key={s.titulo} titulo={s.titulo} descricao={s.descricao} />
+        ))}
       </View>
-      <PageFooter current={servicosPg} total={total} />
+      <PageFooter current={P_SERVICOS} total={total} />
     </Page>
   );
 
-  /* ── PLANOS ───────────────────────────────────────────────────── */
-  function PlanoPage({
-    pageNum,
+  /* ================================================================
+     PLANO helper
+     ================================================================ */
+  function PagePlano({
+    pg: pgNum,
     badge,
     nome,
     subtitulo,
@@ -633,7 +761,7 @@ export function PropostaDocument(props: PropostaPDFData) {
     porUnidadeFmt,
     destaque = false,
   }: {
-    pageNum: number;
+    pg: number;
     badge: string;
     nome: string;
     subtitulo: string;
@@ -644,22 +772,22 @@ export function PropostaDocument(props: PropostaPDFData) {
     destaque?: boolean;
   }) {
     return (
-      <Page size="A4" style={{ fontSize: 10, color: TEXT_COLOR, paddingBottom: 40, backgroundColor: WHITE }}>
-        <PageHeader label="Plano" />
-        <View style={{ paddingHorizontal: 50, paddingTop: 32 }}>
-          {/* Badge "Mais Escolhido" */}
+      <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+        <PageHeader label="Planos e Investimento" />
+        <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
+          {/* Badge destaque */}
           {destaque && (
             <View
               style={{
-                alignSelf: "flex-start",
                 backgroundColor: GOLD,
                 borderRadius: 20,
                 paddingHorizontal: 14,
-                paddingVertical: 5,
-                marginBottom: 12,
+                paddingVertical: 4,
+                alignSelf: "flex-start",
+                marginBottom: 10,
               }}
             >
-              <Text style={{ fontSize: 8, fontWeight: "bold", color: NAVY, letterSpacing: 1.5 }}>
+              <Text style={{ fontSize: 7.5, fontWeight: "bold", color: NAVY, letterSpacing: 1.5 }}>
                 ★  MAIS ESCOLHIDO
               </Text>
             </View>
@@ -668,551 +796,484 @@ export function PropostaDocument(props: PropostaPDFData) {
           <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
             {badge}
           </Text>
-          <Text style={{ fontSize: 28, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
+          <Text style={{ fontSize: 24, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
             {nome}
           </Text>
-          <Divider />
-          <Text style={{ fontSize: 10.5, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
+          <GoldDivider />
+          <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 16, lineHeight: 1.5 }}>
             {subtitulo}
           </Text>
 
           {/* Ideal para */}
-          <View style={{ backgroundColor: GRAY_50, borderRadius: 6, padding: 14, marginBottom: 20 }}>
-            <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 6 }}>
+          <View
+            style={{
+              backgroundColor: GRAY_50,
+              borderRadius: 6,
+              paddingHorizontal: 14,
+              paddingVertical: 10,
+              marginBottom: 20,
+              borderLeftWidth: 3,
+              borderLeftColor: GOLD,
+            }}
+          >
+            <Text style={{ fontSize: 8, color: GOLD, fontWeight: "bold", letterSpacing: 1.5, marginBottom: 4 }}>
               IDEAL PARA
             </Text>
-            <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.55 }}>{idealPara}</Text>
+            <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.5 }}>{idealPara}</Text>
           </View>
 
           {/* Checklist */}
-          <View style={{ marginBottom: 8 }}>
-            {features.map((f, i) => <FeatureRow key={i} text={f} />)}
-          </View>
+          <Text style={{ fontSize: 8.5, fontWeight: "bold", color: NAVY, marginBottom: 10, letterSpacing: 0.5 }}>
+            O QUE ESTÁ INCLUÍDO
+          </Text>
+          {features.map((f) => (
+            <FeatureRow key={f} text={f} />
+          ))}
 
-          {/* Box de preço */}
+          {/* Preço */}
           <View
             style={{
               backgroundColor: NAVY,
-              borderRadius: 8, padding: 20, marginTop: 16,
+              borderRadius: 8,
+              padding: 20,
+              marginTop: 16,
             }}
           >
-            <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 8 }}>
+            <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, marginBottom: 8 }}>
               INVESTIMENTO MENSAL
             </Text>
             <Text style={{ fontSize: 32, fontWeight: "bold", color: WHITE, marginBottom: 4 }}>
               {totalFmt}
             </Text>
-            <Text style={{ fontSize: 10, color: GOLD_LIGHT }}>
+            <Text style={{ fontSize: 9.5, color: GOLD_LIGHT }}>
               {porUnidadeFmt} por unidade/mês
             </Text>
           </View>
         </View>
-        <PageFooter current={pageNum} total={total} />
+        <PageFooter current={pgNum} total={total} />
       </Page>
     );
   }
 
-  /* ── COMPARATIVO ──────────────────────────────────────────────── */
-  const ComparativoPage = () => {
-    type Row = { label: string; e: boolean; c: boolean; p: boolean };
-    type Section = { section: string; rows: Row[] };
-
-    const sections: Section[] = [
-      {
-        section: "FINANCEIRO",
-        rows: [
-          { label: "Emissão de boletos",             e: true,  c: true,  p: true  },
-          { label: "Cobrança de inadimplentes",       e: true,  c: true,  p: true  },
-          { label: "Balancete digital mensal",        e: true,  c: true,  p: true  },
-          { label: "Gestão de contas a pagar",        e: false, c: true,  p: true  },
-          { label: "Pagamentos online integrados",    e: false, c: true,  p: true  },
-          { label: "Planejamento orçamentário anual", e: false, c: true,  p: true  },
-        ],
-      },
-      {
-        section: "OPERACIONAL",
-        rows: [
-          { label: "Portal do condômino",              e: true,  c: true,  p: true  },
-          { label: "Suporte via WhatsApp",             e: true,  c: true,  p: true  },
-          { label: "Rateio de água e gás",             e: false, c: true,  p: true  },
-          { label: "Elaboração de atas e convocações", e: false, c: true,  p: true  },
-          { label: "Relatórios gerenciais",            e: false, c: true,  p: true  },
-        ],
-      },
-      {
-        section: "PREMIUM",
-        rows: [
-          { label: "Assessoria jurídica condominial",      e: false, c: false, p: true },
-          { label: "Cumprimento de obrigações fiscais",    e: false, c: false, p: true },
-          { label: "Gestão de obras e reformas",           e: false, c: false, p: true },
-          { label: "Revisão anual da convenção",           e: false, c: false, p: true },
-          { label: "Atendimento prioritário SLA 12h",      e: false, c: false, p: true },
-          { label: "Relatório trimestral de desempenho",   e: false, c: false, p: true },
-        ],
-      },
-    ];
-
-    const cell = (val: boolean) => (
-      <View style={{ width: "20%", alignItems: "center" }}>
-        <Text
-          style={{
-            fontSize: 11,
-            fontWeight: "bold",
-            color: val ? GREEN_CHECK : GRAY_500,
-          }}
-        >
-          {val ? "+" : "—"}
+  /* ================================================================
+     COMPARATIVO — após planos
+     ================================================================ */
+  const PageComparativo = () => (
+    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+      <PageHeader label="Comparativo de Planos" />
+      <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>
+          COMPARATIVO
         </Text>
-      </View>
-    );
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 8 }}>
+          Escolha o plano ideal
+        </Text>
+        <GoldDivider />
 
-    return (
-      <Page size="A4" style={{ fontSize: 10, color: TEXT_COLOR, paddingBottom: 40, backgroundColor: WHITE }}>
-        <PageHeader label="Comparativo" />
-        <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
-            COMPARATIVO DE PLANOS
-          </Text>
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
-            Veja o que cada plano oferece
-          </Text>
-          <Divider />
+        {/* Cabeçalho tabela */}
+        <View style={{ flexDirection: "row", backgroundColor: NAVY, borderRadius: 6, padding: 10, marginBottom: 0 }}>
+          <Text style={{ flex: 2.5, fontSize: 8.5, fontWeight: "bold", color: WHITE }}>Recurso</Text>
+          <Text style={{ flex: 1, fontSize: 8.5, fontWeight: "bold", color: GOLD, textAlign: "center" }}>Essencial</Text>
+          <Text style={{ flex: 1, fontSize: 8.5, fontWeight: "bold", color: GOLD, textAlign: "center" }}>Completo</Text>
+          <Text style={{ flex: 1, fontSize: 8.5, fontWeight: "bold", color: GOLD, textAlign: "center" }}>Premium</Text>
+        </View>
 
-          {/* Header da tabela */}
-          <View
-            style={{
-              flexDirection: "row", backgroundColor: NAVY,
-              borderRadius: 6, paddingVertical: 10, paddingHorizontal: 12,
-              marginBottom: 0, marginTop: 10,
-            }}
-          >
-            <Text style={{ width: "40%", fontSize: 8, color: GOLD, fontWeight: "bold", letterSpacing: 1 }}>
-              SERVIÇO
-            </Text>
-            <Text style={{ width: "20%", fontSize: 8, color: WHITE, fontWeight: "bold", textAlign: "center" }}>
-              ESSENCIAL
-            </Text>
-            <Text style={{ width: "20%", fontSize: 8, color: GOLD, fontWeight: "bold", textAlign: "center" }}>
-              COMPLETO
-            </Text>
-            <Text style={{ width: "20%", fontSize: 8, color: WHITE, fontWeight: "bold", textAlign: "center" }}>
-              PREMIUM
-            </Text>
-          </View>
-
-          {sections.map((sec, si) => (
-            <View key={si}>
-              {/* Cabeçalho de seção */}
+        {COMPARATIVO_ROWS.map((cat) => (
+          <View key={cat.categoria}>
+            {/* Categoria */}
+            <View style={{ backgroundColor: GRAY_50, paddingHorizontal: 10, paddingVertical: 5 }}>
+              <Text style={{ fontSize: 7.5, fontWeight: "bold", color: NAVY, letterSpacing: 1.5 }}>
+                {cat.categoria}
+              </Text>
+            </View>
+            {cat.itens.map((row, i) => (
               <View
+                key={row.item}
                 style={{
                   flexDirection: "row",
-                  backgroundColor: GRAY_50,
-                  paddingVertical: 7, paddingHorizontal: 12,
-                  borderBottomWidth: 1, borderBottomColor: GRAY_200,
+                  paddingHorizontal: 10,
+                  paddingVertical: 7,
+                  backgroundColor: i % 2 === 0 ? WHITE : GRAY_50,
+                  alignItems: "center",
                 }}
               >
-                <Text style={{ width: "40%", fontSize: 7.5, fontWeight: "bold", color: NAVY, letterSpacing: 1.5 }}>
-                  {sec.section}
+                <Text style={{ flex: 2.5, fontSize: 9, color: GRAY_700 }}>{row.item}</Text>
+                <Text style={{ flex: 1, fontSize: 11, textAlign: "center", color: row.e ? GREEN_CHECK : GRAY_500, fontWeight: row.e ? "bold" : "normal" }}>
+                  {row.e ? "✓" : "—"}
                 </Text>
-                <View style={{ width: "60%" }} />
-              </View>
-
-              {sec.rows.map((row, ri) => (
-                <View
-                  key={ri}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    paddingVertical: 7, paddingHorizontal: 12,
-                    backgroundColor: ri % 2 === 0 ? WHITE : GRAY_50,
-                    borderBottomWidth: 0.5, borderBottomColor: GRAY_200,
-                  }}
-                >
-                  <Text style={{ width: "40%", fontSize: 9, color: GRAY_700 }}>{row.label}</Text>
-                  {cell(row.e)}
-                  {cell(row.c)}
-                  {cell(row.p)}
-                </View>
-              ))}
-            </View>
-          ))}
-
-          {/* Linha de investimento */}
-          <View
-            style={{
-              flexDirection: "row", backgroundColor: NAVY,
-              borderRadius: 6, paddingVertical: 12, paddingHorizontal: 12,
-              marginTop: 4,
-            }}
-          >
-            <Text style={{ width: "40%", fontSize: 9, color: GOLD, fontWeight: "bold" }}>
-              Investimento mensal
-            </Text>
-            <Text style={{ width: "20%", fontSize: 8.5, color: WHITE, textAlign: "center" }}>
-              {essencial.totalFmt}
-            </Text>
-            <Text style={{ width: "20%", fontSize: 8.5, color: GOLD, textAlign: "center", fontWeight: "bold" }}>
-              {completo.totalFmt}
-            </Text>
-            <Text style={{ width: "20%", fontSize: 8.5, color: WHITE, textAlign: "center" }}>
-              {premium.totalFmt}
-            </Text>
-          </View>
-        </View>
-        <PageFooter current={comparativoPg} total={total} />
-      </Page>
-    );
-  };
-
-  /* ── SÍNDICO ──────────────────────────────────────────────────── */
-  const SindicoPage = () => {
-    const sindicoFmt = sindico;
-    return (
-      <Page size="A4" style={{ fontSize: 10, color: TEXT_COLOR, paddingBottom: 40, backgroundColor: WHITE }}>
-        <PageHeader label="Serviço" />
-        <View style={{ paddingHorizontal: 50, paddingTop: 32 }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
-            SERVIÇO
-          </Text>
-          <Text style={{ fontSize: 28, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
-            Síndico Profissional
-          </Text>
-          <Divider />
-          <Text style={{ fontSize: 10.5, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
-            Gestão presencial com representação legal do condomínio
-          </Text>
-
-          <View style={{ backgroundColor: GRAY_50, borderRadius: 6, padding: 14, marginBottom: 20 }}>
-            <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 6 }}>
-              IDEAL PARA
-            </Text>
-            <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.55 }}>
-              Condomínios que desejam um síndico dedicado, com experiência em gestão
-              condominial e representação legal.
-            </Text>
-          </View>
-
-          {[
-            "Representação legal do condomínio",
-            "Gestão de funcionários e fornecedores",
-            "Convocação e condução de assembleias",
-            "Cumprimento de obrigações trabalhistas",
-            "Fiscalização de contratos e obras",
-            "Atendimento aos condôminos",
-            "Aplicação do regimento interno",
-          ].map((f, i) => <FeatureRow key={i} text={f} />)}
-
-          {/* Box Seguro RC */}
-          <View
-            style={{
-              backgroundColor: NAVY,
-              borderRadius: 8, padding: 18, marginTop: 16, marginBottom: 16,
-              borderLeftWidth: 4, borderLeftColor: GOLD,
-            }}
-          >
-            <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 6 }}>
-              SEGURO RC DE SÍNDICO INCLUSO
-            </Text>
-            <Text style={{ fontSize: 10, color: WHITE, lineHeight: 1.6 }}>
-              A Alpha Condomínios tem como diferencial no mercado o Seguro de
-              Responsabilidade Civil (RC) do Síndico{" "}
-              <Text style={{ fontWeight: "bold", color: GOLD }}>INCLUSO</Text>. Protegemos o
-              síndico contra riscos inerentes à função, sem custo adicional.
-            </Text>
-          </View>
-
-          {/* Box investimento */}
-          <View style={{ backgroundColor: NAVY, borderRadius: 8, padding: 20 }}>
-            <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 8 }}>
-              INVESTIMENTO MENSAL — SÍNDICO
-            </Text>
-            <Text style={{ fontSize: 28, fontWeight: "bold", color: WHITE, marginBottom: 4 }}>
-              1 salário-mínimo/mês
-            </Text>
-            <Text style={{ fontSize: 9, color: GOLD_LIGHT }}>
-              Valores calculados para {numeroUnidades} unidades. Sujeitos a ajuste conforme avaliação técnica.
-            </Text>
-          </View>
-        </View>
-        <PageFooter current={sindicoPg} total={total} />
-      </Page>
-    );
-  };
-
-  /* ── CONDIÇÕES ────────────────────────────────────────────────── */
-  const CondicoesPage = () => {
-    const items = [
-      { titulo: "Vigência",     texto: "Contrato de 12 meses, renovável automaticamente por igual período." },
-      { titulo: "Pagamento",    texto: "Faturamento mensal via boleto bancário, com vencimento todo dia 10." },
-      { titulo: "Reajuste",     texto: "Reajuste anual pelo IGPM/FGV ou índice equivalente." },
-      { titulo: "Implantação",  texto: "Prazo de implantação de até 30 dias após assinatura do contrato." },
-      { titulo: "Rescisão",     texto: "Rescisão sem multa após período mínimo de 12 meses, com aviso prévio de 60 dias." },
-      { titulo: "Validade",     texto: "Esta proposta tem validade de 30 dias a partir da data de emissão." },
-    ];
-
-    return (
-      <Page size="A4" style={{ fontSize: 10, color: TEXT_COLOR, paddingBottom: 40, backgroundColor: WHITE }}>
-        <PageHeader label="Condições" />
-        <View style={{ paddingHorizontal: 50, paddingTop: 32 }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
-            CONDIÇÕES COMERCIAIS
-          </Text>
-          <Text style={{ fontSize: 22, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
-            Transparência em todos os termos
-          </Text>
-          <Divider />
-          <Text style={{ fontSize: 10, color: GRAY_500, lineHeight: 1.6, marginBottom: 24 }}>
-            da nossa proposta.
-          </Text>
-
-          {/* Grid 2×3 */}
-          <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
-            {items.map((item, i) => (
-              <View
-                key={i}
-                style={{
-                  width: "47%",
-                  backgroundColor: GRAY_50,
-                  borderRadius: 6, padding: 16,
-                  marginBottom: 12,
-                  borderTopWidth: 3, borderTopColor: GOLD,
-                }}
-              >
-                <Text style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
-                  {item.titulo}
+                <Text style={{ flex: 1, fontSize: 11, textAlign: "center", color: row.c ? GREEN_CHECK : GRAY_500, fontWeight: row.c ? "bold" : "normal" }}>
+                  {row.c ? "✓" : "—"}
                 </Text>
-                <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>
-                  {item.texto}
+                <Text style={{ flex: 1, fontSize: 11, textAlign: "center", color: row.p ? GREEN_CHECK : GRAY_500, fontWeight: row.p ? "bold" : "normal" }}>
+                  {row.p ? "✓" : "—"}
                 </Text>
               </View>
             ))}
           </View>
+        ))}
+
+        {/* Linha de investimento */}
+        <View style={{ backgroundColor: NAVY, borderRadius: 6, padding: 10, marginTop: 10 }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ flex: 2.5, fontSize: 9, fontWeight: "bold", color: WHITE }}>
+              Investimento mensal
+            </Text>
+            <Text style={{ flex: 1, fontSize: 8.5, color: GOLD, textAlign: "center" }}>
+              {essencial.totalFmt}
+            </Text>
+            <Text style={{ flex: 1, fontSize: 8.5, color: GOLD, textAlign: "center" }}>
+              {completo.totalFmt}
+            </Text>
+            <Text style={{ flex: 1, fontSize: 8.5, color: GOLD, textAlign: "center" }}>
+              {premium.totalFmt}
+            </Text>
+          </View>
         </View>
-        <PageFooter current={condicoesPg} total={total} />
+      </View>
+      <PageFooter current={P_COMPARATIVO} total={total} />
+    </Page>
+  );
+
+  /* ================================================================
+     SÍNDICO PROFISSIONAL
+     ================================================================ */
+  const PageSindico = () => {
+    const sindicoInfo = sindico!;
+    return (
+      <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+        <PageHeader label="Serviço Adicional" />
+        <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
+            SÍNDICO PROFISSIONAL
+          </Text>
+          <Text style={{ fontSize: 24, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
+            Gestão com Responsabilidade Total
+          </Text>
+          <GoldDivider />
+          <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
+            Assuma a tranquilidade de ter um síndico profissional dedicado ao seu condomínio,
+            com experiência comprovada e total responsabilidade pela gestão.
+          </Text>
+
+          {[
+            "Representação legal do condomínio",
+            "Presidência de assembleias e reuniões",
+            "Gestão direta de funcionários e fornecedores",
+            "Atendimento presencial periódico no condomínio",
+            "Resolução de conflitos entre condôminos",
+            "Acompanhamento de obras e manutenções",
+            "Relatórios executivos mensais ao conselho",
+            "Disponibilidade para emergências",
+          ].map((f) => (
+            <FeatureRow key={f} text={f} />
+          ))}
+
+          {/* Seguro RC destaque */}
+          <View
+            style={{
+              backgroundColor: GRAY_50,
+              borderRadius: 8,
+              padding: 16,
+              marginTop: 16,
+              marginBottom: 8,
+              borderLeftWidth: 3,
+              borderLeftColor: GOLD,
+              flexDirection: "row",
+              alignItems: "flex-start",
+            }}
+          >
+            <IShield />
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Text style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
+                Seguro de Responsabilidade Civil Incluso
+              </Text>
+              <Text style={{ fontSize: 9, color: GRAY_700, lineHeight: 1.5 }}>
+                Proteção completa ao síndico profissional e ao condomínio contra eventuais
+                reclamações decorrentes do exercício da função.
+              </Text>
+            </View>
+          </View>
+
+          {/* Preço */}
+          <View style={{ backgroundColor: NAVY, borderRadius: 8, padding: 20, marginTop: 8 }}>
+            <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, marginBottom: 8 }}>
+              INVESTIMENTO MENSAL
+            </Text>
+            <Text style={{ fontSize: 32, fontWeight: "bold", color: WHITE, marginBottom: 4 }}>
+              {sindicoInfo.totalFmt}
+            </Text>
+            <Text style={{ fontSize: 9.5, color: GOLD_LIGHT }}>
+              {sindicoInfo.porUnidadeFmt} por unidade/mês
+            </Text>
+          </View>
+        </View>
+        <PageFooter current={P_SINDICO} total={total} />
       </Page>
     );
   };
 
-  /* ── PRÓXIMOS PASSOS ──────────────────────────────────────────── */
-  const PassosPage = () => (
-    <Page size="A4" style={{ fontSize: 10, color: TEXT_COLOR, paddingBottom: 40, backgroundColor: WHITE }}>
-      <PageHeader label="Como Contratar" />
-      <View style={{ paddingHorizontal: 50, paddingTop: 32 }}>
-        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
-          PRÓXIMOS PASSOS
+  /* ================================================================
+     CONDIÇÕES GERAIS
+     ================================================================ */
+  const PageCondicoes = () => (
+    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+      <PageHeader label="Condições Gerais" />
+      <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>
+          INFORMAÇÕES IMPORTANTES
         </Text>
-        <Text style={{ fontSize: 22, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
-          Simples, rápido e sem burocracia
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 8 }}>
+          Condições da Proposta
         </Text>
-        <Divider />
+        <GoldDivider />
 
-        <View style={{ marginTop: 16 }}>
-          <StepRow
-            n={1}
-            titulo="Aprovação da Proposta"
-            texto="Analise esta proposta e, se aprovada, nos comunique para seguirmos com a formalização."
-          />
-          <StepRow
-            n={2}
-            titulo="Assinatura do Contrato"
-            texto="Enviaremos o contrato digital para assinatura eletrônica. Rápido e seguro."
-          />
-          <StepRow
-            n={3}
-            titulo="Implantação"
-            texto="Nossa equipe inicia o processo de implantação em até 30 dias, com acompanhamento dedicado."
-          />
-          <StepRow
-            n={4}
-            titulo="Gestão Ativa"
-            texto="Seu condomínio passa a contar com toda a estrutura Alpha Condomínios para uma gestão de excelência."
-          />
+        <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
+          {[
+            {
+              titulo: "Vigência da Proposta",
+              texto: "Esta proposta é válida por 30 dias a partir da data de emissão. Após este prazo, os valores poderão ser revisados conforme condições de mercado.",
+            },
+            {
+              titulo: "Contrato de Prestação",
+              texto: "O contrato tem vigência mínima de 12 meses, com renovação automática e rescisão mediante aviso prévio de 30 dias.",
+            },
+            {
+              titulo: "Reajuste Anual",
+              texto: "Os honorários são reajustados anualmente pelo IGPM ou índice acordado entre as partes, sempre com comunicação prévia.",
+            },
+            {
+              titulo: "Forma de Pagamento",
+              texto: "Pagamento mensal via boleto bancário, com vencimento no 5º dia útil. Aceita débito automático mediante solicitação.",
+            },
+            {
+              titulo: "Serviços Não Incluídos",
+              texto: "Despesas com cartório, taxas governamentais, honorários advocatícios litigiosos e perícias técnicas são cobrados à parte.",
+            },
+            {
+              titulo: "Transição e Onboarding",
+              texto: "Oferecemos suporte completo na transição da administração anterior, sem custo adicional, com prazo de até 60 dias.",
+            },
+          ].map((c) => (
+            <View
+              key={c.titulo}
+              style={{
+                width: "47%",
+                backgroundColor: GRAY_50,
+                borderRadius: 6,
+                padding: 14,
+                marginBottom: 10,
+              }}
+            >
+              <Text style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
+                {c.titulo}
+              </Text>
+              <Text style={{ fontSize: 8.5, color: GRAY_700, lineHeight: 1.55 }}>{c.texto}</Text>
+            </View>
+          ))}
         </View>
+      </View>
+      <PageFooter current={P_CONDICOES} total={total} />
+    </Page>
+  );
+
+  /* ================================================================
+     PRÓXIMOS PASSOS
+     ================================================================ */
+  const PagePassos = () => (
+    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+      <PageHeader label="Próximos Passos" />
+      <View style={{ paddingHorizontal: 50, paddingTop: 28 }}>
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>
+          COMO COMEÇAR
+        </Text>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 8 }}>
+          Seu condomínio em boas mãos em 4 etapas
+        </Text>
+        <GoldDivider />
+        <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 24, lineHeight: 1.5 }}>
+          Processo simples, rápido e sem burocracia para você ter a melhor gestão condominial.
+        </Text>
+
+        <StepRow
+          n={1}
+          titulo="Aprovação da Proposta"
+          texto="Confirme sua escolha de plano e assine digitalmente o contrato de prestação de serviços. Todo o processo é 100% digital."
+        />
+        <StepRow
+          n={2}
+          titulo="Reunião de Onboarding"
+          texto="Agendamos uma reunião com síndico e conselho para mapear todas as necessidades, rotinas e particularidades do condomínio."
+        />
+        <StepRow
+          n={3}
+          titulo="Transição e Implantação"
+          texto="Nossa equipe cuida de toda a transição: documentos, contratos, funcionários e financeiro, com acompanhamento dedicado por 60 dias."
+        />
+        <StepRow
+          n={4}
+          titulo="Gestão em Pleno Funcionamento"
+          texto="Com tudo implantado, você passa a contar com relatórios mensais, portal do condômino ativo e atendimento contínuo da nossa equipe."
+        />
 
         {/* CTA */}
         <View
           style={{
             backgroundColor: NAVY,
-            borderRadius: 8, padding: 22, marginTop: 16,
+            borderRadius: 8,
+            padding: 22,
+            marginTop: 10,
+            alignItems: "center",
           }}
         >
-          <Text style={{ fontSize: 12, fontWeight: "bold", color: WHITE, marginBottom: 12, textAlign: "center" }}>
-            Pronto para transformar a gestão do seu condomínio?
+          <Text style={{ fontSize: 9, color: GOLD, letterSpacing: 1.5, marginBottom: 8 }}>
+            FALE CONOSCO AGORA
           </Text>
-          <Text style={{ fontSize: 10, color: GOLD, textAlign: "center", marginBottom: 4 }}>
-            {telefoneContato}
+          <Text style={{ fontSize: 13, fontWeight: "bold", color: WHITE, marginBottom: 6 }}>
+            Vamos cuidar do seu condomínio juntos
           </Text>
-          <Text style={{ fontSize: 10, color: GOLD_LIGHT, textAlign: "center" }}>
-            {emailContato}
+          <Text style={{ fontSize: 9.5, color: GOLD_LIGHT, marginBottom: 4 }}>
+            📞 {contato?.telefone || "(11) 99999-9999"}
+          </Text>
+          <Text style={{ fontSize: 9.5, color: GOLD_LIGHT }}>
+            ✉  {contato?.email || "contato@alphacondominios.com.br"}
           </Text>
         </View>
       </View>
-      <PageFooter current={passosPg} total={total} />
+      <PageFooter current={P_PASSOS} total={total} />
     </Page>
   );
 
-  /* ── CONTRACAPA ───────────────────────────────────────────────── */
-  const ContracapaPage = () => (
-    <Page size="A4" style={{ backgroundColor: NAVY, justifyContent: "center", alignItems: "center" }}>
-      <View style={{ alignItems: "center", paddingHorizontal: 60 }}>
+  /* ================================================================
+     CONTRACAPA — última página
+     ================================================================ */
+  const PageContracapa = () => (
+    <Page size="A4" style={{ backgroundColor: NAVY }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 60 }}>
         <Image
           src={LOGO_B64}
-          style={{ width: 140, height: "auto", marginBottom: 32 }}
+          style={{ width: 160, height: 80, objectFit: "contain", marginBottom: 32 }}
         />
-        <View style={{ height: 2, width: 40, backgroundColor: GOLD, marginBottom: 28 }} />
-        <Text style={{ fontSize: 13, fontWeight: "bold", color: WHITE, letterSpacing: 1.5, marginBottom: 8, textAlign: "center" }}>
-          GESTÃO CONDOMINIAL DE EXCELÊNCIA
+        <View style={{ height: 2, width: 60, backgroundColor: GOLD, marginBottom: 24 }} />
+        <Text
+          style={{
+            fontSize: 11,
+            color: GOLD_LIGHT,
+            letterSpacing: 2,
+            textAlign: "center",
+            marginBottom: 10,
+          }}
+        >
+          GESTÃO · TRANSPARÊNCIA · CONFIANÇA
         </Text>
-        <Text style={{ fontSize: 10, color: GOLD_LIGHT, marginBottom: 4, textAlign: "center" }}>
-          {telefoneContato}
+        <Text style={{ fontSize: 9.5, color: GRAY_500, textAlign: "center", marginBottom: 32 }}>
+          www.alphacondominios.com.br
         </Text>
-        <Text style={{ fontSize: 10, color: GOLD_LIGHT, marginBottom: 4, textAlign: "center" }}>
-          {emailContato}
-        </Text>
-        <Text style={{ fontSize: 10, color: GOLD_LIGHT, textAlign: "center" }}>
-          www.alphafacilities.com.br
+        <Text style={{ fontSize: 8.5, color: GRAY_700, textAlign: "center", lineHeight: 1.7 }}>
+          {contato?.telefone || "(11) 99999-9999"}  ·  {contato?.email || "contato@alphacondominios.com.br"}
         </Text>
       </View>
+      {/* Faixa dourada inferior */}
+      <View style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 6, backgroundColor: GOLD }} />
     </Page>
   );
 
-  /* ── CONSIDERAÇÕES FINAIS (opcional) ──────────────────────────── */
-  const ConsideracoesPage = () => (
-    <Page size="A4" style={{ fontSize: 10, color: TEXT_COLOR, paddingBottom: 40, backgroundColor: WHITE }}>
-      <PageHeader label="Considerações Finais" />
-      <View style={{ paddingHorizontal: 50, paddingTop: 32 }}>
-        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
-          CONSIDERAÇÕES FINAIS
-        </Text>
-        <Text style={{ fontSize: 22, fontWeight: "bold", color: NAVY, marginBottom: 16 }}>
-          Observações Importantes
-        </Text>
-        <Divider />
-        <Text style={{ fontSize: 10.5, color: GRAY_700, lineHeight: 1.75 }}>
-          {consideracoesFinais}
-        </Text>
-      </View>
-      <PageFooter current={pg - 1} total={total} />
-    </Page>
-  );
+  /* ================================================================
+     HELPERS EXTRAS
+     ================================================================ */
+  function GoldDivider() {
+    return <View style={{ height: 3, width: 44, backgroundColor: GOLD, marginBottom: 16 }} />;
+  }
 
-  /* ── MONTAGEM FINAL ───────────────────────────────────────────── */
+  function DiferencialCard({ icon, titulo, texto }: { icon: React.ReactNode; titulo: string; texto: string }) {
+    return (
+      <View
+        style={{
+          width: "47%",
+          backgroundColor: GRAY_50,
+          borderRadius: 6,
+          padding: 14,
+          marginBottom: 10,
+          borderLeftWidth: 3,
+          borderLeftColor: GOLD,
+        }}
+      >
+        <View style={{ marginBottom: 6 }}>{icon}</View>
+        <Text style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>{titulo}</Text>
+        <Text style={{ fontSize: 8.5, color: GRAY_700, lineHeight: 1.5 }}>{texto}</Text>
+      </View>
+    );
+  }
+
+  function StepRow({ n, titulo, texto }: { n: number; titulo: string; texto: string }) {
+    return (
+      <View style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 22 }}>
+        <View
+          style={{
+            width: 32, height: 32, borderRadius: 16,
+            backgroundColor: GOLD,
+            justifyContent: "center", alignItems: "center",
+            marginRight: 16, flexShrink: 0,
+          }}
+        >
+          <Text style={{ fontSize: 14, fontWeight: "bold", color: NAVY }}>{n}</Text>
+        </View>
+        <View style={{ flex: 1, paddingTop: 2 }}>
+          <Text style={{ fontSize: 11, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>{titulo}</Text>
+          <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>{texto}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  /* ================================================================
+     RENDER FINAL
+     ================================================================ */
   return (
     <Document>
-      <CoverPage />
-      <QuemSomosPage />
-      <DiferenciaisPage />
-      <ServicosPage />
-
+      <PageCapa />
+      <PageQuemSomos />
+      <PageDiferenciais />
+      <PageServicos />
       {incluiAdmin && (
         <>
-          <PlanoPage
-            pageNum={essencialPg}
-            badge="PLANO"
+          <PagePlano
+            pg={P_ESSENCIAL}
+            badge="PLANO ESSENCIAL"
             nome="Essencial"
-            subtitulo="Gestão financeira objetiva e eficiente"
-            idealPara="Condomínios que buscam organização financeira com custo acessível."
-            features={[
-              "Emissão de boletos",
-              "Cobrança de inadimplentes",
-              "Balancete digital mensal",
-              "Portal do condômino",
-              "Suporte via WhatsApp",
-            ]}
+            subtitulo="A base sólida para uma gestão organizada, transparente e sem complicações."
+            idealPara="Condomínios que buscam organização financeira e administrativa com custo acessível."
+            features={ESSENCIAL_FEATURES}
             totalFmt={essencial.totalFmt}
             porUnidadeFmt={essencial.porUnidadeFmt}
           />
-          <PlanoPage
-            pageNum={completoPg}
-            badge="PLANO"
+          <PagePlano
+            pg={P_COMPLETO}
+            badge="PLANO COMPLETO"
             nome="Completo"
-            subtitulo="Administração completa com gestão integrada"
-            idealPara="Condomínios que precisam de gestão financeira, operacional e de comunicação integradas."
-            features={[
-              "Tudo do Plano Essencial",
-              "Rateio de água e gás",
-              "Planejamento orçamentário anual",
-              "Gestão de contas a pagar",
-              "Elaboração de atas e convocações",
-              "Pagamentos online integrados",
-              "Relatórios gerenciais",
-            ]}
+            subtitulo="Gestão completa com suporte jurídico e administração de pessoal incluídos."
+            idealPara="Condomínios que precisam de gestão integrada com mais recursos e suporte ampliado."
+            features={COMPLETO_FEATURES}
             totalFmt={completo.totalFmt}
             porUnidadeFmt={completo.porUnidadeFmt}
             destaque
           />
-          <PlanoPage
-            pageNum={premiumPg}
-            badge="PLANO"
+          <PagePlano
+            pg={P_PREMIUM}
+            badge="PLANO PREMIUM"
             nome="Premium"
-            subtitulo="Gestão completa com assessoria jurídica e atendimento prioritário"
-            idealPara="Condomínios que desejam o mais alto nível de gestão, com suporte jurídico e SLA de atendimento."
-            features={[
-              "Tudo do Plano Completo",
-              "Assessoria jurídica condominial",
-              "Cumprimento de obrigações fiscais",
-              "Gestão de obras e reformas",
-              "Revisão anual da convenção",
-              "Atendimento prioritário SLA 12h",
-              "Relatório trimestral de desempenho",
-            ]}
+            subtitulo="Solução executiva completa com gestor exclusivo e atendimento 24h."
+            idealPara="Condomínios que exigem o mais alto nível de gestão, com presença e dedicação total."
+            features={PREMIUM_FEATURES}
             totalFmt={premium.totalFmt}
             porUnidadeFmt={premium.porUnidadeFmt}
           />
-          <ComparativoPage />
+          <PageComparativo />
         </>
       )}
-
-      {incluiSindico && <SindicoPage />}
-
-      <CondicoesPage />
-      <PassosPage />
-      {consideracoesFinais?.trim() && <ConsideracoesPage />}
-      <ContracapaPage />
+      {incluiSindico && <PageSindico />}
+      <PageCondicoes />
+      <PagePassos />
+      <PageContracapa />
     </Document>
-  );
-}
-
-function DiferencialCard({
-  icon, titulo, texto,
-}: { icon: React.ReactNode; titulo: string; texto: string }) {
-  return (
-    <View
-      style={{
-        width: "47%",
-        backgroundColor: GRAY_50,
-        borderRadius: 6, padding: 14, marginBottom: 10,
-        borderLeftWidth: 3, borderLeftColor: GOLD,
-      }}
-    >
-      <View style={{ marginBottom: 6 }}>{icon}</View>
-      <Text style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
-        {titulo}
-      </Text>
-      <Text style={{ fontSize: 8.5, color: GRAY_700, lineHeight: 1.5 }}>{texto}</Text>
-    </View>
-  );
-}
-
-function StepRow({ n, titulo, texto }: { n: number; titulo: string; texto: string }) {
-  return (
-    <View style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 22 }}>
-      <View
-        style={{
-          width: 32, height: 32, borderRadius: 16,
-          backgroundColor: GOLD,
-          justifyContent: "center", alignItems: "center",
-          marginRight: 16, flexShrink: 0,
-        }}
-      >
-        <Text style={{ fontSize: 14, fontWeight: "bold", color: NAVY }}>{n}</Text>
-      </View>
-      <View style={{ flex: 1, paddingTop: 2 }}>
-        <Text style={{ fontSize: 11, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
-          {titulo}
-        </Text>
-        <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>{texto}</Text>
-      </View>
-    </View>
   );
 }
