@@ -1053,7 +1053,7 @@ export function PropostaDocument(props: PropostaPDFData) {
               <Text
                 style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
               >
-                1 salário-mínimo/mês
+                {sindico || "Sob consulta"}
               </Text>
               <Text style={{ fontSize: 9.5, color: GRAY_500, marginBottom: 14 }}>
                 Valores calculados para {numeroUnidades} unidades. Sujeitos a ajuste
