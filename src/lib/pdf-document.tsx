@@ -29,6 +29,7 @@ const GRAY_500   = "#6B7280";
 const GRAY_600   = "#4B5563";
 const GRAY_700   = "#374151";
 const TEXT_COLOR = "#111827";
+const GREEN_CHECK = "#16A34A";
 
 /* ================================================================
    LOGO
@@ -87,18 +88,22 @@ const IconStar = ({ size = 22 }: { size?: number }) => (
    ================================================================ */
 function FeatureRow({ text }: { text: string }) {
   return (
-    <View style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 5 }}>
+    <View style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 6 }}>
       <View
         style={{
-          width: 13,
-          height: 13,
-          borderRadius: 7,
-          backgroundColor: GOLD,
-          marginRight: 8,
-          marginTop: 2,
+          width: 16,
+          height: 16,
+          borderRadius: 8,
+          backgroundColor: GREEN_CHECK,
+          marginRight: 9,
+          marginTop: 1,
           flexShrink: 0,
+          justifyContent: "center",
+          alignItems: "center",
         }}
-      />
+      >
+        <Text style={{ fontSize: 9, color: WHITE, fontWeight: "bold" }}>✓</Text>
+      </View>
       <Text style={{ fontSize: 9.5, color: GRAY_700, flex: 1, lineHeight: 1.5 }}>
         {text}
       </Text>
@@ -111,9 +116,8 @@ function SectionBand({ label }: { label: string }) {
     <View
       style={{
         backgroundColor: NAVY,
-        paddingVertical: 4,
+        paddingVertical: 5,
         paddingHorizontal: 50,
-        marginBottom: 0,
       }}
     >
       <Text style={{ fontSize: 7.5, color: GOLD, letterSpacing: 2.5, fontWeight: "bold" }}>
@@ -149,6 +153,54 @@ function PageFooter({ current, total }: { current: number; total: number }) {
   );
 }
 
+function PriceBox({
+  label,
+  total,
+  perUnit,
+  highlight = false,
+}: {
+  label: string;
+  total: string;
+  perUnit: string;
+  highlight?: boolean;
+}) {
+  return (
+    <View
+      style={{
+        backgroundColor: highlight ? NAVY : GRAY_50,
+        borderRadius: 8,
+        padding: 16,
+        marginTop: 16,
+        borderTopWidth: highlight ? 0 : 1,
+        borderTopColor: GRAY_200,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 8,
+          color: highlight ? GOLD : GRAY_500,
+          letterSpacing: 1.5,
+          marginBottom: 6,
+        }}
+      >
+        {label}
+      </Text>
+      <Text
+        style={{
+          fontSize: 30,
+          fontWeight: "bold",
+          color: highlight ? WHITE : NAVY,
+        }}
+      >
+        {total}
+      </Text>
+      <Text style={{ fontSize: 9.5, color: highlight ? GOLD_LIGHT : GRAY_500, marginTop: 4 }}>
+        {perUnit} por unidade/mês
+      </Text>
+    </View>
+  );
+}
+
 /* ================================================================
    ESTILOS GLOBAIS
    ================================================================ */
@@ -165,7 +217,6 @@ const s = StyleSheet.create({
     paddingHorizontal: 50,
     paddingTop: 36,
     flex: 1,
-    justifyContent: "center",
   },
   badge: {
     fontSize: 7.5,
@@ -227,38 +278,41 @@ export function PropostaDocument(props: PropostaPDFData) {
     consideracoesFinais,
   } = props;
 
-  const nomeCondominio = condominio?.nome || "Condomínio";
-  const numeroUnidades = Number(condominio?.unidades) || 0;
-  const bairro = condominio?.endereco || "";
-  const nomeContato = contato?.nome || "";
-  const cargoContato = "";
-  const numeroContrato = numero || "";
-  const dataValidade = "";
+  const nomeCondominio  = condominio?.nome || "Condomínio";
+  const numeroUnidades  = Number(condominio?.unidades) || 0;
+  const bairro          = condominio?.endereco || "";
+  const nomeContato     = contato?.nome || "";
+  const cargoContato    = "";
+  const numeroContrato  = numero || "";
+  const dataValidade    = "";
 
   /* total de páginas */
-  let total = 1;
-  total += 2;
-  if (incluiAdmin) total += 4;
-  if (incluiSindico) total += 1;
-  total += 2;
+  let total = 1; // capa
+  total += 2;    // sobre nós + serviços
+  if (incluiAdmin) total += 4;   // 3 planos + comparativo
+  if (incluiSindico) total += 1; // síndico
+  total += 2;    // condições + próximos passos
   if (consideracoesFinais?.trim()) total += 1;
+  total += 1;    // contracapa
 
-  const planos    = calcularPlanos(numeroUnidades);
+  const planos   = calcularPlanos(numeroUnidades);
   const essencial = formatPlanoDetalhado(planos.essencial);
   const completo  = formatPlanoDetalhado(planos.completo);
   const premium   = formatPlanoDetalhado(planos.premium);
-  const sindico = incluiSindico ? formatSindico(numeroUnidades) : null;
+  const sindico   = incluiSindico ? formatSindico(numeroUnidades) : null;
 
   const localidade = [bairro, cidade].filter(Boolean).join(" – ");
   const dataHoje   = (data instanceof Date ? data : new Date()).toLocaleDateString("pt-BR", {
     day: "2-digit", month: "long", year: "numeric",
   });
 
-  const condPg = 3 + (incluiAdmin ? 4 : 0) + (incluiSindico ? 1 : 0) + 1;
-  const contPg = condPg + 1;
-  const finalPg = contPg + 1;
+  const sindicoPg = 3 + (incluiAdmin ? 4 : 0) + 1;
+  const condPg    = 3 + (incluiAdmin ? 4 : 0) + (incluiSindico ? 1 : 0) + 1;
+  const contPg    = condPg + 1;
+  const finalPg   = contPg + 1;
+  const contracapaPg = total;
 
-  /* ── Serviços — pág 3 ─────────────────────────────────── */
+  /* ── Serviços ─────────────────────────────────────────── */
   const SERVICOS = [
     {
       titulo: "Administração de Condomínios",
@@ -326,9 +380,6 @@ export function PropostaDocument(props: PropostaPDFData) {
     { label: "Relatório trimestral de desempenho", e: false, c: false, p: true },
   ];
 
-  const cellVal   = (v: boolean | null) => (v === null ? "" : v ? "✓" : "–");
-  const cellColor = (v: boolean | null) => (v === true ? NAVY : GRAY_500);
-
   return (
     <Document>
 
@@ -336,7 +387,7 @@ export function PropostaDocument(props: PropostaPDFData) {
           PÁG 1 — CAPA
           ══════════════════════════════════════════ */}
       <Page size="A4" style={{ padding: 0, backgroundColor: WHITE }}>
-        <View style={{ flexDirection: "row", flex: 1 }}>
+        <View style={{ flexDirection: "row", flex: 1, minHeight: "100%" }}>
 
           {/* Coluna esquerda */}
           <View
@@ -344,14 +395,15 @@ export function PropostaDocument(props: PropostaPDFData) {
               width: "55%",
               paddingTop: 56,
               paddingBottom: 40,
-              paddingHorizontal: 40,
+              paddingHorizontal: 44,
               justifyContent: "space-between",
             }}
           >
             <View>
+              {/* LOGO — maior */}
               <Image
                 src={LOGO_B64}
-                style={{ width: 110, height: 36, marginBottom: 40, objectFit: "contain" }}
+                style={{ width: 160, height: 52, marginBottom: 48, objectFit: "contain" }}
               />
               <Text
                 style={{
@@ -366,7 +418,7 @@ export function PropostaDocument(props: PropostaPDFData) {
               </Text>
               <Text
                 style={{
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: "bold",
                   color: NAVY,
                   marginBottom: 6,
@@ -433,54 +485,74 @@ export function PropostaDocument(props: PropostaPDFData) {
             </View>
           </View>
 
-          {/* Coluna direita — navy */}
+          {/* Coluna direita — navy com prédios */}
           <View
             style={{
               width: "45%",
               backgroundColor: NAVY,
               justifyContent: "flex-end",
               alignItems: "center",
-              paddingBottom: 30,
+              paddingBottom: 40,
             }}
           >
-            <Svg width={160} height={200} viewBox="0 0 160 200">
-              <Path d="M10 140 h28 v60 h-28z" fill="rgba(255,255,255,0.12)" />
-              <Path d="M14 148 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
-              <Path d="M26 148 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
-              <Path d="M14 162 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
-              <Path d="M26 162 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
-              <Path d="M14 176 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
-              <Path d="M26 176 h8 v8 h-8z"  fill="rgba(255,255,255,0.18)" />
-              <Path d="M46 100 h32 v100 h-32z" fill="rgba(255,255,255,0.15)" />
-              <Path d="M50 108 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              <Path d="M64 108 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              <Path d="M50 124 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              <Path d="M64 124 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              <Path d="M50 140 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              <Path d="M64 140 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              <Path d="M50 156 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              <Path d="M64 156 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              <Path d="M50 172 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              <Path d="M64 172 h10 v10 h-10z" fill="rgba(255,255,255,0.2)" />
-              <Path d="M86 118 h30 v82 h-30z" fill="rgba(255,255,255,0.13)" />
-              <Path d="M90 126 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
-              <Path d="M103 126 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M90 141 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
-              <Path d="M103 141 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M90 156 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
-              <Path d="M103 156 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M90 171 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
-              <Path d="M103 171 h9 v9 h-9z" fill="rgba(255,255,255,0.18)" />
-              <Path d="M124 150 h26 v50 h-26z" fill="rgba(255,255,255,0.10)" />
-              <Path d="M128 158 h8 v8 h-8z" fill="rgba(255,255,255,0.16)" />
-              <Path d="M138 158 h8 v8 h-8z" fill="rgba(255,255,255,0.16)" />
-              <Path d="M128 172 h8 v8 h-8z" fill="rgba(255,255,255,0.16)" />
-              <Path d="M138 172 h8 v8 h-8z" fill="rgba(255,255,255,0.16)" />
-              <Path d="M128 186 h8 v8 h-8z" fill="rgba(255,255,255,0.16)" />
-              <Path d="M138 186 h8 v8 h-8z" fill="rgba(255,255,255,0.16)" />
+            <Svg width={180} height={240} viewBox="0 0 180 240">
+              {/* Prédio 1 — esquerda */}
+              <Path d="M10 160 h32 v80 h-32z" fill="rgba(255,255,255,0.10)" />
+              <Path d="M14 168 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M27 168 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M14 183 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M27 183 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M14 198 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M27 198 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M14 213 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
+              <Path d="M27 213 h9 v9 h-9z"  fill="rgba(255,255,255,0.18)" />
+              {/* Prédio 2 — centro-esquerda (mais alto) */}
+              <Path d="M50 100 h38 h0 v140 h-38z" fill="rgba(255,255,255,0.14)" />
+              <Path d="M54 110 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M70 110 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M54 128 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M70 128 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M54 146 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M70 146 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M54 164 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M70 164 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M54 182 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M70 182 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M54 200 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M70 200 h12 v12 h-12z" fill="rgba(255,255,255,0.20)" />
+              {/* Prédio 3 — centro (o mais alto) */}
+              <Path d="M96 60 h36 v180 h-36z" fill="rgba(255,255,255,0.12)" />
+              <Path d="M100 70 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M115 70 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M100 87 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M115 87 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M100 104 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M115 104 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M100 121 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M115 121 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M100 138 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M115 138 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M100 155 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M115 155 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M100 172 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M115 172 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M100 189 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              <Path d="M115 189 h11 v11 h-11z" fill="rgba(255,255,255,0.20)" />
+              {/* Prédio 4 — direita */}
+              <Path d="M140 130 h32 v110 h-32z" fill="rgba(255,255,255,0.10)" />
+              <Path d="M144 140 h9 v9 h-9z"  fill="rgba(255,255,255,0.16)" />
+              <Path d="M157 140 h9 v9 h-9z"  fill="rgba(255,255,255,0.16)" />
+              <Path d="M144 155 h9 v9 h-9z"  fill="rgba(255,255,255,0.16)" />
+              <Path d="M157 155 h9 v9 h-9z"  fill="rgba(255,255,255,0.16)" />
+              <Path d="M144 170 h9 v9 h-9z"  fill="rgba(255,255,255,0.16)" />
+              <Path d="M157 170 h9 v9 h-9z"  fill="rgba(255,255,255,0.16)" />
+              <Path d="M144 185 h9 v9 h-9z"  fill="rgba(255,255,255,0.16)" />
+              <Path d="M157 185 h9 v9 h-9z"  fill="rgba(255,255,255,0.16)" />
+              <Path d="M144 200 h9 v9 h-9z"  fill="rgba(255,255,255,0.16)" />
+              <Path d="M157 200 h9 v9 h-9z"  fill="rgba(255,255,255,0.16)" />
             </Svg>
             <Text
-              style={{ fontSize: 7.5, color: "rgba(255,255,255,0.4)", marginTop: 12 }}
+              style={{ fontSize: 7.5, color: "rgba(255,255,255,0.35)", marginTop: 8 }}
             >
               Página 1 de {total}
             </Text>
@@ -576,9 +648,7 @@ export function PropostaDocument(props: PropostaPDFData) {
                   }}
                 >
                   <View style={{ marginBottom: 6 }}>{d.icon}</View>
-                  <Text
-                    style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
-                  >
+                  <Text style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
                     {d.title}
                   </Text>
                   <Text style={{ fontSize: 8.5, color: GRAY_700, lineHeight: 1.5 }}>
@@ -607,9 +677,7 @@ export function PropostaDocument(props: PropostaPDFData) {
           {SERVICOS.map((sv, i) => (
             <View key={i}>
               <View style={s.sectionRule} />
-              <Text
-                style={{ fontSize: 11.5, fontWeight: "bold", color: NAVY, marginBottom: 3 }}
-              >
+              <Text style={{ fontSize: 11.5, fontWeight: "bold", color: NAVY, marginBottom: 3 }}>
                 {sv.titulo}
               </Text>
               <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>
@@ -628,7 +696,7 @@ export function PropostaDocument(props: PropostaPDFData) {
         <>
           {/* PÁG 4 — ESSENCIAL */}
           <Page size="A4" style={s.page}>
-            <SectionBand label="Plano" />
+            <SectionBand label="Plano Essencial" />
             <View style={s.body}>
               <Text style={s.badge}>PLANO</Text>
               <Text style={s.h1}>Essencial</Text>
@@ -638,82 +706,54 @@ export function PropostaDocument(props: PropostaPDFData) {
                 style={{
                   backgroundColor: GRAY_50,
                   borderRadius: 8,
+                  borderLeftWidth: 3,
+                  borderLeftColor: GOLD,
                   padding: 14,
-                  marginBottom: 16,
+                  marginBottom: 18,
                 }}
               >
-                <Text
-                  style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
-                >
+                <Text style={{ fontSize: 9, color: GOLD, letterSpacing: 1.5, fontWeight: "bold", marginBottom: 4 }}>
                   IDEAL PARA
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 }}>
                   Condomínios que buscam organização financeira com custo acessível.
                 </Text>
               </View>
-              <View style={{ marginBottom: 20 }}>
+              <View style={{ marginBottom: 8 }}>
                 {[
                   "Emissão de boletos",
                   "Cobrança de inadimplentes",
                   "Balancete digital mensal",
                   "Portal do condômino",
                   "Suporte via WhatsApp",
-                ].map((f, i) => (
-                  <FeatureRow key={i} text={f} />
-                ))}
+                ].map((f, i) => <FeatureRow key={i} text={f} />)}
               </View>
-              <View
-                style={{
-                  borderTopWidth: 1,
-                  borderTopColor: GRAY_200,
-                  paddingTop: 16,
-                  marginTop: 4,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 8,
-                    color: GRAY_500,
-                    letterSpacing: 1.5,
-                    marginBottom: 6,
-                  }}
-                >
-                  INVESTIMENTO MENSAL
-                </Text>
-                <Text style={{ fontSize: 28, fontWeight: "bold", color: NAVY }}>
-                  {essencial.totalFmt}
-                </Text>
-                <Text style={{ fontSize: 9.5, color: GRAY_500, marginTop: 4 }}>
-                  {essencial.porUnidadeFmt} por unidade/mês
-                </Text>
-              </View>
+              <PriceBox
+                label="INVESTIMENTO MENSAL"
+                total={essencial.totalFmt}
+                perUnit={essencial.porUnidadeFmt}
+              />
             </View>
             <PageFooter current={4} total={total} />
           </Page>
 
           {/* PÁG 5 — COMPLETO */}
           <Page size="A4" style={s.page}>
-            <SectionBand label="Plano" />
+            <SectionBand label="Plano Completo" />
             <View style={s.body}>
+              {/* Badge "MAIS ESCOLHIDO" */}
               <View
                 style={{
                   alignSelf: "flex-start",
                   backgroundColor: GOLD,
                   borderRadius: 4,
-                  paddingHorizontal: 10,
-                  paddingVertical: 3,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
                   marginBottom: 10,
                 }}
               >
-                <Text
-                  style={{
-                    fontSize: 7.5,
-                    fontWeight: "bold",
-                    color: NAVY,
-                    letterSpacing: 1,
-                  }}
-                >
-                  MAIS ESCOLHIDO
+                <Text style={{ fontSize: 7.5, fontWeight: "bold", color: NAVY, letterSpacing: 1.5 }}>
+                  ★  MAIS ESCOLHIDO
                 </Text>
               </View>
               <Text style={s.h1}>Completo</Text>
@@ -723,13 +763,13 @@ export function PropostaDocument(props: PropostaPDFData) {
                 style={{
                   backgroundColor: GRAY_50,
                   borderRadius: 8,
+                  borderLeftWidth: 3,
+                  borderLeftColor: GOLD,
                   padding: 14,
-                  marginBottom: 16,
+                  marginBottom: 18,
                 }}
               >
-                <Text
-                  style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
-                >
+                <Text style={{ fontSize: 9, color: GOLD, letterSpacing: 1.5, fontWeight: "bold", marginBottom: 4 }}>
                   IDEAL PARA
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 }}>
@@ -737,7 +777,7 @@ export function PropostaDocument(props: PropostaPDFData) {
                   comunicação integradas.
                 </Text>
               </View>
-              <View style={{ marginBottom: 20 }}>
+              <View style={{ marginBottom: 8 }}>
                 {[
                   "Tudo do Plano Essencial",
                   "Rateio de água e gás",
@@ -746,42 +786,21 @@ export function PropostaDocument(props: PropostaPDFData) {
                   "Elaboração de atas e convocações",
                   "Pagamentos online integrados",
                   "Relatórios gerenciais",
-                ].map((f, i) => (
-                  <FeatureRow key={i} text={f} />
-                ))}
+                ].map((f, i) => <FeatureRow key={i} text={f} />)}
               </View>
-              <View
-                style={{
-                  borderTopWidth: 1,
-                  borderTopColor: GRAY_200,
-                  paddingTop: 16,
-                  marginTop: 4,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 8,
-                    color: GRAY_500,
-                    letterSpacing: 1.5,
-                    marginBottom: 6,
-                  }}
-                >
-                  INVESTIMENTO MENSAL
-                </Text>
-                <Text style={{ fontSize: 28, fontWeight: "bold", color: NAVY }}>
-                  {completo.totalFmt}
-                </Text>
-                <Text style={{ fontSize: 9.5, color: GRAY_500, marginTop: 4 }}>
-                  {completo.porUnidadeFmt} por unidade/mês
-                </Text>
-              </View>
+              <PriceBox
+                label="INVESTIMENTO MENSAL"
+                total={completo.totalFmt}
+                perUnit={completo.porUnidadeFmt}
+                highlight
+              />
             </View>
             <PageFooter current={5} total={total} />
           </Page>
 
           {/* PÁG 6 — PREMIUM */}
           <Page size="A4" style={s.page}>
-            <SectionBand label="Plano" />
+            <SectionBand label="Plano Premium" />
             <View style={s.body}>
               <Text style={s.badge}>PLANO</Text>
               <Text style={s.h1}>Premium</Text>
@@ -793,13 +812,13 @@ export function PropostaDocument(props: PropostaPDFData) {
                 style={{
                   backgroundColor: GRAY_50,
                   borderRadius: 8,
+                  borderLeftWidth: 3,
+                  borderLeftColor: GOLD,
                   padding: 14,
-                  marginBottom: 16,
+                  marginBottom: 18,
                 }}
               >
-                <Text
-                  style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
-                >
+                <Text style={{ fontSize: 9, color: GOLD, letterSpacing: 1.5, fontWeight: "bold", marginBottom: 4 }}>
                   IDEAL PARA
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 }}>
@@ -807,7 +826,7 @@ export function PropostaDocument(props: PropostaPDFData) {
                   e SLA de atendimento.
                 </Text>
               </View>
-              <View style={{ marginBottom: 20 }}>
+              <View style={{ marginBottom: 8 }}>
                 {[
                   "Tudo do Plano Completo",
                   "Assessoria jurídica condominial",
@@ -816,58 +835,29 @@ export function PropostaDocument(props: PropostaPDFData) {
                   "Revisão anual da convenção",
                   "Atendimento prioritário SLA 12h",
                   "Relatório trimestral de desempenho",
-                ].map((f, i) => (
-                  <FeatureRow key={i} text={f} />
-                ))}
+                ].map((f, i) => <FeatureRow key={i} text={f} />)}
               </View>
-              <View
-                style={{
-                  borderTopWidth: 1,
-                  borderTopColor: GRAY_200,
-                  paddingTop: 16,
-                  marginTop: 4,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 8,
-                    color: GRAY_500,
-                    letterSpacing: 1.5,
-                    marginBottom: 6,
-                  }}
-                >
-                  INVESTIMENTO MENSAL
-                </Text>
-                <Text style={{ fontSize: 28, fontWeight: "bold", color: NAVY }}>
-                  {premium.totalFmt}
-                </Text>
-                <Text style={{ fontSize: 9.5, color: GRAY_500, marginTop: 4 }}>
-                  {premium.porUnidadeFmt} por unidade/mês
-                </Text>
-              </View>
+              <PriceBox
+                label="INVESTIMENTO MENSAL"
+                total={premium.totalFmt}
+                perUnit={premium.porUnidadeFmt}
+              />
             </View>
             <PageFooter current={6} total={total} />
           </Page>
 
           {/* PÁG 7 — COMPARATIVO */}
           <Page size="A4" style={s.page}>
-            <SectionBand label="Comparativo" />
-            <View
-              style={{
-                paddingHorizontal: 50,
-                paddingTop: 30,
-                flex: 1,
-                justifyContent: "center",
-              }}
-            >
+            <SectionBand label="Comparativo de Planos" />
+            <View style={{ paddingHorizontal: 50, paddingTop: 28, flex: 1 }}>
               <Text style={s.badge}>COMPARATIVO</Text>
               <Text style={s.h1}>Comparativo de Planos</Text>
               <View style={s.divider} />
-              <Text style={{ fontSize: 9.5, color: GRAY_500, marginBottom: 16 }}>
+              <Text style={{ fontSize: 9.5, color: GRAY_500, marginBottom: 14 }}>
                 Veja lado a lado o que cada plano oferece.
               </Text>
 
-              {/* Cabeçalho */}
+              {/* Cabeçalho da tabela */}
               <View
                 style={{
                   flexDirection: "row",
@@ -877,9 +867,7 @@ export function PropostaDocument(props: PropostaPDFData) {
                   borderRadius: 4,
                 }}
               >
-                <Text
-                  style={{ flex: 3, fontSize: 8.5, color: WHITE, fontWeight: "bold" }}
-                >
+                <Text style={{ flex: 3, fontSize: 8.5, color: WHITE, fontWeight: "bold" }}>
                   Serviço
                 </Text>
                 {["Essencial", "Completo", "Premium"].map((h) => (
@@ -888,7 +876,7 @@ export function PropostaDocument(props: PropostaPDFData) {
                     style={{
                       flex: 1,
                       fontSize: 8.5,
-                      color: WHITE,
+                      color: h === "Completo" ? GOLD : WHITE,
                       fontWeight: "bold",
                       textAlign: "center",
                     }}
@@ -903,19 +891,13 @@ export function PropostaDocument(props: PropostaPDFData) {
                   <View
                     key={i}
                     style={{
-                      backgroundColor: GRAY_100,
-                      paddingVertical: 5,
+                      backgroundColor: NAVY,
+                      paddingVertical: 4,
                       paddingHorizontal: 8,
+                      marginTop: 4,
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 7.5,
-                        fontWeight: "bold",
-                        color: NAVY,
-                        letterSpacing: 1,
-                      }}
-                    >
+                    <Text style={{ fontSize: 7.5, fontWeight: "bold", color: GOLD, letterSpacing: 1.5 }}>
                       {row.label}
                     </Text>
                   </View>
@@ -924,10 +906,11 @@ export function PropostaDocument(props: PropostaPDFData) {
                     key={i}
                     style={{
                       flexDirection: "row",
-                      paddingVertical: 6,
+                      paddingVertical: 5,
                       paddingHorizontal: 8,
                       borderBottomWidth: 0.5,
                       borderBottomColor: GRAY_200,
+                      backgroundColor: i % 2 === 0 ? WHITE : GRAY_50,
                     }}
                   >
                     <Text style={{ flex: 3, fontSize: 8.5, color: TEXT_COLOR }}>
@@ -938,13 +921,13 @@ export function PropostaDocument(props: PropostaPDFData) {
                         key={j}
                         style={{
                           flex: 1,
-                          fontSize: 10,
-                          fontWeight: v ? "bold" : "normal",
-                          color: cellColor(v),
+                          fontSize: 11,
+                          fontWeight: "bold",
+                          color: v === true ? GREEN_CHECK : GRAY_300,
                           textAlign: "center",
                         }}
                       >
-                        {cellVal(v)}
+                        {v === true ? "✓" : "–"}
                       </Text>
                     ))}
                   </View>
@@ -955,17 +938,14 @@ export function PropostaDocument(props: PropostaPDFData) {
               <View
                 style={{
                   flexDirection: "row",
-                  paddingVertical: 8,
+                  paddingVertical: 9,
                   paddingHorizontal: 8,
-                  backgroundColor: GRAY_50,
-                  borderTopWidth: 1,
-                  borderTopColor: NAVY,
-                  marginTop: 2,
+                  backgroundColor: NAVY,
+                  borderRadius: 4,
+                  marginTop: 6,
                 }}
               >
-                <Text
-                  style={{ flex: 3, fontSize: 8.5, fontWeight: "bold", color: NAVY }}
-                >
+                <Text style={{ flex: 3, fontSize: 8.5, fontWeight: "bold", color: WHITE }}>
                   Investimento mensal
                 </Text>
                 {[essencial.totalFmt, completo.totalFmt, premium.totalFmt].map((v, j) => (
@@ -975,7 +955,7 @@ export function PropostaDocument(props: PropostaPDFData) {
                       flex: 1,
                       fontSize: 8.5,
                       fontWeight: "bold",
-                      color: NAVY,
+                      color: j === 1 ? GOLD : WHITE,
                       textAlign: "center",
                     }}
                   >
@@ -994,7 +974,7 @@ export function PropostaDocument(props: PropostaPDFData) {
           ══════════════════════════════════════════ */}
       {incluiSindico && sindico && (
         <Page size="A4" style={s.page}>
-          <SectionBand label="Serviço" />
+          <SectionBand label="Síndico Profissional" />
           <View style={s.body}>
             <Text style={s.badge}>SERVIÇO</Text>
             <Text style={s.h1}>Síndico Profissional</Text>
@@ -1006,13 +986,13 @@ export function PropostaDocument(props: PropostaPDFData) {
               style={{
                 backgroundColor: GRAY_50,
                 borderRadius: 8,
+                borderLeftWidth: 3,
+                borderLeftColor: GOLD,
                 padding: 14,
-                marginBottom: 16,
+                marginBottom: 18,
               }}
             >
-              <Text
-                style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
-              >
+              <Text style={{ fontSize: 9, color: GOLD, letterSpacing: 1.5, fontWeight: "bold", marginBottom: 4 }}>
                 IDEAL PARA
               </Text>
               <Text style={{ fontSize: 9.5, color: GRAY_600, lineHeight: 1.5 }}>
@@ -1020,7 +1000,7 @@ export function PropostaDocument(props: PropostaPDFData) {
                 condominial e representação legal.
               </Text>
             </View>
-            <View style={{ marginBottom: 20 }}>
+            <View style={{ marginBottom: 16 }}>
               {[
                 "Representação legal do condomínio",
                 "Gestão de funcionários e fornecedores",
@@ -1029,58 +1009,70 @@ export function PropostaDocument(props: PropostaPDFData) {
                 "Fiscalização de contratos e obras",
                 "Atendimento aos condôminos",
                 "Aplicação do regimento interno",
-              ].map((f, i) => (
-                <FeatureRow key={i} text={f} />
-              ))}
+              ].map((f, i) => <FeatureRow key={i} text={f} />)}
             </View>
+
+            {/* Preço */}
             <View
               style={{
+                backgroundColor: GRAY_50,
+                borderRadius: 8,
+                padding: 16,
+                marginBottom: 16,
                 borderTopWidth: 1,
                 borderTopColor: GRAY_200,
-                paddingTop: 16,
               }}
             >
-              <Text
-                style={{
-                  fontSize: 8,
-                  color: GRAY_500,
-                  letterSpacing: 1.5,
-                  marginBottom: 6,
-                }}
-              >
+              <Text style={{ fontSize: 8, color: GRAY_500, letterSpacing: 1.5, marginBottom: 6 }}>
                 INVESTIMENTO MENSAL — SÍNDICO
               </Text>
-              <Text
-                style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 4 }}
-              >
-                {sindico || "Sob consulta"}
+              <Text style={{ fontSize: 30, fontWeight: "bold", color: NAVY }}>
+                {sindico}
               </Text>
-              <Text style={{ fontSize: 9.5, color: GRAY_500, marginBottom: 14 }}>
-                Valores calculados para {numeroUnidades} unidades. Sujeitos a ajuste
-                conforme avaliação técnica.
+              <Text style={{ fontSize: 9.5, color: GRAY_500, marginTop: 4 }}>
+                Calculado para {numeroUnidades} unidades. Sujeito a ajuste após avaliação técnica.
               </Text>
+            </View>
+
+            {/* Destaque RC */}
+            <View
+              style={{
+                backgroundColor: NAVY,
+                borderRadius: 8,
+                padding: 18,
+                flexDirection: "row",
+                alignItems: "flex-start",
+              }}
+            >
               <View
                 style={{
-                  backgroundColor: NAVY,
-                  borderRadius: 8,
-                  padding: 14,
+                  width: 32,
+                  height: 32,
+                  borderRadius: 16,
+                  backgroundColor: GOLD,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 14,
+                  flexShrink: 0,
                 }}
               >
-                <Text style={{ fontSize: 9.5, color: GOLD_LIGHT, lineHeight: 1.6 }}>
-                  A Alpha Condomínios tem como diferencial no mercado o{" "}
-                  <Text style={{ fontWeight: "bold" }}>
-                    Seguro de Responsabilidade Civil (RC) do Síndico INCLUSO
-                  </Text>
-                  . Protegemos o síndico contra riscos inerentes à função, sem custo
-                  adicional.
+                <Text style={{ fontSize: 14, color: NAVY, fontWeight: "bold" }}>✓</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 9, color: GOLD, letterSpacing: 1, fontWeight: "bold", marginBottom: 5 }}>
+                  DIFERENCIAL EXCLUSIVO
+                </Text>
+                <Text style={{ fontSize: 10, color: WHITE, lineHeight: 1.6 }}>
+                  A Alpha Condomínios inclui o{" "}
+                  <Text style={{ fontWeight: "bold", color: GOLD }}>
+                    Seguro de Responsabilidade Civil (RC) do Síndico
+                  </Text>{" "}
+                  sem custo adicional. Proteção completa contra riscos inerentes à função.
                 </Text>
               </View>
             </View>
           </View>
-          <PageFooter
-  current={3 + (incluiAdmin ? 4 : 0) + 1}
-  total={total}
-/>
+          <PageFooter current={sindicoPg} total={total} />
         </Page>
       )}
 
@@ -1088,7 +1080,7 @@ export function PropostaDocument(props: PropostaPDFData) {
           PÁG — CONDIÇÕES COMERCIAIS
           ══════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
-        <SectionBand label="Condições" />
+        <SectionBand label="Condições Comerciais" />
         <View style={s.body}>
           <Text style={s.badge}>CONDIÇÕES</Text>
           <Text style={s.h1}>Condições Comerciais</Text>
@@ -1133,17 +1125,10 @@ export function PropostaDocument(props: PropostaPDFData) {
                     borderLeftWidth: 3,
                     borderLeftColor: GOLD,
                     padding: 14,
-                    minHeight: 80,
+                    minHeight: 88,
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      fontWeight: "bold",
-                      color: NAVY,
-                      marginBottom: 5,
-                    }}
-                  >
+                  <Text style={{ fontSize: 10, fontWeight: "bold", color: NAVY, marginBottom: 5 }}>
                     {c.titulo}
                   </Text>
                   <Text style={{ fontSize: 9, color: GRAY_700, lineHeight: 1.55 }}>
@@ -1158,7 +1143,7 @@ export function PropostaDocument(props: PropostaPDFData) {
       </Page>
 
       {/* ══════════════════════════════════════════
-          PÁG — COMO CONTRATAR
+          PÁG — PRÓXIMOS PASSOS
           ══════════════════════════════════════════ */}
       <Page size="A4" style={s.page}>
         <SectionBand label="Próximos Passos" />
@@ -1194,34 +1179,27 @@ export function PropostaDocument(props: PropostaPDFData) {
               style={{
                 flexDirection: "row",
                 alignItems: "flex-start",
-                marginBottom: 20,
+                marginBottom: 22,
               }}
             >
               <View
                 style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 17,
-                  backgroundColor: NAVY,
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  backgroundColor: GOLD,
                   justifyContent: "center",
                   alignItems: "center",
                   marginRight: 14,
                   flexShrink: 0,
                 }}
               >
-                <Text style={{ fontSize: 14, fontWeight: "bold", color: WHITE }}>
+                <Text style={{ fontSize: 15, fontWeight: "bold", color: NAVY }}>
                   {step.n}
                 </Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "bold",
-                    color: NAVY,
-                    marginBottom: 3,
-                  }}
-                >
+                <Text style={{ fontSize: 12, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
                   {step.titulo}
                 </Text>
                 <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>
@@ -1235,7 +1213,7 @@ export function PropostaDocument(props: PropostaPDFData) {
             style={{
               backgroundColor: NAVY,
               borderRadius: 10,
-              padding: 22,
+              padding: 24,
               marginTop: 16,
               alignItems: "center",
             }}
@@ -1251,16 +1229,10 @@ export function PropostaDocument(props: PropostaPDFData) {
             >
               Pronto para transformar a gestão do seu condomínio?
             </Text>
-            <Text
-              style={{
-                fontSize: 9.5,
-                color: GOLD,
-                textAlign: "center",
-                lineHeight: 1.7,
-              }}
-            >
+            <Text style={{ fontSize: 9.5, color: GOLD, textAlign: "center", lineHeight: 1.8 }}>
               (31) 99778-7316{"\n"}
-              comercial@alphafacilities.com.br
+              comercial@alphafacilities.com.br{"\n"}
+              www.alphafacilities.com.br
             </Text>
           </View>
         </View>
@@ -1282,6 +1254,66 @@ export function PropostaDocument(props: PropostaPDFData) {
           <PageFooter current={finalPg} total={total} />
         </Page>
       )}
+
+      {/* ══════════════════════════════════════════
+          CONTRACAPA
+          ══════════════════════════════════════════ */}
+      <Page size="A4" style={{ padding: 0, backgroundColor: NAVY }}>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 60 }}>
+          <Image
+            src={LOGO_B64}
+            style={{ width: 180, height: 58, objectFit: "contain", marginBottom: 36 }}
+          />
+          <View style={{ height: 2, width: 60, backgroundColor: GOLD, marginBottom: 28 }} />
+          <Text
+            style={{
+              fontSize: 13,
+              color: WHITE,
+              textAlign: "center",
+              lineHeight: 1.7,
+              marginBottom: 32,
+              maxWidth: 320,
+            }}
+          >
+            Obrigado pela oportunidade.{"\n"}
+            Será um prazer cuidar do seu condomínio.
+          </Text>
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: "rgba(200,169,97,0.4)",
+              borderRadius: 8,
+              padding: 24,
+              alignItems: "center",
+              width: "100%",
+              maxWidth: 340,
+            }}
+          >
+            <Text style={{ fontSize: 9, color: GOLD, letterSpacing: 1.5, fontWeight: "bold", marginBottom: 12 }}>
+              ENTRE EM CONTATO
+            </Text>
+            <Text style={{ fontSize: 10, color: WHITE, textAlign: "center", lineHeight: 1.8 }}>
+              (31) 99778-7316{"\n"}
+              comercial@alphafacilities.com.br{"\n"}
+              www.alphafacilities.com.br
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            position: "absolute",
+            bottom: 24,
+            left: 0,
+            right: 0,
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 7.5, color: "rgba(255,255,255,0.3)" }}>
+            Página {contracapaPg} de {total}
+          </Text>
+        </View>
+      </Page>
+
     </Document>
   );
 }
