@@ -485,7 +485,7 @@ export function PropostaDocument(props: PropostaPDFData) {
         {/* Logo grande */}
         <View>
           <Image
-            src={LOGO_B64}
+            src="/logo-alpha.png"
             style={{ width: 160, height: 80, objectFit: "contain", marginBottom: 48 }}
           />
           {/* Badge */}
