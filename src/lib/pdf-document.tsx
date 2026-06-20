@@ -354,12 +354,14 @@ function PageCapa({
         backgroundColor: WHITE,
       }}
     >
-      {/* ── COLUNA ESQUERDA — BRANCA ── */}
+      {/* ══════════════════════════════════════
+          COLUNA ESQUERDA — BRANCA
+          ══════════════════════════════════════ */}
       <View
         style={{
           width: "55%",
           backgroundColor: WHITE,
-          paddingTop: 80,
+          paddingTop: 0,
           paddingBottom: 48,
           paddingHorizontal: 44,
           flexDirection: "column",
@@ -367,43 +369,69 @@ function PageCapa({
           alignItems: "flex-start",
         }}
       >
-        {/* LOGO */}
+        {/* ── LOGO em destaque ── */}
         <Image
           src={logoAlpha}
           style={{
-            width: 160,
-            height: 80,
+            width: 220,        // ✅ AJUSTE 1: logo maior
+            height: 110,
             objectFit: "contain",
-            marginBottom: 48,
+            marginBottom: 64,
           }}
         />
 
-        {/* LABEL */}
+        {/* ── LABEL ── */}
         <Text
           style={{
             fontSize: 8,
-            color: GRAY_500,
-            letterSpacing: 3,
-            marginBottom: 10,
+            color: NAVY,
+            letterSpacing: 3.5,
+            marginBottom: 6,
           }}
         >
           PROPOSTA COMERCIAL
         </Text>
 
-        {/* NOME DO CONDOMÍNIO */}
+        {/* ── NÚMERO DA PROPOSTA ── */}
         <Text
           style={{
-            fontSize: 16,
+            fontSize: 20,
             fontWeight: "bold",
             color: NAVY,
-            marginBottom: 5,
-            lineHeight: 1.3,
+            marginBottom: 6,
+            letterSpacing: 0.5,
           }}
         >
-          {nomeCondominio}
+          N {numeroContrato}
         </Text>
 
-        {/* ENDEREÇO */}
+        {/* ── DATA ── */}
+        <Text
+          style={{
+            fontSize: 9,
+            color: GRAY_500,
+            marginBottom: 32,
+          }}
+        >
+          {dataHoje}
+        </Text>
+
+        {/* ── NOME DO CONDOMÍNIO (se houver) ── */}
+        {nomeCondominio ? (
+          <Text
+            style={{
+              fontSize: 11,
+              fontWeight: "bold",
+              color: NAVY,
+              marginBottom: 4,
+              lineHeight: 1.3,
+            }}
+          >
+            {nomeCondominio}
+          </Text>
+        ) : null}
+
+        {/* ── ENDEREÇO ── */}
         {enderecoCondominio ? (
           <Text
             style={{
@@ -417,174 +445,136 @@ function PageCapa({
           </Text>
         ) : null}
 
-        {/* UNIDADES */}
+        {/* ── UNIDADES ── */}
         {numeroUnidades ? (
-          <Text style={{ fontSize: 9, color: GRAY_500, marginBottom: 6 }}>
+          <Text
+            style={{
+              fontSize: 9,
+              color: GRAY_500,
+              marginBottom: 8,
+            }}
+          >
             {numeroUnidades} unidades
           </Text>
         ) : null}
 
-        {/* SOLICITANTE */}
+        {/* ── SOLICITANTE ── */}
         {nomeContato ? (
-          <Text style={{ fontSize: 9, color: GRAY_500, marginBottom: 28 }}>
+          <Text
+            style={{
+              fontSize: 9,
+              color: GRAY_500,
+            }}
+          >
             Solicitante: {nomeContato}
           </Text>
         ) : null}
-
-        {/* SEPARADOR */}
-        <View
-          style={{
-            width: 40,
-            height: 1,
-            backgroundColor: GRAY_500,
-            opacity: 0.25,
-            marginBottom: 18,
-          }}
-        />
-
-        {/* NÚMERO DA PROPOSTA */}
-        <Text
-          style={{
-            fontSize: 9,
-            color: GRAY_500,
-            letterSpacing: 1,
-            marginBottom: 4,
-          }}
-        >
-          Proposta Nº
-        </Text>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-            color: NAVY,
-            marginBottom: 6,
-          }}
-        >
-          {numeroContrato}
-        </Text>
-
-        {/* DATA */}
-        <Text style={{ fontSize: 9, color: GRAY_500 }}>{dataHoje}</Text>
       </View>
 
-      {/* ── COLUNA DIREITA — DEGRADÊ AZUL ── */}
+      {/* ══════════════════════════════════════
+          COLUNA DIREITA — DEGRADÊ AZUL SUAVE
+          ══════════════════════════════════════ */}
       <View
         style={{
           width: "45%",
+          position: "relative",
           flexDirection: "column",
           justifyContent: "flex-end",
           alignItems: "center",
           overflow: "hidden",
-          position: "relative",
         }}
       >
-        {/* Camada base — azul claro */}
+        {/* ── BASE AZUL ESCURO (fundo total) ── */}
         <View
           style={{
             position: "absolute",
             top: 0, left: 0, right: 0, bottom: 0,
-            backgroundColor: "#C8D8E8",
-          }}
-        />
-        {/* Camada intermediária */}
-        <View
-          style={{
-            position: "absolute",
-            top: "20%", left: 0, right: 0, bottom: 0,
-            backgroundColor: "#8BA8C4",
-            opacity: 0.6,
-          }}
-        />
-        {/* Camada escura */}
-        <View
-          style={{
-            position: "absolute",
-            top: "45%", left: 0, right: 0, bottom: 0,
-            backgroundColor: "#3A5A80",
-            opacity: 0.75,
-          }}
-        />
-        {/* Camada navy */}
-        <View
-          style={{
-            position: "absolute",
-            top: "65%", left: 0, right: 0, bottom: 0,
-            backgroundColor: NAVY,
-            opacity: 0.92,
-          }}
-        />
-        {/* Camada fundo — navy escuro */}
-        <View
-          style={{
-            position: "absolute",
-            top: "82%", left: 0, right: 0, bottom: 0,
-            backgroundColor: NAVY_DARK,
+            backgroundColor: "#1B2A4A",
           }}
         />
 
-        {/* SILHUETA DOS PRÉDIOS */}
+        {/* ── DEGRADÊ: 8 CAMADAS BRANCAS com opacidade decrescente ──
+             Simulam transição suave de branco (topo) → azul (base)  
+             ✅ AJUSTE 2: sem quebras de cor                          */}
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: "100%", opacity: 0.97, backgroundColor: WHITE }} />
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: "88%",  opacity: 0.88, backgroundColor: WHITE }} />
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: "76%",  opacity: 0.76, backgroundColor: WHITE }} />
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: "64%",  opacity: 0.60, backgroundColor: WHITE }} />
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: "52%",  opacity: 0.44, backgroundColor: WHITE }} />
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: "40%",  opacity: 0.28, backgroundColor: WHITE }} />
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: "28%",  opacity: 0.14, backgroundColor: WHITE }} />
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: "14%",  opacity: 0.05, backgroundColor: WHITE }} />
+
+        {/* ── SILHUETA DE PRÉDIOS ── */}
         <View
           style={{
             position: "absolute",
-            bottom: 148,
+            bottom: 160,
             left: 0,
             right: 0,
-            alignItems: "flex-end",
+            alignItems: "center",
           }}
         >
           <BuildingsSilhouette />
         </View>
 
-        {/* CAIXA DE CONTATO */}
+        {/* ── BLOCO DE CONTATO ──
+             ✅ AJUSTE 3: padding e fontes maiores, borda dourada espessa */}
         <View
           style={{
-            marginBottom: 32,
-            marginHorizontal: 20,
+            width: "88%",
             backgroundColor: WHITE,
             borderRadius: 6,
             borderWidth: 1.5,
             borderColor: GOLD,
-            paddingVertical: 18,
+            paddingVertical: 22,
             paddingHorizontal: 20,
+            marginBottom: 36,
             alignItems: "center",
-            width: "82%",
           }}
         >
+          {/* ENTRE EM CONTATO */}
           <Text
             style={{
-              fontSize: 7.5,
+              fontSize: 8,
               color: GOLD,
-              letterSpacing: 2.5,
-              marginBottom: 12,
+              letterSpacing: 3,
+              marginBottom: 14,
             }}
           >
             ENTRE EM CONTATO
           </Text>
 
+          {/* TELEFONE */}
           <Text
             style={{
-              fontSize: 10,
+              fontSize: 13,
               fontWeight: "bold",
               color: NAVY,
-              marginBottom: 5,
+              marginBottom: 7,
             }}
           >
             (31) 99778-7316
           </Text>
 
+          {/* E-MAIL */}
           <Text
             style={{
-              fontSize: 8.5,
+              fontSize: 10,
               color: NAVY,
               marginBottom: 5,
-              textAlign: "center",
             }}
           >
             comercial@alphafacilities.com.br
           </Text>
 
-          <Text style={{ fontSize: 8.5, color: GRAY_500 }}>
+          {/* SITE */}
+          <Text
+            style={{
+              fontSize: 9.5,
+              color: GRAY_500,
+            }}
+          >
             www.alphafacilities.com.br
           </Text>
         </View>
