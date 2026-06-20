@@ -13,7 +13,7 @@ import {
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { calcularPlanos, formatSindico, formatBRL } from "./calculations";
+import { calcularPlanos, formatBRL, SERVICOS_PLANOS } from "./calculations";
 import logoAlpha from "../assets/logo-alpha.png";
 
 /* ================================================================
@@ -44,10 +44,8 @@ interface PropostaPDFData {
 }
 
 /* ================================================================
-   DEGRADÊ SVG — sem LinearGradient importado
-   Usa <defs> nativo do Svg do react-pdf (PDFKit)
+   DEGRADÊ SVG
    ================================================================ */
-
 function GradientVertical({
   width,
   height,
@@ -65,7 +63,7 @@ function GradientVertical({
       style={{ position: "absolute", top: 0, left: 0 }}
     >
       <Defs>
-        {/* @ts-ignore — linearGradient em minúsculo é suportado pelo PDFKit via SVG spec */}
+        {/* @ts-ignore */}
         <linearGradient id={uid} x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
           {/* @ts-ignore */}
           <stop offset="0%"   stopColor="#6A8FC0" stopOpacity="1" />
@@ -342,7 +340,7 @@ function PageCapa({ data }: { data: PropostaPDFData }) {
     <Page size="A4" style={{ position: "relative", backgroundColor: WHITE }}>
       <GradientVertical width={W / 2} height={H} uid="gv-capa" />
 
-      {/* Coluna esquerda — branca */}
+      {/* Coluna esquerda */}
       <View
         style={{
           position: "absolute",
@@ -383,7 +381,7 @@ function PageCapa({ data }: { data: PropostaPDFData }) {
         </View>
       </View>
 
-      {/* Coluna direita — sobre o degradê */}
+      {/* Coluna direita */}
       <View
         style={{
           position: "absolute",
@@ -911,9 +909,22 @@ function PageSindico({
 }: {
   pg: number;
   total: number;
-  sindico: { preco: number; itens: string[] };
+  sindico: {
+    preco: number;
+    itens: string[];
+    label: string | null;
+    isConsulta: boolean;
+  };
   unidades: number;
 }) {
+  const precoTexto = sindico.isConsulta
+    ? sindico.label ?? "Sob consulta"
+    : sindico.label ?? formatBRL(sindico.preco) + "/mês";
+
+  const porUnidadeTexto = sindico.isConsulta
+    ? "Sob consulta"
+    : formatBRL(sindico.preco / unidades) + "/unidade";
+
   return (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 50 }}>
       <PageHeader label="Serviço" />
@@ -948,11 +959,11 @@ function PageSindico({
             </Text>
           </View>
           <View style={{ alignItems: "flex-end" }}>
-            <Text style={{ fontSize: 26, fontWeight: "bold", color: GOLD }}>
-              {formatBRL(sindico.preco)}
+            <Text style={{ fontSize: sindico.isConsulta ? 13 : 26, fontWeight: "bold", color: GOLD }}>
+              {precoTexto}
             </Text>
             <Text style={{ fontSize: 8, color: WHITE, opacity: 0.7 }}>
-              {formatBRL(sindico.preco / unidades)}/unidade
+              {porUnidadeTexto}
             </Text>
           </View>
         </View>
@@ -1253,11 +1264,40 @@ function PageContracapa({ data }: { data: PropostaPDFData }) {
 }
 
 /* ================================================================
-   DOCUMENTO PRINCIPAL
+   DOCUMENTO PRINCIPAL — CORRIGIDO
    ================================================================ */
 export function PropostaPDF({ data }: { data: PropostaPDFData }) {
-  const planos = calcularPlanos(data.condominio.unidades);
-  const sindico = formatSindico(data.condominio.unidades);
+  const calc = calcularPlanos(data.condominio.unidades);
+
+  // Monta array de planos no formato que PagePlano e PageComparativo esperam
+  const planosAdmin = [
+    {
+      nome: "Essencial",
+      preco: calc.essencial.tipo === "valor" ? calc.essencial.mensal : 0,
+      itens: SERVICOS_PLANOS.essencial,
+    },
+    {
+      nome: "Completo",
+      preco: calc.completo.tipo === "valor" ? calc.completo.mensal : 0,
+      itens: SERVICOS_PLANOS.completo,
+    },
+    {
+      nome: "Premium",
+      preco: calc.premium.tipo === "valor" ? calc.premium.mensal : 0,
+      itens: SERVICOS_PLANOS.premium,
+    },
+  ];
+
+  // Monta síndico no formato que PageSindico espera
+  const sindicoData = {
+    preco: calc.sindico.tipo === "valor" ? calc.sindico.mensal : 0,
+    itens: SERVICOS_PLANOS.sindico,
+    label: calc.sindico.tipo === "valor"
+      ? (calc.sindico.label ?? null)
+      : calc.sindico.texto,
+    isConsulta: calc.sindico.tipo === "consulta",
+  };
+
   const temConsideracoes = !!(data.consideracoesFinais && data.consideracoesFinais.trim());
 
   let total = 4;
@@ -1278,10 +1318,10 @@ export function PropostaPDF({ data }: { data: PropostaPDFData }) {
 
       {data.incluiAdmin && (
         <>
-          <PagePlano pg={++pg} total={total} plano={planos[0]} unidades={data.condominio.unidades} />
-          <PagePlano pg={++pg} total={total} plano={planos[1]} unidades={data.condominio.unidades} />
-          <PagePlano pg={++pg} total={total} plano={planos[2]} unidades={data.condominio.unidades} />
-          <PageComparativo pg={++pg} total={total} planos={planos} />
+          <PagePlano pg={++pg} total={total} plano={planosAdmin[0]} unidades={data.condominio.unidades} />
+          <PagePlano pg={++pg} total={total} plano={planosAdmin[1]} unidades={data.condominio.unidades} />
+          <PagePlano pg={++pg} total={total} plano={planosAdmin[2]} unidades={data.condominio.unidades} />
+          <PageComparativo pg={++pg} total={total} planos={planosAdmin} />
         </>
       )}
 
@@ -1289,7 +1329,7 @@ export function PropostaPDF({ data }: { data: PropostaPDFData }) {
         <PageSindico
           pg={++pg}
           total={total}
-          sindico={sindico}
+          sindico={sindicoData}
           unidades={data.condominio.unidades}
         />
       )}
