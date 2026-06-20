@@ -9,6 +9,9 @@ import {
   Svg,
   Rect,
   Path,
+  Defs,
+  LinearGradient,
+  Stop,
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -43,6 +46,56 @@ interface PropostaPDFData {
 }
 
 /* ================================================================
+   DEGRADÊ SVG — reutilizável
+   Capa:    vertical   topo claro → base escura
+   Headers: horizontal esquerda clara → direita escura
+   ================================================================ */
+
+/** Preenche toda a área com degradê VERTICAL: topo=#4A6FA5 → base=NAVY_DARK */
+function GradientVertical({ width, height }: { width: number; height: number }) {
+  return (
+    <Svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      style={{ position: "absolute", top: 0, left: 0 }}
+    >
+      <Defs>
+        <LinearGradient id="gv" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0%"   stopColor="#6A8FC0" stopOpacity="1" />
+          <Stop offset="30%"  stopColor="#4A6FA5" stopOpacity="1" />
+          <Stop offset="65%"  stopColor="#2E4470" stopOpacity="1" />
+          <Stop offset="100%" stopColor="#0F1A30" stopOpacity="1" />
+        </LinearGradient>
+      </Defs>
+      <Rect x="0" y="0" width={width} height={height} fill="url(#gv)" />
+    </Svg>
+  );
+}
+
+/** Preenche toda a área com degradê HORIZONTAL: esquerda=#6A8FC0 → direita=NAVY_DARK */
+function GradientHorizontal({ width, height }: { width: number; height: number }) {
+  return (
+    <Svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      style={{ position: "absolute", top: 0, left: 0 }}
+    >
+      <Defs>
+        <LinearGradient id="gh" x1="0" y1="0" x2="1" y2="0">
+          <Stop offset="0%"   stopColor="#6A8FC0" stopOpacity="1" />
+          <Stop offset="35%"  stopColor="#4A6FA5" stopOpacity="1" />
+          <Stop offset="70%"  stopColor="#2E4470" stopOpacity="1" />
+          <Stop offset="100%" stopColor="#0F1A30" stopOpacity="1" />
+        </LinearGradient>
+      </Defs>
+      <Rect x="0" y="0" width={width} height={height} fill="url(#gh)" />
+    </Svg>
+  );
+}
+
+/* ================================================================
    COMPONENTES AUXILIARES
    ================================================================ */
 function GoldDivider() {
@@ -59,69 +112,36 @@ function GoldDivider() {
   );
 }
 
-/* ================================================================
-   ✅ AJUSTE 4 — PageHeader com degradê horizontal esquerda→direita
-   Claro (#2E4A7A) na esquerda, escuro (#0F1A30) na direita
-   Logo branca destaca sobre o fundo mais claro
-   ================================================================ */
+/**
+ * Header das páginas internas.
+ * Degradê horizontal real via SVG LinearGradient.
+ */
 function PageHeader({ label }: { label: string }) {
+  // A4 = 595pt de largura. Header tem paddingVertical 20 + logo 45 + label ~12 ≈ 90pt altura
+  const W = 595;
+  const H = 90;
   return (
-    <View
-      style={{
-        position: "relative",
-        paddingHorizontal: 50,
-        paddingVertical: 20,
-        overflow: "hidden",
-      }}
-    >
-      {/* Camada base: azul escuro (direita) */}
+    <View style={{ position: "relative", width: W, height: H, overflow: "hidden" }}>
+      {/* ✅ Degradê horizontal sem quebras */}
+      <GradientHorizontal width={W} height={H} />
+      {/* Conteúdo */}
       <View
         style={{
           position: "absolute",
           top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: NAVY_DARK,
+          paddingHorizontal: 50,
+          paddingVertical: 18,
+          justifyContent: "center",
         }}
-      />
-      {/* Degradê horizontal: 10 faixas verticais de claro→escuro */}
-      {[
-        { left: "0%",  width: "10%", opacity: 0.90 },
-        { left: "10%", width: "10%", opacity: 0.80 },
-        { left: "20%", width: "10%", opacity: 0.68 },
-        { left: "30%", width: "10%", opacity: 0.55 },
-        { left: "40%", width: "10%", opacity: 0.42 },
-        { left: "50%", width: "10%", opacity: 0.30 },
-        { left: "60%", width: "10%", opacity: 0.20 },
-        { left: "70%", width: "10%", opacity: 0.12 },
-        { left: "80%", width: "10%", opacity: 0.06 },
-        { left: "90%", width: "10%", opacity: 0.00 },
-      ].map((layer, i) => (
-        <View
-          key={i}
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            left: layer.left,
-            width: layer.width,
-            backgroundColor: "#4A6FA5",
-            opacity: layer.opacity,
-          }}
+      >
+        <Image
+          src={logoAlpha}
+          style={{ width: 90, height: 45, objectFit: "contain", marginBottom: 6 }}
         />
-      ))}
-
-      {/* Conteúdo sobre o degradê */}
-      <Image
-        src={logoAlpha}
-        style={{
-          width: 90,
-          height: 45,
-          objectFit: "contain",
-          marginBottom: 6,
-        }}
-      />
-      <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5 }}>
-        {label.toUpperCase()}
-      </Text>
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5 }}>
+          {label.toUpperCase()}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -325,7 +345,7 @@ function BuildingsSilhouette() {
 
 /* ================================================================
    PÁGINA 1 — CAPA
-   ✅ AJUSTE 1 — Degradê vertical suave e visível no lado direito
+   ✅ Degradê vertical SVG real na coluna direita (sem faixas)
    ================================================================ */
 function PageCapa({
   numeroContrato, dataHoje, nomeCondominio, enderecoCondominio,
@@ -335,15 +355,18 @@ function PageCapa({
   enderecoCondominio: string; numeroUnidades: number; nomeContato: string;
   pg: number; total: number;
 }) {
+  // Coluna direita: 45% de A4 (595pt) ≈ 268pt | altura A4 = 842pt
+  const CW = 268;
+  const CH = 842;
+
   return (
     <Page size="A4" style={{ flexDirection: "row", backgroundColor: WHITE }}>
 
-      {/* ── COLUNA ESQUERDA — BRANCA ── */}
+      {/* ── COLUNA ESQUERDA ── */}
       <View
         style={{
           width: "55%",
           backgroundColor: WHITE,
-          paddingBottom: 48,
           paddingHorizontal: 44,
           flexDirection: "column",
           justifyContent: "center",
@@ -352,7 +375,7 @@ function PageCapa({
       >
         <Image
           src={logoAlpha}
-          style={{ width: 220, height: 110, objectFit: "contain", marginBottom: 64 }}
+          style={{ width: 220, height: 110, objectFit: "contain", marginBottom: 56 }}
         />
 
         <Text style={{ fontSize: 8, color: NAVY, letterSpacing: 3.5, marginBottom: 6 }}>
@@ -383,7 +406,7 @@ function PageCapa({
         ) : null}
       </View>
 
-      {/* ── COLUNA DIREITA — DEGRADÊ VERTICAL SUAVE ── */}
+      {/* ── COLUNA DIREITA — DEGRADÊ VERTICAL SVG REAL ── */}
       <View
         style={{
           width: "45%",
@@ -394,32 +417,14 @@ function PageCapa({
           overflow: "hidden",
         }}
       >
-        {/* Base: azul navy escuro cobrindo tudo */}
-        <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: NAVY }} />
+        {/* ✅ Degradê vertical sem quebras */}
+        <GradientVertical width={CW} height={CH} />
 
-        {/*
-          ✅ Degradê vertical: topo claro (#4A6FA5) → base escura (NAVY)
-          12 faixas horizontais com opacidade decrescente de cima para baixo.
-          Resultado: transição suave e visível, sem quebras.
-        */}
-        <View style={{ position: "absolute", top: "0%",       left: 0, right: 0, height: "9%",  backgroundColor: "#4A6FA5", opacity: 0.95 }} />
-        <View style={{ position: "absolute", top: "8%",       left: 0, right: 0, height: "9%",  backgroundColor: "#4A6FA5", opacity: 0.85 }} />
-        <View style={{ position: "absolute", top: "16%",      left: 0, right: 0, height: "9%",  backgroundColor: "#4A6FA5", opacity: 0.74 }} />
-        <View style={{ position: "absolute", top: "24%",      left: 0, right: 0, height: "9%",  backgroundColor: "#3D5A8A", opacity: 0.62 }} />
-        <View style={{ position: "absolute", top: "32%",      left: 0, right: 0, height: "9%",  backgroundColor: "#3D5A8A", opacity: 0.50 }} />
-        <View style={{ position: "absolute", top: "40%",      left: 0, right: 0, height: "9%",  backgroundColor: "#2E4470", opacity: 0.38 }} />
-        <View style={{ position: "absolute", top: "48%",      left: 0, right: 0, height: "9%",  backgroundColor: "#2E4470", opacity: 0.28 }} />
-        <View style={{ position: "absolute", top: "56%",      left: 0, right: 0, height: "9%",  backgroundColor: "#253860", opacity: 0.18 }} />
-        <View style={{ position: "absolute", top: "64%",      left: 0, right: 0, height: "9%",  backgroundColor: "#1E2E50", opacity: 0.12 }} />
-        <View style={{ position: "absolute", top: "72%",      left: 0, right: 0, height: "9%",  backgroundColor: "#1B2A4A", opacity: 0.07 }} />
-        <View style={{ position: "absolute", top: "80%",      left: 0, right: 0, height: "9%",  backgroundColor: "#1B2A4A", opacity: 0.03 }} />
-        <View style={{ position: "absolute", top: "88%",      left: 0, right: 0, height: "12%", backgroundColor: "#1B2A4A", opacity: 0.00 }} />
-
-        {/* SILHUETA DE PRÉDIOS */}
+        {/* SILHUETA */}
         <View
           style={{
             position: "absolute",
-            bottom: 160,
+            bottom: 180,
             left: 0, right: 0,
             alignItems: "center",
           }}
@@ -460,19 +465,20 @@ function PageCapa({
 }
 
 /* ================================================================
-   ✅ AJUSTE 2 — PÁGINA 2: apenas "Quem Somos" (centralizado)
+   PÁGINA 2 — QUEM SOMOS
+   ✅ flex: 1 + justifyContent: "center" garante centralização
    ================================================================ */
 function PageQuemSomos({ pg, total }: { pg: number; total: number }) {
   return (
-    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+    <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Sobre Nós" />
 
       <View
         style={{
           flex: 1,
           paddingHorizontal: 60,
-          paddingTop: 40,
-          paddingBottom: 60,
+          paddingTop: 36,
+          paddingBottom: 52,
           justifyContent: "center",
         }}
       >
@@ -521,19 +527,20 @@ function PageQuemSomos({ pg, total }: { pg: number; total: number }) {
 }
 
 /* ================================================================
-   ✅ AJUSTE 2 — PÁGINA 3: apenas "Nossos Diferenciais" (centralizado)
+   PÁGINA 3 — NOSSOS DIFERENCIAIS
    ================================================================ */
 function PageDiferenciais({ pg, total }: { pg: number; total: number }) {
   return (
-    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+    <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Diferenciais" />
 
       <View
         style={{
           flex: 1,
           paddingHorizontal: 50,
-          paddingTop: 36,
-          paddingBottom: 60,
+          paddingTop: 30,
+          paddingBottom: 52,
+          justifyContent: "center",
         }}
       >
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>
@@ -542,7 +549,7 @@ function PageDiferenciais({ pg, total }: { pg: number; total: number }) {
         <Text style={{ fontSize: 24, fontWeight: "bold", color: NAVY, marginBottom: 8 }}>
           Nossos Diferenciais
         </Text>
-        <Text style={{ fontSize: 9.5, color: GRAY_700, marginBottom: 20, lineHeight: 1.5 }}>
+        <Text style={{ fontSize: 9.5, color: GRAY_700, marginBottom: 16, lineHeight: 1.5 }}>
           O que torna a Alpha Condomínios diferente no mercado.
         </Text>
         <GoldDivider />
@@ -559,7 +566,7 @@ function PageDiferenciais({ pg, total }: { pg: number; total: number }) {
           <DiferencialCard icon={<IMonitor />} titulo="Tecnologia de Ponta"    texto="Portal do condomínio, boletos digitais e aplicativo para gestão completa." />
           <DiferencialCard icon={<IPeople />}  titulo="Atendimento Humanizado" texto="Equipe dedicada com suporte ágil via WhatsApp, telefone e e-mail." />
           <DiferencialCard icon={<IShield />}  titulo="Conformidade Legal"     texto="Cumprimento rigoroso das obrigações fiscais, trabalhistas e condominiais." />
-          <DiferencialCard icon={<IMoney />}   titulo="Redução de Custos"      texto="Gestão estratégica e negociação qualificada com fornecedores, gerando economia real e sustentável." />
+          <DiferencialCard icon={<IMoney />}   titulo="Redução de Custos"      texto="Gestão estratégica e negociação qualificada com fornecedores, gerando economia real." />
           <DiferencialCard icon={<IStar />}    titulo="Excelência Comprovada"  texto="Mais de 25 anos de experiência em administração condominial com resultados consistentes." />
         </View>
       </View>
@@ -571,24 +578,30 @@ function PageDiferenciais({ pg, total }: { pg: number; total: number }) {
 
 /* ================================================================
    PÁGINA — SERVIÇOS
-   ✅ AJUSTE 3 — Conteúdo ocupa a página com padding equilibrado
    ================================================================ */
 function PageServicos({ pg, total }: { pg: number; total: number }) {
   const servicos = [
     { titulo: "Administração de Condomínios",  descricao: "Gestão completa de todas as atividades administrativas, financeiras e operacionais do condomínio, com foco em eficiência e transparência." },
-    { titulo: "Síndico Profissional",          descricao: "Profissional qualificado e dedicado exclusivamente à gestão do condomínio, garantindo cumprimento de todas as obrigações legais. Inclui Seguro de Responsabilidade Civil (RC) de Síndico, protegendo o profissional e o condomínio." },
-    { titulo: "Certificado Digital",           descricao: "Emissão e gestão de certificados digitais para assinatura eletrônica de documentos, atas e contratos, garantindo validade jurídica e agilidade." },
-    { titulo: "Seguro Condominial",            descricao: "Contratação e gestão de apólices de seguro patrimonial, incêndio, responsabilidade civil e outros, com análise criteriosa de coberturas e custos." },
-    { titulo: "AVCB",                          descricao: "Assessoria completa para obtenção e renovação do Auto de Vistoria do Corpo de Bombeiros, garantindo conformidade legal e segurança dos moradores." },
-    { titulo: "Assessoria Jurídica",           descricao: "Suporte jurídico especializado em direito condominial, com orientação em assembleias, elaboração de documentos e resolução de conflitos." },
-    { titulo: "Garantidora de Crédito",        descricao: "Intermediação com empresas garantidoras para locação de unidades, facilitando a entrada de inquilinos e reduzindo inadimplência." },
-    { titulo: "Dentre Outros",                 descricao: "Soluções personalizadas conforme necessidades específicas de cada condomínio: manutenção predial, comunicação visual, automação, sustentabilidade e muito mais." },
+    { titulo: "Síndico Profissional",          descricao: "Profissional qualificado e dedicado exclusivamente à gestão do condomínio. Inclui Seguro de Responsabilidade Civil (RC) de Síndico." },
+    { titulo: "Certificado Digital",           descricao: "Emissão e gestão de certificados digitais para assinatura eletrônica de documentos, atas e contratos." },
+    { titulo: "Seguro Condominial",            descricao: "Contratação e gestão de apólices de seguro patrimonial, incêndio, responsabilidade civil e outros." },
+    { titulo: "AVCB",                          descricao: "Assessoria completa para obtenção e renovação do Auto de Vistoria do Corpo de Bombeiros." },
+    { titulo: "Assessoria Jurídica",           descricao: "Suporte jurídico especializado em direito condominial, assembleias, documentos e resolução de conflitos." },
+    { titulo: "Garantidora de Crédito",        descricao: "Intermediação com empresas garantidoras para locação de unidades, facilitando a entrada de inquilinos." },
+    { titulo: "Dentre Outros",                 descricao: "Soluções personalizadas: manutenção predial, comunicação visual, automação, sustentabilidade e muito mais." },
   ];
 
   return (
-    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+    <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Serviços" />
-      <View style={{ paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 50,
+          paddingTop: 28,
+          paddingBottom: 52,
+        }}
+      >
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
           SOLUÇÕES COMPLETAS
         </Text>
@@ -610,7 +623,6 @@ function PageServicos({ pg, total }: { pg: number; total: number }) {
 
 /* ================================================================
    PÁGINA DE PLANO
-   ✅ AJUSTE 3 — Padding bottom garante que footer não sobrepõe
    ================================================================ */
 function PagePlano({
   pg, total, badge, nome, subtitulo, idealPara, features, totalFmt, porUnidadeFmt,
@@ -619,9 +631,16 @@ function PagePlano({
   idealPara: string; features: string[]; totalFmt: string; porUnidadeFmt: string;
 }) {
   return (
-    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+    <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Plano" />
-      <View style={{ paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 50,
+          paddingTop: 28,
+          paddingBottom: 52,
+        }}
+      >
         {badge && (
           <View style={{
             backgroundColor: GOLD, borderRadius: 4,
@@ -690,9 +709,16 @@ function PageComparativo({
   const ColW = { item: "46%", plano: "18%" };
 
   return (
-    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+    <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Comparativo" />
-      <View style={{ paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 50,
+          paddingTop: 28,
+          paddingBottom: 52,
+        }}
+      >
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>COMPARATIVO DE PLANOS</Text>
         <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 14 }}>Comparativo de Planos</Text>
         <Text style={{ fontSize: 9.5, color: GRAY_700, marginBottom: 18, lineHeight: 1.5 }}>Veja lado a lado o que cada plano oferece.</Text>
@@ -741,9 +767,16 @@ function PageSindico({ pg, total, sindicoTotalFmt, sindicoPorUnidade, numeroUnid
   pg: number; total: number; sindicoTotalFmt: string; sindicoPorUnidade: string; numeroUnidades: number;
 }) {
   return (
-    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+    <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Serviço" />
-      <View style={{ paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 50,
+          paddingTop: 28,
+          paddingBottom: 52,
+        }}
+      >
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 8 }}>SERVIÇO</Text>
         <Text style={{ fontSize: 26, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>Síndico Profissional</Text>
         <Text style={{ fontSize: 10, color: GRAY_700, marginBottom: 20, lineHeight: 1.5 }}>Gestão presencial com representação legal do condomínio</Text>
@@ -800,9 +833,17 @@ function PageCondicoes({ pg, total }: { pg: number; total: number }) {
   ];
 
   return (
-    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+    <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Condições" />
-      <View style={{ paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 50,
+          paddingTop: 28,
+          paddingBottom: 52,
+          justifyContent: "center",
+        }}
+      >
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>CONDIÇÕES GERAIS</Text>
         <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>Condições Comerciais</Text>
         <Text style={{ fontSize: 9.5, color: GRAY_700, marginBottom: 16, lineHeight: 1.5 }}>Transparência em todos os termos da nossa proposta.</Text>
@@ -832,9 +873,17 @@ function PagePassos({ pg, total, telefone, email }: {
   pg: number; total: number; telefone: string; email: string;
 }) {
   return (
-    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+    <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Próximos Passos" />
-      <View style={{ paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 50,
+          paddingTop: 28,
+          paddingBottom: 52,
+          justifyContent: "center",
+        }}
+      >
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>COMO CONTRATAR</Text>
         <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>Como Contratar</Text>
         <Text style={{ fontSize: 9.5, color: GRAY_700, marginBottom: 20, lineHeight: 1.5 }}>Simples, rápido e sem burocracia.</Text>
@@ -866,9 +915,17 @@ function PagePassos({ pg, total, telefone, email }: {
    ================================================================ */
 function PageConsideracoes({ pg, total, texto }: { pg: number; total: number; texto: string }) {
   return (
-    <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 40 }}>
+    <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Considerações Finais" />
-      <View style={{ paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 50,
+          paddingTop: 28,
+          paddingBottom: 52,
+          justifyContent: "center",
+        }}
+      >
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>OBSERVAÇÕES</Text>
         <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 14 }}>Considerações Finais</Text>
         <GoldDivider />
@@ -902,8 +959,6 @@ function PageContracapa() {
 
 /* ================================================================
    DOCUMENTO PRINCIPAL
-   ✅ AJUSTE 2 — Quem Somos e Diferenciais agora são páginas separadas
-   Contagem de páginas atualizada (+1)
    ================================================================ */
 export function PropostaDocument(props: PropostaPDFData) {
   const {
@@ -927,14 +982,13 @@ export function PropostaDocument(props: PropostaPDFData) {
   );
 
   const localidade = [bairro, cidade].filter(Boolean).join(" – ");
-
   const temConsideracoes = Boolean(consideracoesFinais?.trim());
 
   /* ── Contagem de páginas ── */
   let total = 0;
   total += 1; // capa
   total += 1; // quem somos
-  total += 1; // diferenciais   ← ✅ nova página separada
+  total += 1; // diferenciais
   total += 1; // serviços
   if (incluiAdmin)      total += 4; // essencial + completo + premium + comparativo
   if (incluiSindico)    total += 1; // síndico
@@ -945,10 +999,10 @@ export function PropostaDocument(props: PropostaPDFData) {
 
   /* ── Índices de página ── */
   let pg = 0;
-  const P_CAPA        = ++pg;
-  const P_QUEM_SOMOS  = ++pg;
-  const P_DIFERENCIAIS = ++pg; // ← ✅ índice novo
-  const P_SERVICOS    = ++pg;
+  const P_CAPA         = ++pg;
+  const P_QUEM_SOMOS   = ++pg;
+  const P_DIFERENCIAIS = ++pg;
+  const P_SERVICOS     = ++pg;
   let P_ESSENCIAL = 0, P_COMPLETO = 0, P_PREMIUM = 0, P_COMPARATIVO = 0;
   if (incluiAdmin) {
     P_ESSENCIAL   = ++pg;
@@ -1010,7 +1064,6 @@ export function PropostaDocument(props: PropostaPDFData) {
 
   return (
     <Document>
-      {/* 1. Capa */}
       <PageCapa
         numeroContrato={numeroContrato}
         dataHoje={dataHoje}
@@ -1022,16 +1075,12 @@ export function PropostaDocument(props: PropostaPDFData) {
         total={total}
       />
 
-      {/* 2. Quem Somos */}
       <PageQuemSomos pg={P_QUEM_SOMOS} total={total} />
 
-      {/* 3. Diferenciais */}
       <PageDiferenciais pg={P_DIFERENCIAIS} total={total} />
 
-      {/* 4. Serviços */}
       <PageServicos pg={P_SERVICOS} total={total} />
 
-      {/* 5–8. Planos */}
       {incluiAdmin && (
         <>
           <PagePlano
@@ -1071,7 +1120,6 @@ export function PropostaDocument(props: PropostaPDFData) {
         </>
       )}
 
-      {/* Síndico */}
       {incluiSindico && (
         <PageSindico
           pg={P_SINDICO} total={total}
@@ -1081,17 +1129,14 @@ export function PropostaDocument(props: PropostaPDFData) {
         />
       )}
 
-      {/* Condições */}
       <PageCondicoes pg={P_CONDICOES} total={total} />
 
-      {/* Próximos Passos */}
       <PagePassos
         pg={P_PASSOS} total={total}
         telefone={telefoneContato}
         email={emailContato}
       />
 
-      {/* Considerações Finais */}
       {temConsideracoes && (
         <PageConsideracoes
           pg={P_CONSIDERACOES} total={total}
@@ -1099,7 +1144,6 @@ export function PropostaDocument(props: PropostaPDFData) {
         />
       )}
 
-      {/* Contracapa */}
       <PageContracapa />
     </Document>
   );
