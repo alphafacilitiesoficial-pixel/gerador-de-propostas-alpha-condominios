@@ -1352,18 +1352,16 @@ export function PropostaDocument(props: PropostaPDFData) {
   return (
     <Document>
       {/* 1. Capa */}
-      <PageCapa
-        numeroContrato={numeroContrato}
-        dataHoje={dataHoje}
-        nomeCondominio={nomeCondominio}
-        localidade={localidade}
-        numeroUnidades={numeroUnidades}
-        nomeContato={nomeContato}
-        telefoneContato={telefoneContato}
-        emailContato={emailContato}
-        pg={P_CAPA}
-        total={total}
-      />
+<PageCapa
+  numeroContrato={data.numero}
+  dataHoje={format(data.data, "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
+  nomeCondominio={data.condominio.nome}
+  enderecoCondominio={data.condominio.endereco}
+  numeroUnidades={data.condominio.unidades}
+  nomeContato={data.contato.nome}
+  pg={1}
+  total={totalPages}
+/>
 
       {/* 2. Sobre Nós + Diferenciais */}
       <PageSobreNos pg={P_SOBRE} total={total} />
