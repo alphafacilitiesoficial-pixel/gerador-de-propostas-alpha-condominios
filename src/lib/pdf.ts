@@ -1,4 +1,4 @@
-// Geração de PDF profissional via @react-pdf/renderer
+// src/lib/pdf.ts
 
 export interface PropostaPDFData {
   numero: string;
@@ -19,13 +19,15 @@ export interface PDFHandle {
 export function gerarPDFProposta(data: PropostaPDFData): PDFHandle {
   const buildBlob = async (): Promise<Blob> => {
     try {
-      const [{ pdf }, { PropostaDocument }, React] = await Promise.all([
+      const [{ pdf }, { PropostaPDF }, React] = await Promise.all([
         import("@react-pdf/renderer"),
         import("./pdf-document"),
         import("react"),
       ]);
-      const element = React.createElement(PropostaDocument, data) as any;
-      const blob = await pdf(element).toBlob();
+
+      // Props encapsuladas em { data } conforme a assinatura do componente
+      const element = React.createElement(PropostaPDF, { data });
+      const blob = await pdf(element as any).toBlob();
       return blob;
     } catch (err) {
       console.error("[PDF] Erro ao gerar PDF:", err);
@@ -38,23 +40,20 @@ export function gerarPDFProposta(data: PropostaPDFData): PDFHandle {
     async save(filename: string) {
       const blob = await buildBlob();
 
-      // 1) Tenta Web Share API (funciona em mobile/PWA)
       const file = new File([blob], filename, { type: "application/pdf" });
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         try {
           await navigator.share({ files: [file], title: filename });
           return;
         } catch (_) {
-          // Usuário cancelou ou API falhou — segue pro fallback
+          // usuário cancelou — segue pro fallback
         }
       }
 
-      // 2) Fallback: abre em nova aba
       const url = URL.createObjectURL(blob);
       const newTab = window.open(url, "_blank");
 
       if (!newTab) {
-        // 3) Se popup bloqueado, força download tradicional
         const a = document.createElement("a");
         a.href = url;
         a.download = filename;
