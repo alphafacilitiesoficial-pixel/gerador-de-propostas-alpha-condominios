@@ -12,287 +12,59 @@ import { calcularPlanos, formatSindico, formatBRL } from "./calculations";
 import logoAlpha from "../assets/logo-alpha.png";
 
 /* ================================================================
-   CORES
+   CORES — atualize no topo do arquivo se necessário
    ================================================================ */
 const NAVY      = "#1B2A4A";
 const GOLD      = "#C8A961";
 const WHITE     = "#FFFFFF";
-const GRAY_50   = "#F7F8FA";
-const GRAY_200  = "#E5E7EB";
-const GRAY_700  = "#374151";
-const GREEN_CHECK = "#16A34A";
+const GRAY_500  = "#6B7280";
 const NAVY_DARK = "#0F1A30";
 
 /* ================================================================
-   TIPOS
-   ================================================================ */
-interface PropostaPDFData {
-  numero: string;
-  data: Date;
-  cidade?: string;
-  condominio: { nome: string; endereco: string; unidades: number; tipo: string };
-  contato: { nome: string; telefone: string; email: string };
-  incluiAdmin: boolean;
-  incluiSindico: boolean;
-  consideracoesFinais?: string;
-}
-
-/* ================================================================
-   SILHUETA DE PRÉDIOS (coluna direita da capa)
+   SILHUETA DE PRÉDIOS — fiel ao design da imagem
    ================================================================ */
 function BuildingsSilhouette() {
   return (
-    <Svg width="230" height="230" viewBox="0 0 230 230">
-      <Rect x="6"   y="130" width="34" height="100" fill="#A8B8CC" opacity="0.45" />
-      <Rect x="11"  y="138" width="8"  height="10"  fill="#7A8DA0" opacity="0.55" />
-      <Rect x="23"  y="138" width="8"  height="10"  fill="#7A8DA0" opacity="0.40" />
-      <Rect x="11"  y="153" width="8"  height="10"  fill="#7A8DA0" opacity="0.50" />
-      <Rect x="23"  y="153" width="8"  height="10"  fill="#7A8DA0" opacity="0.55" />
-      <Rect x="11"  y="168" width="8"  height="10"  fill="#7A8DA0" opacity="0.40" />
-      <Rect x="23"  y="168" width="8"  height="10"  fill="#7A8DA0" opacity="0.50" />
-      <Rect x="11"  y="183" width="8"  height="10"  fill="#7A8DA0" opacity="0.55" />
-      <Rect x="23"  y="183" width="8"  height="10"  fill="#7A8DA0" opacity="0.40" />
-      <Rect x="48"  y="75"  width="40" height="155" fill="#B0C0D4" opacity="0.50" />
-      <Rect x="53"  y="83"  width="10" height="12"  fill="#8090A8" opacity="0.60" />
-      <Rect x="67"  y="83"  width="10" height="12"  fill="#8090A8" opacity="0.45" />
-      <Rect x="53"  y="100" width="10" height="12"  fill="#8090A8" opacity="0.55" />
-      <Rect x="67"  y="100" width="10" height="12"  fill="#8090A8" opacity="0.60" />
-      <Rect x="53"  y="117" width="10" height="12"  fill="#8090A8" opacity="0.45" />
-      <Rect x="67"  y="117" width="10" height="12"  fill="#8090A8" opacity="0.55" />
-      <Rect x="53"  y="134" width="10" height="12"  fill="#8090A8" opacity="0.60" />
-      <Rect x="67"  y="134" width="10" height="12"  fill="#8090A8" opacity="0.45" />
-      <Rect x="53"  y="151" width="10" height="12"  fill="#8090A8" opacity="0.55" />
-      <Rect x="67"  y="151" width="10" height="12"  fill="#8090A8" opacity="0.60" />
-      <Rect x="53"  y="168" width="10" height="12"  fill="#8090A8" opacity="0.45" />
-      <Rect x="67"  y="168" width="10" height="12"  fill="#8090A8" opacity="0.55" />
-      <Rect x="97"  y="45"  width="44" height="185" fill="#BBC8DA" opacity="0.50" />
-      <Rect x="102" y="53"  width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
-      <Rect x="118" y="53"  width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
-      <Rect x="102" y="71"  width="11" height="13"  fill="#8A9AB0" opacity="0.55" />
-      <Rect x="118" y="71"  width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
-      <Rect x="102" y="89"  width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
-      <Rect x="118" y="89"  width="11" height="13"  fill="#8A9AB0" opacity="0.55" />
-      <Rect x="102" y="107" width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
-      <Rect x="118" y="107" width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
-      <Rect x="102" y="125" width="11" height="13"  fill="#8A9AB0" opacity="0.55" />
-      <Rect x="118" y="125" width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
-      <Rect x="102" y="143" width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
-      <Rect x="118" y="143" width="11" height="13"  fill="#8A9AB0" opacity="0.55" />
-      <Rect x="102" y="161" width="11" height="13"  fill="#8A9AB0" opacity="0.60" />
-      <Rect x="118" y="161" width="11" height="13"  fill="#8A9AB0" opacity="0.45" />
-      <Rect x="150" y="100" width="38" height="130" fill="#A8B8C8" opacity="0.45" />
-      <Rect x="155" y="108" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
-      <Rect x="168" y="108" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
-      <Rect x="155" y="124" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
-      <Rect x="168" y="124" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
-      <Rect x="155" y="140" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
-      <Rect x="168" y="140" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
-      <Rect x="155" y="156" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
-      <Rect x="168" y="156" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
-      <Rect x="155" y="172" width="9"  height="11"  fill="#7C8EA0" opacity="0.55" />
-      <Rect x="168" y="172" width="9"  height="11"  fill="#7C8EA0" opacity="0.40" />
-      <Rect x="196" y="115" width="30" height="115" fill="#A0B0C4" opacity="0.40" />
-      <Rect x="200" y="122" width="8"  height="10"  fill="#708090" opacity="0.50" />
-      <Rect x="212" y="122" width="8"  height="10"  fill="#708090" opacity="0.40" />
-      <Rect x="200" y="137" width="8"  height="10"  fill="#708090" opacity="0.50" />
-      <Rect x="212" y="137" width="8"  height="10"  fill="#708090" opacity="0.40" />
-      <Rect x="200" y="152" width="8"  height="10"  fill="#708090" opacity="0.50" />
-      <Rect x="212" y="152" width="8"  height="10"  fill="#708090" opacity="0.40" />
-      <Rect x="200" y="167" width="8"  height="10"  fill="#708090" opacity="0.50" />
-      <Rect x="212" y="167" width="8"  height="10"  fill="#708090" opacity="0.40" />
-      <Rect x="0"   y="226" width="230" height="4"  fill={NAVY_DARK} opacity="0.5" />
+    <Svg width="260" height="220" viewBox="0 0 260 220">
+      {/* Prédio central — mais alto, levemente bege/cinza */}
+      <Rect x="80" y="30" width="70" height="190" fill="#D6CFC4" opacity="0.55" />
+      <Rect x="92"  y="45"  width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.50" />
+      <Rect x="112" y="45"  width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.45" />
+      <Rect x="92"  y="68"  width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.50" />
+      <Rect x="112" y="68"  width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.45" />
+      <Rect x="92"  y="91"  width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.50" />
+      <Rect x="112" y="91"  width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.45" />
+      <Rect x="92"  y="114" width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.50" />
+      <Rect x="112" y="114" width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.45" />
+      <Rect x="92"  y="137" width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.50" />
+      <Rect x="112" y="137" width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.45" />
+      <Rect x="92"  y="160" width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.50" />
+      <Rect x="112" y="160" width="14" height="14" rx="1" fill="#B8B0A4" opacity="0.45" />
+
+      {/* Prédio direito — médio, cinza azulado */}
+      <Rect x="162" y="70" width="60" height="150" fill="#B8C4D4" opacity="0.45" />
+      <Rect x="172" y="84"  width="12" height="12" rx="1" fill="#9AAABB" opacity="0.50" />
+      <Rect x="190" y="84"  width="12" height="12" rx="1" fill="#9AAABB" opacity="0.45" />
+      <Rect x="172" y="103" width="12" height="12" rx="1" fill="#9AAABB" opacity="0.50" />
+      <Rect x="190" y="103" width="12" height="12" rx="1" fill="#9AAABB" opacity="0.45" />
+      <Rect x="172" y="122" width="12" height="12" rx="1" fill="#9AAABB" opacity="0.50" />
+      <Rect x="190" y="122" width="12" height="12" rx="1" fill="#9AAABB" opacity="0.45" />
+      <Rect x="172" y="141" width="12" height="12" rx="1" fill="#9AAABB" opacity="0.50" />
+      <Rect x="190" y="141" width="12" height="12" rx="1" fill="#9AAABB" opacity="0.45" />
+      <Rect x="172" y="160" width="12" height="12" rx="1" fill="#9AAABB" opacity="0.50" />
+      <Rect x="190" y="160" width="12" height="12" rx="1" fill="#9AAABB" opacity="0.45" />
+
+      {/* Prédio extremo direito — menor */}
+      <Rect x="228" y="105" width="32" height="115" fill="#A8B8C8" opacity="0.38" />
+      <Rect x="234" y="116" width="8"  height="9"  rx="1" fill="#8898AA" opacity="0.45" />
+      <Rect x="246" y="116" width="8"  height="9"  rx="1" fill="#8898AA" opacity="0.40" />
+      <Rect x="234" y="131" width="8"  height="9"  rx="1" fill="#8898AA" opacity="0.45" />
+      <Rect x="246" y="131" width="8"  height="9"  rx="1" fill="#8898AA" opacity="0.40" />
+      <Rect x="234" y="146" width="8"  height="9"  rx="1" fill="#8898AA" opacity="0.45" />
+      <Rect x="246" y="146" width="8"  height="9"  rx="1" fill="#8898AA" opacity="0.40" />
+      <Rect x="234" y="161" width="8"  height="9"  rx="1" fill="#8898AA" opacity="0.45" />
+      <Rect x="246" y="161" width="8"  height="9"  rx="1" fill="#8898AA" opacity="0.40" />
     </Svg>
-  );
-}
-
-/* ================================================================
-   SVG ÍCONES
-   ================================================================ */
-const IChart = () => (
-  <Svg width={20} height={20} viewBox="0 0 24 24">
-    <Path d="M3 14h4v7H3zM10 8h4v13h-4zM17 3h4v18h-4z" fill={GOLD} />
-  </Svg>
-);
-const IMonitor = () => (
-  <Svg width={20} height={20} viewBox="0 0 24 24">
-    <Path d="M2 3h20v14H2V3zm2 2v10h16V5H4zm5 14h6v2H9v-2z" fill={GOLD} />
-  </Svg>
-);
-const IPeople = () => (
-  <Svg width={20} height={20} viewBox="0 0 24 24">
-    <Path
-      d="M9 4a3 3 0 1 1 0 6A3 3 0 0 1 9 4zM2 20c0-4 3.5-6 7-6s7 2 7 6H2zM17 6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM19 14c2 1 3 3 3 6h-4c0-2.5-1-4.5-3-5.5a6 6 0 0 1 4-.5z"
-      fill={GOLD}
-    />
-  </Svg>
-);
-const IShield = () => (
-  <Svg width={20} height={20} viewBox="0 0 24 24">
-    <Path
-      d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 15l-4-4 1.41-1.41L11 13.17l5.59-5.59L18 9l-7 7z"
-      fill={GOLD}
-    />
-  </Svg>
-);
-const IMoney = () => (
-  <Svg width={20} height={20} viewBox="0 0 24 24">
-    <Path
-      d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 15h-2v-1c-1.5-.2-2.8-1-3.2-2.2l1.5-.6c.3.9 1.1 1.3 2.2 1.3 1.2 0 2-.5 2-1.3 0-.8-.5-1.2-2-1.6-1.8-.5-3.2-1-3.2-2.8 0-1.3 1-2.3 2.7-2.6V7h2v1c1.3.2 2.2.9 2.6 2l-1.5.6c-.3-.7-.9-1.1-1.8-1.1-1 0-1.7.5-1.7 1.2 0 .7.6 1 2 1.4 1.9.5 3.2 1.1 3.2 3 0 1.4-1.1 2.4-2.8 2.7V17z"
-      fill={GOLD}
-    />
-  </Svg>
-);
-const IStar = () => (
-  <Svg width={20} height={20} viewBox="0 0 24 24">
-    <Path
-      d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-      fill={GOLD}
-    />
-  </Svg>
-);
-
-/* ================================================================
-   HELPERS REUTILIZÁVEIS
-   ================================================================ */
-function PageFooter({ current, total }: { current: number; total: number }) {
-  return (
-    <View
-      style={{
-        position: "absolute",
-        bottom: 0, left: 0, right: 0,
-        backgroundColor: NAVY,
-        paddingVertical: 8,
-        paddingHorizontal: 50,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <Text style={{ fontSize: 7.5, color: GOLD, letterSpacing: 1.5, fontWeight: "bold" }}>
-        ALPHA CONDOMÍNIOS
-      </Text>
-      <Text style={{ fontSize: 7.5, color: WHITE }}>
-        Página {current} de {total}
-      </Text>
-    </View>
-  );
-}
-
-function PageHeader({ label }: { label: string }) {
-  return (
-    <View style={{ backgroundColor: NAVY, paddingVertical: 12, paddingHorizontal: 50 }}>
-      <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 3, fontWeight: "bold" }}>
-        {label.toUpperCase()}
-      </Text>
-    </View>
-  );
-}
-
-function GoldDivider() {
-  return <View style={{ height: 3, width: 44, backgroundColor: GOLD, marginBottom: 16 }} />;
-}
-
-function SectionRule() {
-  return <View style={{ height: 0.5, backgroundColor: GRAY_200, marginVertical: 0 }} />;
-}
-
-function FeatureRow({ text }: { text: string }) {
-  return (
-    <View style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 8 }}>
-      <View
-        style={{
-          width: 16, height: 16, borderRadius: 8,
-          backgroundColor: GREEN_CHECK,
-          marginRight: 10, marginTop: 1,
-          flexShrink: 0,
-          justifyContent: "center", alignItems: "center",
-        }}
-      >
-        <Text style={{ fontSize: 9, color: WHITE, fontWeight: "bold" }}>✓</Text>
-      </View>
-      <Text style={{ fontSize: 9.5, color: GRAY_700, flex: 1, lineHeight: 1.5 }}>
-        {text}
-      </Text>
-    </View>
-  );
-}
-
-function ServicoRow({ titulo, descricao }: { titulo: string; descricao: string }) {
-  return (
-    <View>
-      <View style={{ flexDirection: "row", alignItems: "flex-start", paddingVertical: 11 }}>
-        <View
-          style={{
-            width: 4, height: 4, borderRadius: 2,
-            backgroundColor: GOLD,
-            marginRight: 12, marginTop: 5,
-            flexShrink: 0,
-          }}
-        />
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 10.5, fontWeight: "bold", color: NAVY, marginBottom: 3 }}>
-            {titulo}
-          </Text>
-          <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>
-            {descricao}
-          </Text>
-        </View>
-      </View>
-      <SectionRule />
-    </View>
-  );
-}
-
-function DiferencialCard({
-  icon,
-  titulo,
-  texto,
-}: {
-  icon: React.ReactNode;
-  titulo: string;
-  texto: string;
-}) {
-  return (
-    <View
-      style={{
-        width: "47%",
-        backgroundColor: GRAY_50,
-        borderRadius: 6,
-        padding: 14,
-        marginBottom: 10,
-        borderLeftWidth: 3,
-        borderLeftColor: GOLD,
-      }}
-    >
-      <View style={{ marginBottom: 6 }}>{icon}</View>
-      <Text style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
-        {titulo}
-      </Text>
-      <Text style={{ fontSize: 8.5, color: GRAY_700, lineHeight: 1.5 }}>{texto}</Text>
-    </View>
-  );
-}
-
-function StepRow({ n, titulo, texto }: { n: number; titulo: string; texto: string }) {
-  return (
-    <View style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 22 }}>
-      <View
-        style={{
-          width: 32, height: 32, borderRadius: 16,
-          backgroundColor: GOLD,
-          justifyContent: "center", alignItems: "center",
-          marginRight: 16, flexShrink: 0,
-        }}
-      >
-        <Text style={{ fontSize: 14, fontWeight: "bold", color: NAVY }}>{n}</Text>
-      </View>
-      <View style={{ flex: 1, paddingTop: 2 }}>
-        <Text style={{ fontSize: 11, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
-          {titulo}
-        </Text>
-        <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>{texto}</Text>
-      </View>
-    </View>
   );
 }
 
@@ -303,171 +75,275 @@ function PageCapa({
   numeroContrato,
   dataHoje,
   nomeCondominio,
-  localidade,
+  enderecoCondominio,
   numeroUnidades,
   nomeContato,
-  telefoneContato,
-  emailContato,
   pg,
   total,
 }: {
   numeroContrato: string;
   dataHoje: string;
   nomeCondominio: string;
-  localidade: string;
+  enderecoCondominio: string;
   numeroUnidades: number;
   nomeContato: string;
-  telefoneContato: string;
-  emailContato: string;
   pg: number;
   total: number;
 }) {
   return (
-    <Page size="A4" style={{ flexDirection: "row", backgroundColor: WHITE }}>
-      {/* Coluna esquerda — NAVY */}
+    <Page
+      size="A4"
+      style={{
+        flexDirection: "row",
+        backgroundColor: WHITE,
+        borderWidth: 2,
+        borderColor: "#111111",
+      }}
+    >
+      {/* ── COLUNA ESQUERDA — BRANCA ── */}
+      <View
+        style={{
+          width: "55%",
+          backgroundColor: WHITE,
+          paddingTop: 80,
+          paddingBottom: 48,
+          paddingHorizontal: 44,
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "flex-start",
+        }}
+      >
+        {/* LOGO */}
+        <Image
+          src={logoAlpha}
+          style={{
+            width: 160,
+            height: 80,
+            objectFit: "contain",
+            marginBottom: 56,
+          }}
+        />
+
+        {/* LABEL PROPOSTA COMERCIAL */}
+        <Text
+          style={{
+            fontSize: 8,
+            color: GRAY_500,
+            letterSpacing: 3,
+            marginBottom: 4,
+          }}
+        >
+          PROPOSTA COMERCIAL
+        </Text>
+
+        {/* NOME DO CONDOMÍNIO */}
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: "bold",
+            color: NAVY,
+            marginBottom: 4,
+            lineHeight: 1.3,
+          }}
+        >
+          {nomeCondominio}
+        </Text>
+
+        {/* ENDEREÇO DO CONDOMÍNIO */}
+        {enderecoCondominio ? (
+          <Text
+            style={{
+              fontSize: 9,
+              color: GRAY_500,
+              marginBottom: 4,
+              lineHeight: 1.4,
+            }}
+          >
+            {enderecoCondominio}
+          </Text>
+        ) : null}
+
+        {/* NÚMERO DE UNIDADES */}
+        {numeroUnidades ? (
+          <Text
+            style={{
+              fontSize: 9,
+              color: GRAY_500,
+              marginBottom: 28,
+            }}
+          >
+            {numeroUnidades} unidades
+          </Text>
+        ) : null}
+
+        {/* NOME DO SOLICITANTE */}
+        {nomeContato ? (
+          <Text
+            style={{
+              fontSize: 9,
+              color: GRAY_500,
+              marginBottom: 28,
+            }}
+          >
+            Solicitante: {nomeContato}
+          </Text>
+        ) : null}
+
+        {/* SEPARADOR */}
+        <View
+          style={{
+            width: 40,
+            height: 1,
+            backgroundColor: GRAY_500,
+            opacity: 0.3,
+            marginBottom: 16,
+          }}
+        />
+
+        {/* NÚMERO DA PROPOSTA */}
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: "bold",
+            color: NAVY,
+            marginBottom: 6,
+            letterSpacing: 0.5,
+          }}
+        >
+          N {numeroContrato}
+        </Text>
+
+        {/* DATA */}
+        <Text
+          style={{
+            fontSize: 9,
+            color: GRAY_500,
+          }}
+        >
+          {dataHoje}
+        </Text>
+      </View>
+
+      {/* ── COLUNA DIREITA — DEGRADÊ AZUL ── */}
       <View
         style={{
           width: "45%",
-          backgroundColor: NAVY,
-          paddingTop: 48,
-          paddingBottom: 40,
-          paddingHorizontal: 36,
           flexDirection: "column",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          overflow: "hidden",
+          position: "relative",
         }}
       >
-        {/* Logo */}
-        <View>
-          <Image
-            src={logoAlpha}
-            style={{ width: 130, height: 65, objectFit: "contain", marginBottom: 40 }}
-          />
+        {/* Degradê — camadas simuladas com opacidade crescente */}
+        <View
+          style={{
+            position: "absolute",
+            top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: "#C8D8E8",
+          }}
+        />
+        <View
+          style={{
+            position: "absolute",
+            top: "20%", left: 0, right: 0, bottom: 0,
+            backgroundColor: "#8BA8C4",
+            opacity: 0.6,
+          }}
+        />
+        <View
+          style={{
+            position: "absolute",
+            top: "45%", left: 0, right: 0, bottom: 0,
+            backgroundColor: "#3A5A80",
+            opacity: 0.75,
+          }}
+        />
+        <View
+          style={{
+            position: "absolute",
+            top: "65%", left: 0, right: 0, bottom: 0,
+            backgroundColor: NAVY,
+            opacity: 0.9,
+          }}
+        />
+        <View
+          style={{
+            position: "absolute",
+            top: "82%", left: 0, right: 0, bottom: 0,
+            backgroundColor: NAVY_DARK,
+          }}
+        />
 
-          {/* Proposta Comercial */}
-          <Text
-            style={{
-              fontSize: 8,
-              color: GOLD,
-              letterSpacing: 3,
-              fontWeight: "bold",
-              marginBottom: 16,
-            }}
-          >
-            PROPOSTA COMERCIAL
-          </Text>
-
-          {/* Nome do condomínio */}
-          <Text
-            style={{
-              fontSize: 22,
-              fontWeight: "bold",
-              color: WHITE,
-              lineHeight: 1.25,
-              marginBottom: 6,
-            }}
-          >
-            {nomeCondominio}
-          </Text>
-
-          {localidade ? (
-            <Text style={{ fontSize: 9.5, color: GOLD, marginBottom: 4 }}>{localidade}</Text>
-          ) : null}
-
-          <Text style={{ fontSize: 9.5, color: "#CBD5E1", marginBottom: 32 }}>
-            {numeroUnidades} unidades
-          </Text>
-
-          {/* Número e data */}
-          <Text style={{ fontSize: 8.5, color: "#94A3B8", marginBottom: 4 }}>
-            Nº {numeroContrato}
-          </Text>
-          <Text style={{ fontSize: 8.5, color: "#94A3B8" }}>{dataHoje}</Text>
+        {/* SILHUETA DOS PRÉDIOS */}
+        <View
+          style={{
+            position: "absolute",
+            bottom: 148,
+            left: 0,
+            right: 0,
+            alignItems: "flex-end",
+            paddingRight: 0,
+          }}
+        >
+          <BuildingsSilhouette />
         </View>
 
-        {/* Contato */}
-        <View>
+        {/* CAIXA DE CONTATO */}
+        <View
+          style={{
+            marginBottom: 32,
+            marginHorizontal: 24,
+            backgroundColor: WHITE,
+            borderRadius: 6,
+            borderWidth: 1.5,
+            borderColor: GOLD,
+            paddingVertical: 18,
+            paddingHorizontal: 20,
+            alignItems: "center",
+            width: "85%",
+          }}
+        >
           <Text
             style={{
               fontSize: 7.5,
               color: GOLD,
-              letterSpacing: 2,
-              fontWeight: "bold",
-              marginBottom: 12,
+              letterSpacing: 2.5,
+              marginBottom: 10,
             }}
           >
             ENTRE EM CONTATO
           </Text>
-          <Text style={{ fontSize: 8.5, color: WHITE, marginBottom: 5 }}>
+
+          <Text
+            style={{
+              fontSize: 10,
+              fontWeight: "bold",
+              color: NAVY,
+              marginBottom: 5,
+            }}
+          >
             (31) 99778-7316
           </Text>
-          <Text style={{ fontSize: 8.5, color: WHITE, marginBottom: 5 }}>
+
+          <Text
+            style={{
+              fontSize: 9,
+              fontWeight: "bold",
+              color: NAVY,
+              marginBottom: 5,
+            }}
+          >
             comercial@alphafacilities.com.br
           </Text>
-          <Text style={{ fontSize: 8.5, color: WHITE }}>www.alphafacilities.com.br</Text>
-        </View>
-      </View>
 
-      {/* Coluna direita — gradiente branco→navy com prédios */}
-      <View
-        style={{
-          width: "55%",
-          backgroundColor: "#D6E0EC",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          paddingBottom: 0,
-          overflow: "hidden",
-        }}
-      >
-        {/* Gradiente simulado com camadas */}
-        <View
-          style={{
-            position: "absolute",
-            top: 0, left: 0, right: 0,
-            height: "60%",
-            backgroundColor: WHITE,
-            opacity: 0.7,
-          }}
-        />
-        <View
-          style={{
-            position: "absolute",
-            top: "30%", left: 0, right: 0,
-            height: "40%",
-            backgroundColor: "#8BA3BF",
-            opacity: 0.4,
-          }}
-        />
-        <View
-          style={{
-            position: "absolute",
-            top: "55%", left: 0, right: 0,
-            height: "45%",
-            backgroundColor: NAVY,
-            opacity: 0.75,
-          }}
-        />
-        {/* Prédios na base */}
-        <View style={{ position: "absolute", bottom: 24, alignSelf: "center" }}>
-          <BuildingsSilhouette />
-        </View>
-        {/* Rodapé da capa */}
-        <View
-          style={{
-            position: "absolute",
-            bottom: 0, left: 0, right: 0,
-            backgroundColor: NAVY,
-            paddingVertical: 8,
-            paddingHorizontal: 20,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontSize: 7.5, color: GOLD, letterSpacing: 1.5, fontWeight: "bold" }}>
-            ALPHA CONDOMÍNIOS
-          </Text>
-          <Text style={{ fontSize: 7.5, color: WHITE }}>
-            Página {pg} de {total}
+          <Text
+            style={{
+              fontSize: 8.5,
+              color: GRAY_500,
+            }}
+          >
+            www.alphafacilities.com.br
           </Text>
         </View>
       </View>
