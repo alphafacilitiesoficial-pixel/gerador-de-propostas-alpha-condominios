@@ -10,8 +10,6 @@ import {
   Rect,
   Path,
   Defs,
-  LinearGradient,
-  Stop,
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -46,13 +44,19 @@ interface PropostaPDFData {
 }
 
 /* ================================================================
-   DEGRADÊ SVG — reutilizável
-   Capa:    vertical   topo claro → base escura
-   Headers: horizontal esquerda clara → direita escura
+   DEGRADÊ SVG — sem LinearGradient importado
+   Usa <defs> nativo do Svg do react-pdf (PDFKit)
    ================================================================ */
 
-/** Preenche toda a área com degradê VERTICAL: topo=#4A6FA5 → base=NAVY_DARK */
-function GradientVertical({ width, height }: { width: number; height: number }) {
+function GradientVertical({
+  width,
+  height,
+  uid = "gv",
+}: {
+  width: number;
+  height: number;
+  uid?: string;
+}) {
   return (
     <Svg
       width={width}
@@ -61,22 +65,23 @@ function GradientVertical({ width, height }: { width: number; height: number }) 
       style={{ position: "absolute", top: 0, left: 0 }}
     >
       <Defs>
-        <LinearGradient id="gv" x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0%"   stopColor="#6A8FC0" stopOpacity="1" />
-          <Stop offset="30%"  stopColor="#4A6FA5" stopOpacity="1" />
-          <Stop offset="65%"  stopColor="#2E4470" stopOpacity="1" />
-          <Stop offset="100%" stopColor="#0F1A30" stopOpacity="1" />
-        </LinearGradient>
+        {/* @ts-ignore — linearGradient em minúsculo é suportado pelo PDFKit via SVG spec */}
+        <linearGradient id={uid} x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+          {/* @ts-ignore */}
+          <stop offset="0%"   stopColor="#6A8FC0" stopOpacity="1" />
+          {/* @ts-ignore */}
+          <stop offset="30%"  stopColor="#4A6FA5" stopOpacity="1" />
+          {/* @ts-ignore */}
+          <stop offset="65%"  stopColor="#2E4470" stopOpacity="1" />
+          {/* @ts-ignore */}
+          <stop offset="100%" stopColor="#0F1A30" stopOpacity="1" />
+        </linearGradient>
       </Defs>
-      <Rect x="0" y="0" width={width} height={height} fill="url(#gv)" />
+      <Rect x="0" y="0" width={width} height={height} fill={`url(#${uid})`} />
     </Svg>
   );
 }
 
-/**
- * Preenche toda a área com degradê HORIZONTAL: esquerda=#6A8FC0 → direita=NAVY_DARK
- * uid deve ser único por instância para evitar conflito de id entre páginas no PDF.
- */
 function GradientHorizontal({
   width,
   height,
@@ -94,12 +99,17 @@ function GradientHorizontal({
       style={{ position: "absolute", top: 0, left: 0 }}
     >
       <Defs>
-        <LinearGradient id={uid} x1="0" y1="0" x2="1" y2="0">
-          <Stop offset="0%"   stopColor="#6A8FC0" stopOpacity="1" />
-          <Stop offset="35%"  stopColor="#4A6FA5" stopOpacity="1" />
-          <Stop offset="70%"  stopColor="#2E4470" stopOpacity="1" />
-          <Stop offset="100%" stopColor="#0F1A30" stopOpacity="1" />
-        </LinearGradient>
+        {/* @ts-ignore */}
+        <linearGradient id={uid} x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+          {/* @ts-ignore */}
+          <stop offset="0%"   stopColor="#6A8FC0" stopOpacity="1" />
+          {/* @ts-ignore */}
+          <stop offset="35%"  stopColor="#4A6FA5" stopOpacity="1" />
+          {/* @ts-ignore */}
+          <stop offset="70%"  stopColor="#2E4470" stopOpacity="1" />
+          {/* @ts-ignore */}
+          <stop offset="100%" stopColor="#0F1A30" stopOpacity="1" />
+        </linearGradient>
       </Defs>
       <Rect x="0" y="0" width={width} height={height} fill={`url(#${uid})`} />
     </Svg>
@@ -123,11 +133,6 @@ function GoldDivider() {
   );
 }
 
-/**
- * Header das páginas internas.
- * uid único por página gerado a partir do label — resolve conflito de
- * LinearGradient id duplicado no @react-pdf/renderer.
- */
 function PageHeader({ label }: { label: string }) {
   const W = 595;
   const H = 90;
@@ -228,9 +233,13 @@ function ServicoRow({ titulo, descricao }: { titulo: string; descricao: string }
 }
 
 function DiferencialCard({
-  icon, titulo, texto,
+  icon,
+  titulo,
+  texto,
 }: {
-  icon: React.ReactNode; titulo: string; texto: string;
+  icon: React.ReactElement;
+  titulo: string;
+  texto: string;
 }) {
   return (
     <View
@@ -331,23 +340,7 @@ function PageCapa({ data }: { data: PropostaPDFData }) {
 
   return (
     <Page size="A4" style={{ position: "relative", backgroundColor: WHITE }}>
-      {/* Degradê vertical ocupa metade direita */}
-      <Svg
-        width={W / 2}
-        height={H}
-        viewBox={`0 0 ${W / 2} ${H}`}
-        style={{ position: "absolute", top: 0, right: 0 }}
-      >
-        <Defs>
-          <LinearGradient id="gv-capa" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0%"   stopColor="#6A8FC0" stopOpacity="1" />
-            <Stop offset="30%"  stopColor="#4A6FA5" stopOpacity="1" />
-            <Stop offset="65%"  stopColor="#2E4470" stopOpacity="1" />
-            <Stop offset="100%" stopColor="#0F1A30" stopOpacity="1" />
-          </LinearGradient>
-        </Defs>
-        <Rect x="0" y="0" width={W / 2} height={H} fill="url(#gv-capa)" />
-      </Svg>
+      <GradientVertical width={W / 2} height={H} uid="gv-capa" />
 
       {/* Coluna esquerda — branca */}
       <View
@@ -360,13 +353,10 @@ function PageCapa({ data }: { data: PropostaPDFData }) {
           justifyContent: "space-between",
         }}
       >
-        {/* Logo */}
         <Image
           src={logoAlpha}
           style={{ width: 120, height: 60, objectFit: "contain" }}
         />
-
-        {/* Textos centrais */}
         <View>
           <View style={{ width: 36, height: 3, backgroundColor: GOLD, marginBottom: 20 }} />
           <Text style={{ fontSize: 9, color: GRAY_500, letterSpacing: 2, marginBottom: 6 }}>
@@ -385,8 +375,6 @@ function PageCapa({ data }: { data: PropostaPDFData }) {
             {data.condominio.unidades} unidades · {data.condominio.tipo}
           </Text>
         </View>
-
-        {/* Rodapé esquerdo */}
         <View>
           <Text style={{ fontSize: 8, color: GRAY_500, marginBottom: 2 }}>
             Proposta nº {data.numero}
@@ -410,7 +398,6 @@ function PageCapa({ data }: { data: PropostaPDFData }) {
         <Text style={{ fontSize: 9, color: GOLD, letterSpacing: 2, marginBottom: 16 }}>
           NOSSOS SERVIÇOS
         </Text>
-
         {[
           "Administração Condominial",
           "Síndico Profissional",
@@ -434,7 +421,6 @@ function PageCapa({ data }: { data: PropostaPDFData }) {
             <Text style={{ fontSize: 9, color: WHITE }}>{s}</Text>
           </View>
         ))}
-
         <View style={{ marginTop: 40 }}>
           <Text style={{ fontSize: 8, color: WHITE, opacity: 0.6, marginBottom: 3 }}>
             Contato
@@ -461,7 +447,6 @@ function PageQuemSomos({ pg, total }: { pg: number; total: number }) {
   return (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 50 }}>
       <PageHeader label="Quem Somos" />
-
       <View style={{ paddingHorizontal: 50, paddingTop: 30 }}>
         <GoldDivider />
         <Text style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
@@ -474,7 +459,6 @@ function PageQuemSomos({ pg, total }: { pg: number; total: number }) {
           nossa reputação sobre três pilares: confiança, tecnologia e resultado.
         </Text>
 
-        {/* Cards de números */}
         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 28 }}>
           {[
             { n: "+14", label: "Anos de\nExperiência" },
@@ -502,23 +486,19 @@ function PageQuemSomos({ pg, total }: { pg: number; total: number }) {
           ))}
         </View>
 
-        {/* Missão / Visão / Valores */}
         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 28 }}>
           {[
             {
               titulo: "Missão",
-              texto:
-                "Prover gestão condominial de excelência, garantindo transparência, eficiência e valorização patrimonial.",
+              texto: "Prover gestão condominial de excelência, garantindo transparência, eficiência e valorização patrimonial.",
             },
             {
               titulo: "Visão",
-              texto:
-                "Ser referência nacional em administração condominial, reconhecida pela inovação e qualidade dos serviços.",
+              texto: "Ser referência nacional em administração condominial, reconhecida pela inovação e qualidade dos serviços.",
             },
             {
               titulo: "Valores",
-              texto:
-                "Ética, transparência, comprometimento, inovação tecnológica e foco total na satisfação dos condôminos.",
+              texto: "Ética, transparência, comprometimento, inovação tecnológica e foco total na satisfação dos condôminos.",
             },
           ].map((v) => (
             <View
@@ -540,10 +520,7 @@ function PageQuemSomos({ pg, total }: { pg: number; total: number }) {
           ))}
         </View>
 
-        {/* Por que nos escolher */}
-        <Text
-          style={{ fontSize: 12, fontWeight: "bold", color: NAVY, marginBottom: 14 }}
-        >
+        <Text style={{ fontSize: 12, fontWeight: "bold", color: NAVY, marginBottom: 14 }}>
           Por que escolher a Alpha Condomínios?
         </Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
@@ -561,7 +538,6 @@ function PageQuemSomos({ pg, total }: { pg: number; total: number }) {
           ))}
         </View>
       </View>
-
       <PageFooter current={pg} total={total} />
     </Page>
   );
@@ -574,7 +550,6 @@ function PageDiferenciais({ pg, total }: { pg: number; total: number }) {
   return (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 50 }}>
       <PageHeader label="Diferenciais" />
-
       <View style={{ paddingHorizontal: 50, paddingTop: 30 }}>
         <GoldDivider />
         <Text style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
@@ -618,7 +593,6 @@ function PageDiferenciais({ pg, total }: { pg: number; total: number }) {
           />
         </View>
 
-        {/* Banner inferior */}
         <View
           style={{
             marginTop: 16,
@@ -647,7 +621,6 @@ function PageDiferenciais({ pg, total }: { pg: number; total: number }) {
           </View>
         </View>
       </View>
-
       <PageFooter current={pg} total={total} />
     </Page>
   );
@@ -660,7 +633,6 @@ function PageServicos({ pg, total }: { pg: number; total: number }) {
   return (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 50 }}>
       <PageHeader label="Serviços" />
-
       <View style={{ paddingHorizontal: 50, paddingTop: 30 }}>
         <GoldDivider />
         <Text style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
@@ -669,48 +641,39 @@ function PageServicos({ pg, total }: { pg: number; total: number }) {
         <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.65, marginBottom: 20 }}>
           Oferecemos um portfólio completo de serviços para atender todas as necessidades do seu condomínio.
         </Text>
-
         <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
           {[
             {
               titulo: "Administração Condominial",
-              descricao:
-                "Gestão completa do condomínio: financeiro, contábil, manutenção, assembleias e relacionamento com condôminos.",
+              descricao: "Gestão completa do condomínio: financeiro, contábil, manutenção, assembleias e relacionamento com condôminos.",
             },
             {
               titulo: "Síndico Profissional",
-              descricao:
-                "Síndico externo qualificado para representar e gerir o condomínio com imparcialidade e expertise.",
+              descricao: "Síndico externo qualificado para representar e gerir o condomínio com imparcialidade e expertise.",
             },
             {
               titulo: "Certificado Digital",
-              descricao:
-                "Emissão e renovação de certificados digitais para o condomínio e síndico, com todo o suporte necessário.",
+              descricao: "Emissão e renovação de certificados digitais para o condomínio e síndico, com todo o suporte necessário.",
             },
             {
               titulo: "Seguro Condominial",
-              descricao:
-                "Consultoria e contratação do seguro obrigatório e complementar com as melhores coberturas do mercado.",
+              descricao: "Consultoria e contratação do seguro obrigatório e complementar com as melhores coberturas do mercado.",
             },
             {
               titulo: "AVCB / Corpo de Bombeiros",
-              descricao:
-                "Assessoria completa para obtenção e renovação do Auto de Vistoria do Corpo de Bombeiros.",
+              descricao: "Assessoria completa para obtenção e renovação do Auto de Vistoria do Corpo de Bombeiros.",
             },
             {
               titulo: "Assessoria Jurídica",
-              descricao:
-                "Suporte jurídico especializado em direito condominial, cobranças, ações e elaboração de regulamentos.",
+              descricao: "Suporte jurídico especializado em direito condominial, cobranças, ações e elaboração de regulamentos.",
             },
             {
               titulo: "Garantidora de Crédito",
-              descricao:
-                "Solução para redução da inadimplência com garantia de recebimento das taxas condominiais.",
+              descricao: "Solução para redução da inadimplência com garantia de recebimento das taxas condominiais.",
             },
             {
               titulo: "Suporte Financeiro",
-              descricao:
-                "Planejamento orçamentário, controle de receitas e despesas, e assessoria para decisões financeiras estratégicas.",
+              descricao: "Planejamento orçamentário, controle de receitas e despesas, e assessoria para decisões financeiras estratégicas.",
             },
           ].map((s) => (
             <View key={s.titulo} style={{ width: "48%", marginBottom: 4 }}>
@@ -719,7 +682,6 @@ function PageServicos({ pg, total }: { pg: number; total: number }) {
           ))}
         </View>
       </View>
-
       <PageFooter current={pg} total={total} />
     </Page>
   );
@@ -744,9 +706,7 @@ function PagePlano({
   return (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 50 }}>
       <PageHeader label="Plano" />
-
       <View style={{ paddingHorizontal: 50, paddingTop: 30 }}>
-        {/* Cabeçalho do plano */}
         <View
           style={{
             backgroundColor: NAVY,
@@ -781,7 +741,6 @@ function PagePlano({
         <Text style={{ fontSize: 13, fontWeight: "bold", color: NAVY, marginBottom: 14 }}>
           O que está incluído
         </Text>
-
         <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
           {plano.itens.map((item) => (
             <View key={item} style={{ width: "48%", marginBottom: 4 }}>
@@ -790,7 +749,6 @@ function PagePlano({
           ))}
         </View>
 
-        {/* Nota de rodapé */}
         <View
           style={{
             marginTop: 24,
@@ -808,7 +766,6 @@ function PagePlano({
           </Text>
         </View>
       </View>
-
       <PageFooter current={pg} total={total} />
     </Page>
   );
@@ -850,7 +807,6 @@ function PageComparativo({
   return (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 50 }}>
       <PageHeader label="Comparativo" />
-
       <View style={{ paddingHorizontal: 50, paddingTop: 30 }}>
         <GoldDivider />
         <Text style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
@@ -860,7 +816,6 @@ function PageComparativo({
           Escolha o plano que melhor se adapta às necessidades do seu condomínio.
         </Text>
 
-        {/* Cabeçalho tabela */}
         <View
           style={{
             flexDirection: "row",
@@ -884,7 +839,6 @@ function PageComparativo({
           ))}
         </View>
 
-        {/* Linhas */}
         {features.map((f, i) => (
           <View
             key={f}
@@ -918,7 +872,6 @@ function PageComparativo({
           </View>
         ))}
 
-        {/* Linha de preços */}
         <View
           style={{
             flexDirection: "row",
@@ -942,7 +895,6 @@ function PageComparativo({
           ))}
         </View>
       </View>
-
       <PageFooter current={pg} total={total} />
     </Page>
   );
@@ -965,7 +917,6 @@ function PageSindico({
   return (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 50 }}>
       <PageHeader label="Serviço" />
-
       <View style={{ paddingHorizontal: 50, paddingTop: 30 }}>
         <GoldDivider />
         <Text style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
@@ -977,7 +928,6 @@ function PageSindico({
           responsabilidade.
         </Text>
 
-        {/* Preço */}
         <View
           style={{
             backgroundColor: NAVY,
@@ -1010,7 +960,6 @@ function PageSindico({
         <Text style={{ fontSize: 12, fontWeight: "bold", color: NAVY, marginBottom: 14 }}>
           O que está incluído
         </Text>
-
         <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
           {sindico.itens.map((item) => (
             <View key={item} style={{ width: "48%", marginBottom: 4 }}>
@@ -1040,7 +989,6 @@ function PageSindico({
           </Text>
         </View>
       </View>
-
       <PageFooter current={pg} total={total} />
     </Page>
   );
@@ -1053,7 +1001,6 @@ function PageCondicoes({ pg, total }: { pg: number; total: number }) {
   return (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 50 }}>
       <PageHeader label="Condições Comerciais" />
-
       <View style={{ paddingHorizontal: 50, paddingTop: 30 }}>
         <GoldDivider />
         <Text style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
@@ -1117,7 +1064,6 @@ function PageCondicoes({ pg, total }: { pg: number; total: number }) {
           </View>
         ))}
       </View>
-
       <PageFooter current={pg} total={total} />
     </Page>
   );
@@ -1130,7 +1076,6 @@ function PagePassos({ pg, total }: { pg: number; total: number }) {
   return (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 50 }}>
       <PageHeader label="Próximos Passos" />
-
       <View style={{ paddingHorizontal: 50, paddingTop: 30 }}>
         <GoldDivider />
         <Text style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
@@ -1172,7 +1117,6 @@ function PagePassos({ pg, total }: { pg: number; total: number }) {
           texto="Assumimos oficialmente a gestão do condomínio, com acompanhamento intensivo nas primeiras semanas de operação."
         />
 
-        {/* CTA */}
         <View
           style={{
             backgroundColor: NAVY,
@@ -1200,7 +1144,6 @@ function PagePassos({ pg, total }: { pg: number; total: number }) {
           </View>
         </View>
       </View>
-
       <PageFooter current={pg} total={total} />
     </Page>
   );
@@ -1221,7 +1164,6 @@ function PageConsideracoes({
   return (
     <Page size="A4" style={{ backgroundColor: WHITE, paddingBottom: 50 }}>
       <PageHeader label="Considerações Finais" />
-
       <View style={{ paddingHorizontal: 50, paddingTop: 30 }}>
         <GoldDivider />
         <Text style={{ fontSize: 18, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
@@ -1240,7 +1182,6 @@ function PageConsideracoes({
           <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.7 }}>{texto}</Text>
         </View>
       </View>
-
       <PageFooter current={pg} total={total} />
     </Page>
   );
@@ -1254,20 +1195,7 @@ function PageContracapa({ data }: { data: PropostaPDFData }) {
   const H = 842;
   return (
     <Page size="A4" style={{ position: "relative", backgroundColor: NAVY }}>
-      <Svg
-        width={W}
-        height={H}
-        viewBox={`0 0 ${W} ${H}`}
-        style={{ position: "absolute", top: 0, left: 0 }}
-      >
-        <Defs>
-          <LinearGradient id="gv-contra" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0%"   stopColor="#1B2A4A" stopOpacity="1" />
-            <Stop offset="100%" stopColor="#0F1A30" stopOpacity="1" />
-          </LinearGradient>
-        </Defs>
-        <Rect x="0" y="0" width={W} height={H} fill="url(#gv-contra)" />
-      </Svg>
+      <GradientVertical width={W} height={H} uid="gv-contra" />
 
       <View
         style={{
@@ -1282,9 +1210,7 @@ function PageContracapa({ data }: { data: PropostaPDFData }) {
           src={logoAlpha}
           style={{ width: 140, height: 70, objectFit: "contain", marginBottom: 30 }}
         />
-
         <View style={{ width: 40, height: 2, backgroundColor: GOLD, marginBottom: 30 }} />
-
         <Text
           style={{
             fontSize: 11,
@@ -1300,7 +1226,6 @@ function PageContracapa({ data }: { data: PropostaPDFData }) {
           e aguardamos seu retorno.
         </Text>
 
-        {/* Contatos */}
         <View style={{ alignItems: "center", marginBottom: 40 }}>
           <Text style={{ fontSize: 8.5, color: GOLD, letterSpacing: 1.5, marginBottom: 14 }}>
             ENTRE EM CONTATO
@@ -1335,20 +1260,18 @@ export function PropostaPDF({ data }: { data: PropostaPDFData }) {
   const sindico = formatSindico(data.condominio.unidades);
   const temConsideracoes = !!(data.consideracoesFinais && data.consideracoesFinais.trim());
 
-  // Contagem dinâmica de páginas
-  let total = 4; // capa + quem somos + diferenciais + serviços
-  if (data.incluiAdmin) total += 4; // 3 planos + comparativo
+  let total = 4;
+  if (data.incluiAdmin) total += 4;
   if (data.incluiSindico) total += 1;
-  total += 2; // condições + próximos passos
+  total += 2;
   if (temConsideracoes) total += 1;
-  total += 1; // contracapa
+  total += 1;
 
   let pg = 1;
 
   return (
     <Document>
       <PageCapa data={data} />
-
       <PageQuemSomos pg={++pg} total={total} />
       <PageDiferenciais pg={++pg} total={total} />
       <PageServicos pg={++pg} total={total} />
@@ -1363,7 +1286,12 @@ export function PropostaPDF({ data }: { data: PropostaPDFData }) {
       )}
 
       {data.incluiSindico && (
-        <PageSindico pg={++pg} total={total} sindico={sindico} unidades={data.condominio.unidades} />
+        <PageSindico
+          pg={++pg}
+          total={total}
+          sindico={sindico}
+          unidades={data.condominio.unidades}
+        />
       )}
 
       <PageCondicoes pg={++pg} total={total} />
