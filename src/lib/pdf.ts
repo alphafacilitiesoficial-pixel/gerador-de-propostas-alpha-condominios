@@ -19,14 +19,13 @@ export interface PDFHandle {
 export function gerarPDFProposta(data: PropostaPDFData): PDFHandle {
   const buildBlob = async (): Promise<Blob> => {
     try {
-      const [{ pdf }, { PropostaPDF }, React] = await Promise.all([
+      const [{ pdf }, { PropostaDocument }, React] = await Promise.all([
         import("@react-pdf/renderer"),
         import("./pdf-document"),
         import("react"),
       ]);
 
-      // Props encapsuladas em { data } conforme a assinatura do componente
-      const element = React.createElement(PropostaPDF, { data });
+      const element = React.createElement(PropostaDocument, data);
       const blob = await pdf(element as any).toBlob();
       return blob;
     } catch (err) {
