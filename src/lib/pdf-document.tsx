@@ -580,8 +580,8 @@ function PageDiferenciais({ pg, total }: { pg: number; total: number }) {
    PÁGINA — SERVIÇOS
    ================================================================ */
 
-// Ícones SVG para cada serviço
-const IFolder = () => (
+// Ícones SVG exclusivos para cada serviço (sem conflito com IShield global)
+const ISvcAdmin = () => (
   <Svg width={28} height={28} viewBox="0 0 24 24">
     <Path
       d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"
@@ -590,16 +590,13 @@ const IFolder = () => (
   </Svg>
 );
 
-const IUsers = () => (
+const ISvcSindico = () => (
   <Svg width={28} height={28} viewBox="0 0 24 24">
     <Path
       d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
       stroke={GOLD} strokeWidth="2" fill="none" strokeLinecap="round"
     />
-    <Path
-      d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"
-      fill={GOLD}
-    />
+    <Path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill={GOLD} />
     <Path
       d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
       stroke={GOLD} strokeWidth="2" fill="none" strokeLinecap="round"
@@ -607,7 +604,16 @@ const IUsers = () => (
   </Svg>
 );
 
-const IShield = () => (
+const ISvcCertificado = () => (
+  <Svg width={28} height={28} viewBox="0 0 24 24">
+    <Path
+      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622C17.176 19.29 21 14.59 21 9c0-1.067-.144-2.1-.382-3.016z"
+      stroke={GOLD} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+const ISvcSeguro = () => (
   <Svg width={28} height={28} viewBox="0 0 24 24">
     <Path
       d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"
@@ -620,24 +626,46 @@ const IShield = () => (
   </Svg>
 );
 
-const ICoins = () => (
+const ISvcAVCB = () => (
   <Svg width={28} height={28} viewBox="0 0 24 24">
     <Path
-      d="M12 12c3.31 0 6-1.34 6-3s-2.69-3-6-3-6 1.34-6 3 2.69 3 6 3z"
-      fill={GOLD}
+      d="M17.657 18.657A8 8 0 0 1 4.343 5.343"
+      stroke={GOLD} strokeWidth="2" fill="none" strokeLinecap="round"
     />
     <Path
-      d="M6 9v3c0 1.66 2.69 3 6 3s6-1.34 6-3V9"
-      stroke={GOLD} strokeWidth="1.5" fill="none"
+      d="M12 8v4l3 3"
+      stroke={GOLD} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"
     />
     <Path
-      d="M6 12v3c0 1.66 2.69 3 6 3s6-1.34 6-3v-3"
-      stroke={GOLD} strokeWidth="1.5" fill="none"
+      d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"
+      stroke={GOLD} strokeWidth="2" fill="none"
     />
   </Svg>
 );
 
-const IWrench = () => (
+const ISvcJuridico = () => (
+  <Svg width={28} height={28} viewBox="0 0 24 24">
+    <Path
+      d="M3 6h18M3 12h18M3 18h18"
+      stroke={GOLD} strokeWidth="2" fill="none" strokeLinecap="round"
+    />
+    <Path
+      d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"
+      stroke={GOLD} strokeWidth="2" fill="none" strokeLinecap="round"
+    />
+  </Svg>
+);
+
+const ISvcGarantidora = () => (
+  <Svg width={28} height={28} viewBox="0 0 24 24">
+    <Path
+      d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 15h-2v-1c-1.5-.2-2.8-1-3.2-2.2l1.5-.6c.3.9 1.1 1.3 2.2 1.3 1.2 0 2-.5 2-1.3 0-.8-.5-1.2-2-1.6-1.8-.5-3.2-1-3.2-2.8 0-1.3 1-2.3 2.7-2.6V7h2v1c1.3.2 2.2.9 2.6 2l-1.5.6c-.3-.7-.9-1.1-1.8-1.1-1 0-1.7.5-1.7 1.2 0 .7.6 1 2 1.4 1.9.5 3.2 1.1 3.2 3 0 1.4-1.1 2.4-2.8 2.7V17z"
+      fill={GOLD}
+    />
+  </Svg>
+);
+
+const ISvcOutros = () => (
   <Svg width={28} height={28} viewBox="0 0 24 24">
     <Path
       d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
@@ -646,7 +674,7 @@ const IWrench = () => (
   </Svg>
 );
 
-// Card de serviço
+// Card de serviço — 2 colunas
 function ServicoCard({
   icon,
   titulo,
@@ -664,14 +692,16 @@ function ServicoCard({
         borderRadius: 8,
         borderWidth: 1,
         borderColor: GRAY_200,
-        padding: 16,
+        borderTopWidth: 3,
+        borderTopColor: GOLD,
+        padding: 14,
         marginBottom: 12,
       }}
     >
-      <View style={{ marginBottom: 10 }}>{icon}</View>
+      <View style={{ marginBottom: 8 }}>{icon}</View>
       <Text
         style={{
-          fontSize: 10,
+          fontSize: 9.5,
           fontWeight: "bold",
           color: NAVY,
           marginBottom: 5,
@@ -689,49 +719,49 @@ function ServicoCard({
 function PageServicos({ pg, total }: { pg: number; total: number }) {
   const servicos = [
     {
-      icon: <IFolder />,
+      icon: <ISvcAdmin />,
       titulo: "Administração de Condomínios",
       descricao:
         "Gestão completa de todas as atividades administrativas, financeiras e operacionais do condomínio, com foco em eficiência e transparência.",
     },
     {
-      icon: <IUsers />,
+      icon: <ISvcSindico />,
       titulo: "Síndico Profissional",
       descricao:
-        "Profissional qualificado e dedicado exclusivamente à gestão do condomínio, garantindo cumprimento de todas as obrigações legais. Inclui Seguro de Responsabilidade Civil (RC) de Síndico, protegendo o profissional e o condomínio.",
+        "Profissional qualificado e dedicado exclusivamente à gestão do condomínio, garantindo cumprimento de todas as obrigações legais. Inclui Seguro de Responsabilidade Civil (RC) de Síndico.",
     },
     {
-      icon: <IShield />,
+      icon: <ISvcCertificado />,
       titulo: "Certificado Digital",
       descricao:
         "Emissão e gestão de certificados digitais para assinatura eletrônica de documentos, atas e contratos, garantindo validade jurídica e agilidade.",
     },
     {
-      icon: <IShield />,
+      icon: <ISvcSeguro />,
       titulo: "Seguro Condominial",
       descricao:
         "Contratação e gestão de apólices de seguro patrimonial, incêndio, responsabilidade civil e outros, com análise criteriosa de coberturas e custos.",
     },
     {
-      icon: <IFolder />,
+      icon: <ISvcAVCB />,
       titulo: "AVCB",
       descricao:
         "Assessoria completa para obtenção e renovação do Auto de Vistoria do Corpo de Bombeiros, garantindo conformidade legal e segurança dos moradores.",
     },
     {
-      icon: <IFolder />,
+      icon: <ISvcJuridico />,
       titulo: "Assessoria Jurídica",
       descricao:
         "Suporte jurídico especializado em direito condominial, com orientação em assembleias, elaboração de documentos e resolução de conflitos.",
     },
     {
-      icon: <ICoins />,
+      icon: <ISvcGarantidora />,
       titulo: "Garantidora de Crédito",
       descricao:
         "Intermediação com empresas garantidoras para locação de unidades, facilitando a entrada de inquilinos e reduzindo inadimplência.",
     },
     {
-      icon: <IWrench />,
+      icon: <ISvcOutros />,
       titulo: "Dentre Outros",
       descricao:
         "Soluções personalizadas conforme necessidades específicas de cada condomínio: manutenção predial, comunicação visual, automação, sustentabilidade e muito mais.",
@@ -745,11 +775,10 @@ function PageServicos({ pg, total }: { pg: number; total: number }) {
         style={{
           flex: 1,
           paddingHorizontal: 50,
-          paddingTop: 24,
+          paddingTop: 22,
           paddingBottom: 52,
         }}
       >
-        {/* Cabeçalho da seção */}
         <Text
           style={{
             fontSize: 8,
@@ -759,14 +788,14 @@ function PageServicos({ pg, total }: { pg: number; total: number }) {
             marginBottom: 6,
           }}
         >
-          SERVIÇOS
+          SOLUÇÕES ALPHA
         </Text>
         <Text
           style={{
             fontSize: 20,
             fontWeight: "bold",
             color: NAVY,
-            marginBottom: 8,
+            marginBottom: 6,
           }}
         >
           Nossos Serviços
@@ -774,9 +803,9 @@ function PageServicos({ pg, total }: { pg: number; total: number }) {
         <GoldDivider />
         <Text
           style={{
-            fontSize: 9.5,
+            fontSize: 9,
             color: GRAY_700,
-            marginBottom: 20,
+            marginBottom: 16,
             lineHeight: 1.5,
           }}
         >
