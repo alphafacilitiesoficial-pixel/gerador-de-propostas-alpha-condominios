@@ -579,16 +579,163 @@ function PageDiferenciais({ pg, total }: { pg: number; total: number }) {
 /* ================================================================
    PÁGINA — SERVIÇOS
    ================================================================ */
+
+// Ícones SVG para cada serviço
+const IFolder = () => (
+  <Svg width={28} height={28} viewBox="0 0 24 24">
+    <Path
+      d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"
+      fill={GOLD}
+    />
+  </Svg>
+);
+
+const IUsers = () => (
+  <Svg width={28} height={28} viewBox="0 0 24 24">
+    <Path
+      d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+      stroke={GOLD} strokeWidth="2" fill="none" strokeLinecap="round"
+    />
+    <Path
+      d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"
+      fill={GOLD}
+    />
+    <Path
+      d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+      stroke={GOLD} strokeWidth="2" fill="none" strokeLinecap="round"
+    />
+  </Svg>
+);
+
+const IShield = () => (
+  <Svg width={28} height={28} viewBox="0 0 24 24">
+    <Path
+      d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"
+      fill={GOLD}
+    />
+    <Path
+      d="M9 12l2 2 4-4"
+      stroke={WHITE} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+const ICoins = () => (
+  <Svg width={28} height={28} viewBox="0 0 24 24">
+    <Path
+      d="M12 12c3.31 0 6-1.34 6-3s-2.69-3-6-3-6 1.34-6 3 2.69 3 6 3z"
+      fill={GOLD}
+    />
+    <Path
+      d="M6 9v3c0 1.66 2.69 3 6 3s6-1.34 6-3V9"
+      stroke={GOLD} strokeWidth="1.5" fill="none"
+    />
+    <Path
+      d="M6 12v3c0 1.66 2.69 3 6 3s6-1.34 6-3v-3"
+      stroke={GOLD} strokeWidth="1.5" fill="none"
+    />
+  </Svg>
+);
+
+const IWrench = () => (
+  <Svg width={28} height={28} viewBox="0 0 24 24">
+    <Path
+      d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+      fill={GOLD}
+    />
+  </Svg>
+);
+
+// Card de serviço
+function ServicoCard({
+  icon,
+  titulo,
+  descricao,
+}: {
+  icon: React.ReactNode;
+  titulo: string;
+  descricao: string;
+}) {
+  return (
+    <View
+      style={{
+        width: "48%",
+        backgroundColor: WHITE,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: GRAY_200,
+        padding: 16,
+        marginBottom: 12,
+      }}
+    >
+      <View style={{ marginBottom: 10 }}>{icon}</View>
+      <Text
+        style={{
+          fontSize: 10,
+          fontWeight: "bold",
+          color: NAVY,
+          marginBottom: 5,
+        }}
+      >
+        {titulo}
+      </Text>
+      <Text style={{ fontSize: 8.5, color: GRAY_700, lineHeight: 1.55 }}>
+        {descricao}
+      </Text>
+    </View>
+  );
+}
+
 function PageServicos({ pg, total }: { pg: number; total: number }) {
   const servicos = [
-    { titulo: "Administração de Condomínios",  descricao: "Gestão completa de todas as atividades administrativas, financeiras e operacionais do condomínio, com foco em eficiência e transparência." },
-    { titulo: "Síndico Profissional",          descricao: "Profissional qualificado e dedicado exclusivamente à gestão do condomínio. Inclui Seguro de Responsabilidade Civil (RC) de Síndico." },
-    { titulo: "Certificado Digital",           descricao: "Emissão e gestão de certificados digitais para assinatura eletrônica de documentos, atas e contratos." },
-    { titulo: "Seguro Condominial",            descricao: "Contratação e gestão de apólices de seguro patrimonial, incêndio, responsabilidade civil e outros." },
-    { titulo: "AVCB",                          descricao: "Assessoria completa para obtenção e renovação do Auto de Vistoria do Corpo de Bombeiros." },
-    { titulo: "Assessoria Jurídica",           descricao: "Suporte jurídico especializado em direito condominial, assembleias, documentos e resolução de conflitos." },
-    { titulo: "Garantidora de Crédito",        descricao: "Intermediação com empresas garantidoras para locação de unidades, facilitando a entrada de inquilinos." },
-    { titulo: "Dentre Outros",                 descricao: "Soluções personalizadas: manutenção predial, comunicação visual, automação, sustentabilidade e muito mais." },
+    {
+      icon: <IFolder />,
+      titulo: "Administração de Condomínios",
+      descricao:
+        "Gestão completa de todas as atividades administrativas, financeiras e operacionais do condomínio, com foco em eficiência e transparência.",
+    },
+    {
+      icon: <IUsers />,
+      titulo: "Síndico Profissional",
+      descricao:
+        "Profissional qualificado e dedicado exclusivamente à gestão do condomínio, garantindo cumprimento de todas as obrigações legais. Inclui Seguro de Responsabilidade Civil (RC) de Síndico, protegendo o profissional e o condomínio.",
+    },
+    {
+      icon: <IShield />,
+      titulo: "Certificado Digital",
+      descricao:
+        "Emissão e gestão de certificados digitais para assinatura eletrônica de documentos, atas e contratos, garantindo validade jurídica e agilidade.",
+    },
+    {
+      icon: <IShield />,
+      titulo: "Seguro Condominial",
+      descricao:
+        "Contratação e gestão de apólices de seguro patrimonial, incêndio, responsabilidade civil e outros, com análise criteriosa de coberturas e custos.",
+    },
+    {
+      icon: <IFolder />,
+      titulo: "AVCB",
+      descricao:
+        "Assessoria completa para obtenção e renovação do Auto de Vistoria do Corpo de Bombeiros, garantindo conformidade legal e segurança dos moradores.",
+    },
+    {
+      icon: <IFolder />,
+      titulo: "Assessoria Jurídica",
+      descricao:
+        "Suporte jurídico especializado em direito condominial, com orientação em assembleias, elaboração de documentos e resolução de conflitos.",
+    },
+    {
+      icon: <ICoins />,
+      titulo: "Garantidora de Crédito",
+      descricao:
+        "Intermediação com empresas garantidoras para locação de unidades, facilitando a entrada de inquilinos e reduzindo inadimplência.",
+    },
+    {
+      icon: <IWrench />,
+      titulo: "Dentre Outros",
+      descricao:
+        "Soluções personalizadas conforme necessidades específicas de cada condomínio: manutenção predial, comunicação visual, automação, sustentabilidade e muito mais.",
+    },
   ];
 
   return (
@@ -598,23 +745,61 @@ function PageServicos({ pg, total }: { pg: number; total: number }) {
         style={{
           flex: 1,
           paddingHorizontal: 50,
-          paddingTop: 28,
+          paddingTop: 24,
           paddingBottom: 52,
         }}
       >
-        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
-          SOLUÇÕES COMPLETAS
+        {/* Cabeçalho da seção */}
+        <Text
+          style={{
+            fontSize: 8,
+            color: GOLD,
+            letterSpacing: 2.5,
+            fontWeight: "bold",
+            marginBottom: 6,
+          }}
+        >
+          SERVIÇOS
         </Text>
-        <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 6 }}>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            color: NAVY,
+            marginBottom: 8,
+          }}
+        >
           Nossos Serviços
         </Text>
-        <Text style={{ fontSize: 9.5, color: GRAY_700, marginBottom: 14, lineHeight: 1.5 }}>
+        <GoldDivider />
+        <Text
+          style={{
+            fontSize: 9.5,
+            color: GRAY_700,
+            marginBottom: 20,
+            lineHeight: 1.5,
+          }}
+        >
           Soluções completas para a administração do seu condomínio.
         </Text>
-        <GoldDivider />
-        {servicos.map((s) => (
-          <ServicoRow key={s.titulo} titulo={s.titulo} descricao={s.descricao} />
-        ))}
+
+        {/* Grid 2 colunas */}
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
+        >
+          {servicos.map((s) => (
+            <ServicoCard
+              key={s.titulo}
+              icon={s.icon}
+              titulo={s.titulo}
+              descricao={s.descricao}
+            />
+          ))}
+        </View>
       </View>
       <PageFooter current={pg} total={total} />
     </Page>
