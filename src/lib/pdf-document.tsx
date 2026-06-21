@@ -611,16 +611,12 @@ function PagePlanoEssencial({
     <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Planos" />
       <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
-
-        {/* Título */}
         <Text style={{ fontSize: 32, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
           Essencial
         </Text>
         <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
           Gestão financeira objetiva e eficiente
         </Text>
-
-        {/* Ideal para */}
         <View style={{
           backgroundColor: GRAY_50, borderRadius: 8, padding: 14,
           marginBottom: 20, borderLeftWidth: 3, borderLeftColor: GOLD,
@@ -632,8 +628,6 @@ function PagePlanoEssencial({
             Condomínios que buscam organização financeira com custo acessível.
           </Text>
         </View>
-
-        {/* Itens com separador */}
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 4 }}>
           O QUE ESTÁ INCLUÍDO
         </Text>
@@ -642,10 +636,7 @@ function PagePlanoEssencial({
             <PlanoItem key={item} texto={item} ultimo={i === itens.length - 1} />
           ))}
         </View>
-
         <View style={{ flex: 1 }} />
-
-        {/* Bloco investimento */}
         <View style={{
           backgroundColor: NAVY, borderRadius: 10,
           paddingVertical: 18, paddingHorizontal: 24, alignItems: "center",
@@ -688,8 +679,6 @@ function PagePlanoCompleto({
     <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Planos" />
       <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
-
-        {/* Badge MAIS ESCOLHIDO */}
         <View style={{
           alignSelf: "flex-start", backgroundColor: GOLD,
           borderRadius: 20, paddingHorizontal: 14, paddingVertical: 5, marginBottom: 16,
@@ -698,16 +687,12 @@ function PagePlanoCompleto({
             ★  MAIS ESCOLHIDO
           </Text>
         </View>
-
-        {/* Título */}
         <Text style={{ fontSize: 32, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
           Completo
         </Text>
         <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
           Administração completa com gestão integrada
         </Text>
-
-        {/* Ideal para */}
         <View style={{
           backgroundColor: GRAY_50, borderRadius: 8, padding: 14,
           marginBottom: 20, borderLeftWidth: 3, borderLeftColor: GOLD,
@@ -719,8 +704,6 @@ function PagePlanoCompleto({
             Condomínios que precisam de gestão financeira, operacional e de comunicação integradas.
           </Text>
         </View>
-
-        {/* Itens com separador */}
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 4 }}>
           O QUE ESTÁ INCLUÍDO
         </Text>
@@ -729,10 +712,7 @@ function PagePlanoCompleto({
             <PlanoItem key={item} texto={item} ultimo={i === itens.length - 1} />
           ))}
         </View>
-
         <View style={{ flex: 1 }} />
-
-        {/* Bloco investimento — borda dourada */}
         <View style={{
           backgroundColor: NAVY, borderRadius: 10,
           paddingVertical: 18, paddingHorizontal: 24,
@@ -776,8 +756,6 @@ function PagePlanoPremium({
     <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Planos" />
       <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
-
-        {/* Badge ★ PREMIUM */}
         <View style={{
           alignSelf: "flex-start",
           backgroundColor: NAVY,
@@ -792,16 +770,12 @@ function PagePlanoPremium({
             ★  PREMIUM
           </Text>
         </View>
-
-        {/* Título */}
         <Text style={{ fontSize: 32, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
           Premium
         </Text>
         <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
           Gestão completa com assessoria jurídica e atendimento prioritário
         </Text>
-
-        {/* Ideal para */}
         <View style={{
           backgroundColor: GRAY_50, borderRadius: 8, padding: 14,
           marginBottom: 20, borderLeftWidth: 3, borderLeftColor: GOLD,
@@ -813,8 +787,6 @@ function PagePlanoPremium({
             Condomínios que desejam o mais alto nível de gestão, com suporte jurídico e SLA de atendimento garantido.
           </Text>
         </View>
-
-        {/* Itens com separador */}
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 4 }}>
           O QUE ESTÁ INCLUÍDO
         </Text>
@@ -823,10 +795,7 @@ function PagePlanoPremium({
             <PlanoItem key={item} texto={item} ultimo={i === itens.length - 1} />
           ))}
         </View>
-
         <View style={{ flex: 1 }} />
-
-        {/* Bloco investimento — NAVY_DARK + borda dourada */}
         <View style={{
           backgroundColor: NAVY_DARK, borderRadius: 10,
           paddingVertical: 18, paddingHorizontal: 24,
@@ -887,7 +856,6 @@ function PageComparativo({
     <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Comparativo" />
       <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 24, paddingBottom: 52 }}>
-
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
           COMPARATIVO DE PLANOS
         </Text>
@@ -952,7 +920,7 @@ function PageComparativo({
               }}>
                 {l.c}
               </Text>
-              {/* Premium — sempre CHECK, destacado em dourado */}
+              {/* Premium — sempre CHECK verde em todas as linhas */}
               <Text style={{
                 width: ColW.plano, fontSize: 10, textAlign: "center",
                 color: GREEN_CHECK,
@@ -1079,11 +1047,12 @@ function PageCondicoes({ pg, total }: { pg: number; total: number }) {
 }
 
 /* ================================================================
-   PÁGINA — PRÓXIMOS PASSOS  ← CORREÇÃO: telefone fixo da Alpha
+   PÁGINA 11 — PRÓXIMOS PASSOS
+   ✅ CORREÇÕES:
+      - Telefone: sempre ALPHA_TELEFONE fixo
+      - E-mail:   sempre ALPHA_EMAIL fixo (ignorar emailContato do formulário)
    ================================================================ */
-function PagePassos({ pg, total, email }: {
-  pg: number; total: number; email: string;
-}) {
+function PagePassos({ pg, total }: { pg: number; total: number }) {
   return (
     <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Próximos Passos" />
@@ -1104,9 +1073,10 @@ function PagePassos({ pg, total, email }: {
             Pronto para transformar a gestão do seu condomínio?
           </Text>
           <View style={{ alignItems: "flex-end" }}>
-            {/* ✅ Sempre o telefone fixo da Alpha, nunca o do formulário */}
+            {/* ✅ Telefone fixo da Alpha */}
             <Text style={{ fontSize: 9, color: GOLD, marginBottom: 4 }}>{ALPHA_TELEFONE}</Text>
-            <Text style={{ fontSize: 9, color: WHITE }}>{email || ALPHA_EMAIL}</Text>
+            {/* ✅ E-mail fixo da Alpha */}
+            <Text style={{ fontSize: 9, color: WHITE }}>{ALPHA_EMAIL}</Text>
           </View>
         </View>
       </View>
@@ -1168,7 +1138,6 @@ export function PropostaDocument(props: PropostaPDFData) {
   const numeroUnidades  = Number(condominio?.unidades) || 0;
   const bairro          = condominio?.endereco  || "";
   const nomeContato     = contato?.nome         || "";
-  const emailContato    = contato?.email        || ALPHA_EMAIL;
   const numeroContrato  = numero                || "";
 
   const dataHoje = format(
@@ -1288,11 +1257,8 @@ export function PropostaDocument(props: PropostaPDFData) {
 
       <PageCondicoes pg={P_CONDICOES} total={total} />
 
-      <PagePassos
-        pg={P_PASSOS}
-        total={total}
-        email={emailContato}
-      />
+      {/* ✅ PagePassos não recebe mais prop "email" — usa ALPHA_EMAIL fixo internamente */}
+      <PagePassos pg={P_PASSOS} total={total} />
 
       {temConsideracoes && (
         <PageConsideracoes
