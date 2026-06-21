@@ -122,7 +122,7 @@ function montarTextoWhatsApp(params: {
     "🔹 *Serviços inclusos na proposta:*",
     ...servicos,
     "",
-    "💬 "Ficamos à disposição para esclarecer qualquer dúvida sobre a Proposta!",
+    "💬 "Ficamos à disposição para esclarecer qualquer dúvida sobre a Proposta!"",
     "",
     "━━━━━━━━━━━━━━━━━━━━",
     "*Alpha Facilities*",
