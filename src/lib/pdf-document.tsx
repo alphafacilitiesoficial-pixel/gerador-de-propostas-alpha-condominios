@@ -32,6 +32,13 @@ const GREEN_CHECK = "#16A34A";
 const NAVY_DARK   = "#0F1A30";
 
 /* ================================================================
+   CONSTANTE FIXA — contato Alpha
+   ================================================================ */
+const ALPHA_TELEFONE = "(31) 99778-7316";
+const ALPHA_EMAIL    = "comercial@alphafacilities.com.br";
+const ALPHA_SITE     = "www.alphafacilities.com.br";
+
+/* ================================================================
    TIPOS
    ================================================================ */
 interface PropostaPDFData {
@@ -427,9 +434,9 @@ function PageCapa({
           }}
         >
           <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 3, marginBottom: 14 }}>ENTRE EM CONTATO</Text>
-          <Text style={{ fontSize: 13, fontWeight: "bold", color: NAVY, marginBottom: 7 }}>(31) 99778-7316</Text>
-          <Text style={{ fontSize: 10, color: NAVY, marginBottom: 5 }}>comercial@alphafacilities.com.br</Text>
-          <Text style={{ fontSize: 9.5, color: GRAY_500 }}>www.alphafacilities.com.br</Text>
+          <Text style={{ fontSize: 13, fontWeight: "bold", color: NAVY, marginBottom: 7 }}>{ALPHA_TELEFONE}</Text>
+          <Text style={{ fontSize: 10, color: NAVY, marginBottom: 5 }}>{ALPHA_EMAIL}</Text>
+          <Text style={{ fontSize: 9.5, color: GRAY_500 }}>{ALPHA_SITE}</Text>
         </View>
       </View>
     </Page>
@@ -636,11 +643,13 @@ function PagePlanoEssencial({
           ))}
         </View>
 
-        {/* Espaçador */}
         <View style={{ flex: 1 }} />
 
         {/* Bloco investimento */}
-        <View style={{ backgroundColor: NAVY, borderRadius: 10, paddingVertical: 18, paddingHorizontal: 24, alignItems: "center" }}>
+        <View style={{
+          backgroundColor: NAVY, borderRadius: 10,
+          paddingVertical: 18, paddingHorizontal: 24, alignItems: "center",
+        }}>
           <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
             INVESTIMENTO MENSAL
           </Text>
@@ -681,7 +690,10 @@ function PagePlanoCompleto({
       <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
 
         {/* Badge MAIS ESCOLHIDO */}
-        <View style={{ alignSelf: "flex-start", backgroundColor: GOLD, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 5, marginBottom: 16 }}>
+        <View style={{
+          alignSelf: "flex-start", backgroundColor: GOLD,
+          borderRadius: 20, paddingHorizontal: 14, paddingVertical: 5, marginBottom: 16,
+        }}>
           <Text style={{ fontSize: 8, color: NAVY, letterSpacing: 1.5, fontWeight: "bold" }}>
             ★  MAIS ESCOLHIDO
           </Text>
@@ -718,12 +730,12 @@ function PagePlanoCompleto({
           ))}
         </View>
 
-        {/* Espaçador */}
         <View style={{ flex: 1 }} />
 
         {/* Bloco investimento — borda dourada */}
         <View style={{
-          backgroundColor: NAVY, borderRadius: 10, paddingVertical: 18, paddingHorizontal: 24,
+          backgroundColor: NAVY, borderRadius: 10,
+          paddingVertical: 18, paddingHorizontal: 24,
           alignItems: "center", borderWidth: 2, borderColor: GOLD,
         }}>
           <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
@@ -812,12 +824,12 @@ function PagePlanoPremium({
           ))}
         </View>
 
-        {/* Espaçador */}
         <View style={{ flex: 1 }} />
 
         {/* Bloco investimento — NAVY_DARK + borda dourada */}
         <View style={{
-          backgroundColor: NAVY_DARK, borderRadius: 10, paddingVertical: 18, paddingHorizontal: 24,
+          backgroundColor: NAVY_DARK, borderRadius: 10,
+          paddingVertical: 18, paddingHorizontal: 24,
           alignItems: "center", borderWidth: 2, borderColor: GOLD,
         }}>
           <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
@@ -914,12 +926,6 @@ function PageComparativo({
             );
           }
 
-          const vals = [
-            { v: l.e, highlight: false },
-            { v: l.c, highlight: l.c === CHECK },
-            { v: l.p, highlight: l.p === CHECK },
-          ];
-
           return (
             <View key={i} style={{
               flexDirection: "row",
@@ -930,17 +936,30 @@ function PageComparativo({
               alignItems: "center",
             }}>
               <Text style={{ width: ColW.item, fontSize: 8.5, color: GRAY_700 }}>{l.item}</Text>
-              {vals.map((cell, idx) => (
-                <Text key={idx} style={{
-                  width: ColW.plano,
-                  fontSize: 10,
-                  textAlign: "center",
-                  color: cell.v === CHECK ? GREEN_CHECK : "#9CA3AF",
-                  fontWeight: cell.v === CHECK ? "bold" : "normal",
-                }}>
-                  {cell.v}
-                </Text>
-              ))}
+              {/* Essencial */}
+              <Text style={{
+                width: ColW.plano, fontSize: 10, textAlign: "center",
+                color: l.e === CHECK ? GREEN_CHECK : "#9CA3AF",
+                fontWeight: l.e === CHECK ? "bold" : "normal",
+              }}>
+                {l.e}
+              </Text>
+              {/* Completo */}
+              <Text style={{
+                width: ColW.plano, fontSize: 10, textAlign: "center",
+                color: l.c === CHECK ? GREEN_CHECK : "#9CA3AF",
+                fontWeight: l.c === CHECK ? "bold" : "normal",
+              }}>
+                {l.c}
+              </Text>
+              {/* Premium — sempre CHECK, destacado em dourado */}
+              <Text style={{
+                width: ColW.plano, fontSize: 10, textAlign: "center",
+                color: GREEN_CHECK,
+                fontWeight: "bold",
+              }}>
+                {CHECK}
+              </Text>
             </View>
           );
         })}
@@ -1060,10 +1079,10 @@ function PageCondicoes({ pg, total }: { pg: number; total: number }) {
 }
 
 /* ================================================================
-   PÁGINA — PRÓXIMOS PASSOS
+   PÁGINA — PRÓXIMOS PASSOS  ← CORREÇÃO: telefone fixo da Alpha
    ================================================================ */
-function PagePassos({ pg, total, telefone, email }: {
-  pg: number; total: number; telefone: string; email: string;
+function PagePassos({ pg, total, email }: {
+  pg: number; total: number; email: string;
 }) {
   return (
     <Page size="A4" style={{ backgroundColor: WHITE }}>
@@ -1085,8 +1104,9 @@ function PagePassos({ pg, total, telefone, email }: {
             Pronto para transformar a gestão do seu condomínio?
           </Text>
           <View style={{ alignItems: "flex-end" }}>
-            <Text style={{ fontSize: 9, color: GOLD, marginBottom: 4 }}>{telefone || "(31) 99778-7316"}</Text>
-            <Text style={{ fontSize: 9, color: WHITE }}>{email || "comercial@alphafacilities.com.br"}</Text>
+            {/* ✅ Sempre o telefone fixo da Alpha, nunca o do formulário */}
+            <Text style={{ fontSize: 9, color: GOLD, marginBottom: 4 }}>{ALPHA_TELEFONE}</Text>
+            <Text style={{ fontSize: 9, color: WHITE }}>{email || ALPHA_EMAIL}</Text>
           </View>
         </View>
       </View>
@@ -1127,8 +1147,8 @@ function PageContracapa() {
           GESTÃO · TRANSPARÊNCIA · CONFIANÇA
         </Text>
         <View style={{ height: 0.5, width: 80, backgroundColor: GOLD, marginBottom: 32 }} />
-        <Text style={{ fontSize: 10, color: WHITE, marginBottom: 8 }}>www.alphafacilities.com.br</Text>
-        <Text style={{ fontSize: 9, color: "#94A3B8" }}>(31) 99778-7316 · comercial@alphafacilities.com.br</Text>
+        <Text style={{ fontSize: 10, color: WHITE, marginBottom: 8 }}>{ALPHA_SITE}</Text>
+        <Text style={{ fontSize: 9, color: "#94A3B8" }}>{ALPHA_TELEFONE} · {ALPHA_EMAIL}</Text>
       </View>
     </Page>
   );
@@ -1148,8 +1168,7 @@ export function PropostaDocument(props: PropostaPDFData) {
   const numeroUnidades  = Number(condominio?.unidades) || 0;
   const bairro          = condominio?.endereco  || "";
   const nomeContato     = contato?.nome         || "";
-  const telefoneContato = contato?.telefone     || "(31) 99778-7316";
-  const emailContato    = contato?.email        || "comercial@alphafacilities.com.br";
+  const emailContato    = contato?.email        || ALPHA_EMAIL;
   const numeroContrato  = numero                || "";
 
   const dataHoje = format(
@@ -1270,8 +1289,8 @@ export function PropostaDocument(props: PropostaPDFData) {
       <PageCondicoes pg={P_CONDICOES} total={total} />
 
       <PagePassos
-        pg={P_PASSOS} total={total}
-        telefone={telefoneContato}
+        pg={P_PASSOS}
+        total={total}
         email={emailContato}
       />
 
