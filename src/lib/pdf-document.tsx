@@ -556,22 +556,31 @@ function PageServicos({ pg, total }: { pg: number; total: number }) {
 }
 
 /* ================================================================
-   COMPONENTE AUXILIAR — Item de plano com check dourado
+   COMPONENTE AUXILIAR — Item de plano com separador
    ================================================================ */
-function PlanoItem({ texto }: { texto: string }) {
+function PlanoItem({ texto, ultimo }: { texto: string; ultimo?: boolean }) {
   return (
-    <View style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 9 }}>
-      <View
-        style={{
-          width: 18, height: 18, borderRadius: 9,
-          backgroundColor: GOLD,
-          alignItems: "center", justifyContent: "center",
-          marginRight: 10, marginTop: 1, flexShrink: 0,
-        }}
-      >
-        <Text style={{ fontSize: 9, color: NAVY, fontWeight: "bold" }}>✓</Text>
+    <View>
+      <View style={{ flexDirection: "row", alignItems: "center", paddingVertical: 9 }}>
+        <View
+          style={{
+            width: 20,
+            height: 20,
+            borderRadius: 10,
+            backgroundColor: GOLD,
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: 12,
+            flexShrink: 0,
+          }}
+        >
+          <Text style={{ fontSize: 9, color: NAVY, fontWeight: "bold" }}>✓</Text>
+        </View>
+        <Text style={{ fontSize: 9.5, color: GRAY_700, flex: 1, lineHeight: 1.5 }}>{texto}</Text>
       </View>
-      <Text style={{ fontSize: 9.5, color: GRAY_700, flex: 1, lineHeight: 1.55 }}>{texto}</Text>
+      {!ultimo && (
+        <View style={{ height: 0.5, backgroundColor: GRAY_200, marginLeft: 32 }} />
+      )}
     </View>
   );
 }
@@ -584,22 +593,22 @@ function PagePlanoEssencial({
 }: {
   pg: number; total: number; totalFmt: string; porUnidadeFmt: string;
 }) {
+  const itens = [
+    "Emissão de Boletos de Taxa de Condomínio",
+    "Balancete Digital Mensal",
+    "Cobrança Administrativa de Inadimplentes",
+    "Aplicativo Completo",
+  ];
+
   return (
     <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Planos" />
       <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
 
-        {/* Badge */}
-        <View style={{
-          alignSelf: "flex-start", backgroundColor: GRAY_50, borderRadius: 20,
-          paddingHorizontal: 14, paddingVertical: 5,
-          borderWidth: 1, borderColor: GRAY_200, marginBottom: 18,
-        }}>
-          <Text style={{ fontSize: 8, color: GRAY_500, letterSpacing: 2, fontWeight: "bold" }}>PLANO</Text>
-        </View>
-
         {/* Título */}
-        <Text style={{ fontSize: 32, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>Essencial</Text>
+        <Text style={{ fontSize: 32, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
+          Essencial
+        </Text>
         <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
           Gestão financeira objetiva e eficiente
         </Text>
@@ -609,34 +618,38 @@ function PagePlanoEssencial({
           backgroundColor: GRAY_50, borderRadius: 8, padding: 14,
           marginBottom: 20, borderLeftWidth: 3, borderLeftColor: GOLD,
         }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 5 }}>IDEAL PARA</Text>
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 5 }}>
+            IDEAL PARA
+          </Text>
           <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>
             Condomínios que buscam organização financeira com custo acessível.
           </Text>
         </View>
 
-        {/* Divisor */}
-        <View style={{ height: 1, backgroundColor: GRAY_200, marginBottom: 16 }} />
-
-        {/* Itens */}
-        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 14 }}>
+        {/* Itens com separador */}
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 4 }}>
           O QUE ESTÁ INCLUÍDO
         </Text>
-        <PlanoItem texto="Emissão de Boletos de Taxa de Condomínio" />
-        <PlanoItem texto="Balancete Digital Mensal" />
-        <PlanoItem texto="Cobrança Administrativa de Inadimplentes" />
-        <PlanoItem texto="Aplicativo Completo" />
+        <View style={{ borderWidth: 1, borderColor: GRAY_200, borderRadius: 8, paddingHorizontal: 14, marginBottom: 20 }}>
+          {itens.map((item, i) => (
+            <PlanoItem key={item} texto={item} ultimo={i === itens.length - 1} />
+          ))}
+        </View>
 
         {/* Espaçador */}
         <View style={{ flex: 1 }} />
 
         {/* Bloco investimento */}
-        <View style={{ backgroundColor: NAVY, borderRadius: 10, padding: 24, alignItems: "center" }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 10 }}>
+        <View style={{ backgroundColor: NAVY, borderRadius: 10, paddingVertical: 18, paddingHorizontal: 24, alignItems: "center" }}>
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
             INVESTIMENTO MENSAL
           </Text>
-          <Text style={{ fontSize: 36, fontWeight: "bold", color: WHITE, marginBottom: 6 }}>{totalFmt}</Text>
-          <Text style={{ fontSize: 9.5, color: GRAY_200 }}>{porUnidadeFmt} por unidade/mês</Text>
+          <Text style={{ fontSize: 26, fontWeight: "bold", color: WHITE, marginBottom: 4 }}>
+            {totalFmt}
+          </Text>
+          <Text style={{ fontSize: 9, color: GRAY_200 }}>
+            {porUnidadeFmt} por unidade/mês
+          </Text>
         </View>
       </View>
       <PageFooter current={pg} total={total} />
@@ -652,27 +665,32 @@ function PagePlanoCompleto({
 }: {
   pg: number; total: number; totalFmt: string; porUnidadeFmt: string;
 }) {
+  const itens = [
+    "Tudo do Plano Essencial",
+    "Rateio de Água e/ou Gás",
+    "Planejamento Orçamentário Anual",
+    "Gestão de Contas a Pagar",
+    "Elaboração de Atas e Convocação de Assembleias",
+    "Pagamento Online e Conciliação Bancária Integrados",
+    "Relatórios Gerenciais",
+  ];
+
   return (
     <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Planos" />
       <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
 
-        {/* Badges */}
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 18, gap: 10 }}>
-          <View style={{
-            backgroundColor: GRAY_50, borderRadius: 20,
-            paddingHorizontal: 14, paddingVertical: 5,
-            borderWidth: 1, borderColor: GRAY_200,
-          }}>
-            <Text style={{ fontSize: 8, color: GRAY_500, letterSpacing: 2, fontWeight: "bold" }}>PLANO</Text>
-          </View>
-          <View style={{ backgroundColor: GOLD, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 5 }}>
-            <Text style={{ fontSize: 8, color: NAVY, letterSpacing: 1.5, fontWeight: "bold" }}>★  MAIS ESCOLHIDO</Text>
-          </View>
+        {/* Badge MAIS ESCOLHIDO */}
+        <View style={{ alignSelf: "flex-start", backgroundColor: GOLD, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 5, marginBottom: 16 }}>
+          <Text style={{ fontSize: 8, color: NAVY, letterSpacing: 1.5, fontWeight: "bold" }}>
+            ★  MAIS ESCOLHIDO
+          </Text>
         </View>
 
         {/* Título */}
-        <Text style={{ fontSize: 32, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>Completo</Text>
+        <Text style={{ fontSize: 32, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
+          Completo
+        </Text>
         <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
           Administração completa com gestão integrada
         </Text>
@@ -682,40 +700,41 @@ function PagePlanoCompleto({
           backgroundColor: GRAY_50, borderRadius: 8, padding: 14,
           marginBottom: 20, borderLeftWidth: 3, borderLeftColor: GOLD,
         }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 5 }}>IDEAL PARA</Text>
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 5 }}>
+            IDEAL PARA
+          </Text>
           <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>
             Condomínios que precisam de gestão financeira, operacional e de comunicação integradas.
           </Text>
         </View>
 
-        {/* Divisor */}
-        <View style={{ height: 1, backgroundColor: GRAY_200, marginBottom: 16 }} />
-
-        {/* Itens */}
-        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 14 }}>
+        {/* Itens com separador */}
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 4 }}>
           O QUE ESTÁ INCLUÍDO
         </Text>
-        <PlanoItem texto="Tudo do Plano Essencial" />
-        <PlanoItem texto="Rateio de Água e/ou Gás" />
-        <PlanoItem texto="Planejamento Orçamentário Anual" />
-        <PlanoItem texto="Gestão de Contas a Pagar" />
-        <PlanoItem texto="Elaboração de Atas e Convocação de Assembleias" />
-        <PlanoItem texto="Pagamento Online e Conciliação Bancária Integrados" />
-        <PlanoItem texto="Relatórios Gerenciais" />
+        <View style={{ borderWidth: 1, borderColor: GRAY_200, borderRadius: 8, paddingHorizontal: 14, marginBottom: 20 }}>
+          {itens.map((item, i) => (
+            <PlanoItem key={item} texto={item} ultimo={i === itens.length - 1} />
+          ))}
+        </View>
 
         {/* Espaçador */}
         <View style={{ flex: 1 }} />
 
-        {/* Bloco investimento — borda dourada (destaque) */}
+        {/* Bloco investimento — borda dourada */}
         <View style={{
-          backgroundColor: NAVY, borderRadius: 10, padding: 24,
+          backgroundColor: NAVY, borderRadius: 10, paddingVertical: 18, paddingHorizontal: 24,
           alignItems: "center", borderWidth: 2, borderColor: GOLD,
         }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 10 }}>
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
             INVESTIMENTO MENSAL
           </Text>
-          <Text style={{ fontSize: 36, fontWeight: "bold", color: WHITE, marginBottom: 6 }}>{totalFmt}</Text>
-          <Text style={{ fontSize: 9.5, color: GRAY_200 }}>{porUnidadeFmt} por unidade/mês</Text>
+          <Text style={{ fontSize: 26, fontWeight: "bold", color: WHITE, marginBottom: 4 }}>
+            {totalFmt}
+          </Text>
+          <Text style={{ fontSize: 9, color: GRAY_200 }}>
+            {porUnidadeFmt} por unidade/mês
+          </Text>
         </View>
       </View>
       <PageFooter current={pg} total={total} />
@@ -731,27 +750,41 @@ function PagePlanoPremium({
 }: {
   pg: number; total: number; totalFmt: string; porUnidadeFmt: string;
 }) {
+  const itens = [
+    "Tudo dos Planos Essencial e Completo",
+    "Assessoria Jurídica Condominial",
+    "Cumprimento das Obrigações Fiscais (DBE / DCTFWeb / Seguro)",
+    "Revisão da Convenção de Condomínio e Regimento Interno",
+    "Atendimento Prioritário SLA 12h",
+    "Relatório Trimestral de Saúde Financeira do Condomínio",
+    "Suporte a Prazos de Manutenções Obrigatórias, Vencimento de Contratos, etc.",
+  ];
+
   return (
     <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Planos" />
       <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 28, paddingBottom: 60 }}>
 
-        {/* Badge */}
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 18, gap: 10 }}>
-          <View style={{
-            backgroundColor: GRAY_50, borderRadius: 20,
-            paddingHorizontal: 14, paddingVertical: 5,
-            borderWidth: 1, borderColor: GRAY_200,
-          }}>
-            <Text style={{ fontSize: 8, color: GRAY_500, letterSpacing: 2, fontWeight: "bold" }}>PLANO</Text>
-          </View>
-          <View style={{ backgroundColor: NAVY, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 5, borderWidth: 1, borderColor: GOLD }}>
-            <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 1.5, fontWeight: "bold" }}>★  PREMIUM</Text>
-          </View>
+        {/* Badge ★ PREMIUM */}
+        <View style={{
+          alignSelf: "flex-start",
+          backgroundColor: NAVY,
+          borderRadius: 20,
+          paddingHorizontal: 14,
+          paddingVertical: 5,
+          borderWidth: 1,
+          borderColor: GOLD,
+          marginBottom: 16,
+        }}>
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 1.5, fontWeight: "bold" }}>
+            ★  PREMIUM
+          </Text>
         </View>
 
         {/* Título */}
-        <Text style={{ fontSize: 32, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>Premium</Text>
+        <Text style={{ fontSize: 32, fontWeight: "bold", color: NAVY, marginBottom: 4 }}>
+          Premium
+        </Text>
         <Text style={{ fontSize: 10, color: GRAY_500, marginBottom: 20, lineHeight: 1.5 }}>
           Gestão completa com assessoria jurídica e atendimento prioritário
         </Text>
@@ -761,40 +794,41 @@ function PagePlanoPremium({
           backgroundColor: GRAY_50, borderRadius: 8, padding: 14,
           marginBottom: 20, borderLeftWidth: 3, borderLeftColor: GOLD,
         }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 5 }}>IDEAL PARA</Text>
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 5 }}>
+            IDEAL PARA
+          </Text>
           <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.55 }}>
             Condomínios que desejam o mais alto nível de gestão, com suporte jurídico e SLA de atendimento garantido.
           </Text>
         </View>
 
-        {/* Divisor */}
-        <View style={{ height: 1, backgroundColor: GRAY_200, marginBottom: 16 }} />
-
-        {/* Itens */}
-        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 14 }}>
+        {/* Itens com separador */}
+        <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2, fontWeight: "bold", marginBottom: 4 }}>
           O QUE ESTÁ INCLUÍDO
         </Text>
-        <PlanoItem texto="Tudo dos Planos Essencial e Completo" />
-        <PlanoItem texto="Assessoria Jurídica Condominial" />
-        <PlanoItem texto="Cumprimento das Obrigações Fiscais (DBE / DCTFWeb / Seguro)" />
-        <PlanoItem texto="Revisão da Convenção de Condomínio e Regimento Interno" />
-        <PlanoItem texto="Atendimento Prioritário SLA 12h" />
-        <PlanoItem texto="Relatório Trimestral de Saúde Financeira do Condomínio" />
-        <PlanoItem texto="Suporte a Prazos de Manutenções Obrigatórias, Vencimento de Contratos, etc." />
+        <View style={{ borderWidth: 1, borderColor: GRAY_200, borderRadius: 8, paddingHorizontal: 14, marginBottom: 20 }}>
+          {itens.map((item, i) => (
+            <PlanoItem key={item} texto={item} ultimo={i === itens.length - 1} />
+          ))}
+        </View>
 
         {/* Espaçador */}
         <View style={{ flex: 1 }} />
 
-        {/* Bloco investimento */}
+        {/* Bloco investimento — NAVY_DARK + borda dourada */}
         <View style={{
-          borderRadius: 10, padding: 24, alignItems: "center",
-          backgroundColor: NAVY_DARK, borderWidth: 2, borderColor: GOLD,
+          backgroundColor: NAVY_DARK, borderRadius: 10, paddingVertical: 18, paddingHorizontal: 24,
+          alignItems: "center", borderWidth: 2, borderColor: GOLD,
         }}>
-          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 10 }}>
+          <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>
             INVESTIMENTO MENSAL
           </Text>
-          <Text style={{ fontSize: 36, fontWeight: "bold", color: WHITE, marginBottom: 6 }}>{totalFmt}</Text>
-          <Text style={{ fontSize: 9.5, color: GRAY_200 }}>{porUnidadeFmt} por unidade/mês</Text>
+          <Text style={{ fontSize: 26, fontWeight: "bold", color: WHITE, marginBottom: 4 }}>
+            {totalFmt}
+          </Text>
+          <Text style={{ fontSize: 9, color: GRAY_200 }}>
+            {porUnidadeFmt} por unidade/mês
+          </Text>
         </View>
       </View>
       <PageFooter current={pg} total={total} />
@@ -852,44 +886,66 @@ function PageComparativo({
           Veja lado a lado o que cada plano oferece.
         </Text>
 
-        {/* Cabeçalho da tabela */}
+        {/* Cabeçalho */}
         <View style={{
           flexDirection: "row", backgroundColor: NAVY,
           borderRadius: 4, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 2,
         }}>
           <Text style={{ width: ColW.item, fontSize: 8, color: GOLD, fontWeight: "bold" }}>SERVIÇO</Text>
-          {["Essencial", "Completo", "Premium"].map((n) => (
-            <Text key={n} style={{ width: ColW.plano, fontSize: 8, color: WHITE, fontWeight: "bold", textAlign: "center" }}>{n}</Text>
-          ))}
+          <Text style={{ width: ColW.plano, fontSize: 8, color: WHITE, fontWeight: "bold", textAlign: "center" }}>Essencial</Text>
+          <Text style={{ width: ColW.plano, fontSize: 8, color: GOLD,  fontWeight: "bold", textAlign: "center" }}>Completo</Text>
+          <Text style={{ width: ColW.plano, fontSize: 8, color: GOLD,  fontWeight: "bold", textAlign: "center" }}>Premium</Text>
         </View>
 
         {/* Linhas */}
         {linhas.map((l, i) => {
           if (l.categoria) {
             return (
-              <View key={i} style={{ backgroundColor: GRAY_50, paddingHorizontal: 10, paddingVertical: 5, marginTop: 4 }}>
-                <Text style={{ fontSize: 7.5, fontWeight: "bold", color: NAVY, letterSpacing: 1 }}>{l.categoria}</Text>
+              <View key={i} style={{
+                backgroundColor: GRAY_50,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                marginTop: 4,
+              }}>
+                <Text style={{ fontSize: 7.5, fontWeight: "bold", color: NAVY, letterSpacing: 1 }}>
+                  {l.categoria}
+                </Text>
               </View>
             );
           }
+
+          const vals = [
+            { v: l.e, highlight: false },
+            { v: l.c, highlight: l.c === CHECK },
+            { v: l.p, highlight: l.p === CHECK },
+          ];
+
           return (
             <View key={i} style={{
-              flexDirection: "row", paddingHorizontal: 10, paddingVertical: 6,
-              borderBottomWidth: 0.5, borderBottomColor: GRAY_200, alignItems: "center",
+              flexDirection: "row",
+              paddingHorizontal: 10,
+              paddingVertical: 6,
+              borderBottomWidth: 0.5,
+              borderBottomColor: GRAY_200,
+              alignItems: "center",
             }}>
               <Text style={{ width: ColW.item, fontSize: 8.5, color: GRAY_700 }}>{l.item}</Text>
-              {[l.e, l.c, l.p].map((v, idx) => (
+              {vals.map((cell, idx) => (
                 <Text key={idx} style={{
-                  width: ColW.plano, fontSize: 9, textAlign: "center",
-                  color: v === CHECK ? GREEN_CHECK : "#9CA3AF",
-                  fontWeight: v === CHECK ? "bold" : "normal",
-                }}>{v}</Text>
+                  width: ColW.plano,
+                  fontSize: 10,
+                  textAlign: "center",
+                  color: cell.v === CHECK ? GREEN_CHECK : "#9CA3AF",
+                  fontWeight: cell.v === CHECK ? "bold" : "normal",
+                }}>
+                  {cell.v}
+                </Text>
               ))}
             </View>
           );
         })}
 
-        {/* Rodapé da tabela com preços */}
+        {/* Rodapé com preços */}
         <View style={{
           flexDirection: "row", backgroundColor: NAVY,
           borderRadius: 4, paddingHorizontal: 10, paddingVertical: 10, marginTop: 6,
@@ -897,9 +953,15 @@ function PageComparativo({
           <Text style={{ width: ColW.item, fontSize: 8, color: GOLD, fontWeight: "bold" }}>
             Investimento mensal
           </Text>
-          {[essencialFmt, completoFmt, premiumFmt].map((v) => (
-            <Text key={v} style={{ width: ColW.plano, fontSize: 8, color: WHITE, fontWeight: "bold", textAlign: "center" }}>{v}</Text>
-          ))}
+          <Text style={{ width: ColW.plano, fontSize: 8, color: WHITE, fontWeight: "bold", textAlign: "center" }}>
+            {essencialFmt}
+          </Text>
+          <Text style={{ width: ColW.plano, fontSize: 8, color: GOLD, fontWeight: "bold", textAlign: "center" }}>
+            {completoFmt}
+          </Text>
+          <Text style={{ width: ColW.plano, fontSize: 8, color: GOLD, fontWeight: "bold", textAlign: "center" }}>
+            {premiumFmt}
+          </Text>
         </View>
       </View>
       <PageFooter current={pg} total={total} />
