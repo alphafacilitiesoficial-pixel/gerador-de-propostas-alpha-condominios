@@ -828,7 +828,7 @@ function PageComparativo({
   const CHECK = "✓";
   const DASH  = "—";
 
-  const linhas: { categoria?: string; item?: string; e: string; c: string; p: string }[] = [
+  const linhas: { categoria?: string; item?: string; e?: string; c?: string; p?: string }[] = [
     { categoria: "FINANCEIRO" },
     { item: "Emissão de Boletos de Taxa de Condomínio",       e: CHECK, c: CHECK, p: CHECK },
     { item: "Balancete Digital Mensal",                        e: CHECK, c: CHECK, p: CHECK },
