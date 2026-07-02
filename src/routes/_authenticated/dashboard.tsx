@@ -131,7 +131,7 @@ function Dashboard() {
       "🔹 *Serviços inclusos na proposta:*",
       ...servicos,
       "",
-      "💬 Ficamos à disposição para esclarecer qualquer dúvida e enviar a proposta completa em PDF!",
+      "💬 Ficamos à disposição para esclarecer qualquer dúvida sobre os serviços contemplados na proposta!",
       "",
       "━━━━━━━━━━━━━━━━━━━━",
       "*Alpha Facilities*",
