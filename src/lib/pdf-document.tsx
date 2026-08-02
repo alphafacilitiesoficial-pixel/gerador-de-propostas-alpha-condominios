@@ -118,7 +118,7 @@ function PageHeader({ label }: { label: string }) {
   const W = 595;
   const H = 90;
   return (
-    <View style={{ position: "relative", width: W, height: H, overflow: "hidden" }}>
+    <View fixed style={{ position: "relative", width: W, height: H, overflow: "hidden" }}>
       <GradientHorizontal width={W} height={H} />
       <View
         style={{
@@ -144,6 +144,7 @@ function PageHeader({ label }: { label: string }) {
 function PageFooter({ current, total }: { current: number; total: number }) {
   return (
     <View
+      fixed
       style={{
         position: "absolute",
         bottom: 0, left: 0, right: 0,
@@ -158,9 +159,10 @@ function PageFooter({ current, total }: { current: number; total: number }) {
       <Text style={{ fontSize: 7.5, color: GOLD, letterSpacing: 1.5 }}>
         ALPHA CONDOMÍNIOS
       </Text>
-      <Text style={{ fontSize: 7.5, color: WHITE }}>
-        Página {current} de {total}
-      </Text>
+      <Text
+        style={{ fontSize: 7.5, color: WHITE }}
+        render={({ pageNumber, totalPages }) => `Página ${pageNumber} de ${totalPages}`}
+      />
     </View>
   );
 }
@@ -1132,57 +1134,121 @@ function stripBulletMarker(line: string): string {
   return line.replace(/^\s*[•\-*]\s+/, "").trim();
 }
 
-function renderConsideracoesContent(texto: string) {
+/** Divide um texto em partes normais e em negrito (**assim**), sem exibir os asteriscos. */
+function renderInlineBold(text: string, baseStyle: object, keyPrefix: string) {
+  const parts = text.split(/\*\*(.+?)\*\*/g);
+  if (parts.length === 1) return text;
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <Text key={`${keyPrefix}-b${i}`} style={{ ...baseStyle, fontWeight: "bold" }}>{part}</Text>
+    ) : (
+      part
+    )
+  );
+}
+
+type ConsideracaoLine =
+  | { kind: "divider" }
+  | { kind: "header"; text: string }
+  | { kind: "bullet"; text: string }
+  | { kind: "paragraph"; text: string };
+
+function classifyConsideracoesLines(texto: string): ConsideracaoLine[] {
   const lines = texto.split(/\r?\n/);
-  const elements: any[] = [];
-  let isFirst = true;
-  let key = 0;
+  const out: ConsideracaoLine[] = [];
 
   for (const raw of lines) {
     const line = raw.trim();
     if (!line) continue;
 
     if (isDividerLine(line)) {
-      elements.push(
-        <View key={key++} style={{ height: 0.75, backgroundColor: GRAY_200, marginVertical: 12 }} />
-      );
-      isFirst = false;
+      out.push({ kind: "divider" });
       continue;
     }
 
     const { hadEmoji, text } = stripLeadingEmoji(line);
 
     if (hadEmoji || isHeaderText(text)) {
-      elements.push(
-        <View key={key++} style={{ flexDirection: "row", alignItems: "flex-start", marginTop: isFirst ? 0 : 14, marginBottom: 6 }}>
-          <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: GOLD, marginTop: 4, marginRight: 7 }} />
-          <Text style={{ fontSize: 10, fontWeight: "bold", color: NAVY, letterSpacing: 0.3, flex: 1 }}>
-            {text || line}
-          </Text>
-        </View>
-      );
-      isFirst = false;
+      out.push({ kind: "header", text: text || line });
       continue;
     }
 
     if (isBulletLine(line)) {
+      out.push({ kind: "bullet", text: stripBulletMarker(line) });
+      continue;
+    }
+
+    out.push({ kind: "paragraph", text });
+  }
+
+  return out;
+}
+
+function renderConsideracaoLine(item: ConsideracaoLine, key: string, marginTop: number) {
+  if (item.kind === "divider") {
+    return <View key={key} style={{ height: 0.75, backgroundColor: GRAY_200, marginVertical: 12 }} />;
+  }
+  if (item.kind === "header") {
+    return (
+      <View key={key} style={{ flexDirection: "row", alignItems: "flex-start", marginTop, marginBottom: 6 }}>
+        <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: GOLD, marginTop: 4, marginRight: 7 }} />
+        <Text style={{ fontSize: 10, fontWeight: "bold", color: NAVY, letterSpacing: 0.3, flex: 1 }}>
+          {item.text}
+        </Text>
+      </View>
+    );
+  }
+  if (item.kind === "bullet") {
+    const style = { fontSize: 9.5, color: GRAY_700, lineHeight: 1.6 };
+    return (
+      <View key={key} style={{ flexDirection: "row", marginTop, marginBottom: 5, paddingLeft: 12 }}>
+        <Text style={{ fontSize: 9.5, color: GOLD, marginRight: 6 }}>•</Text>
+        <Text style={{ ...style, flex: 1 }}>{renderInlineBold(item.text, style, key)}</Text>
+      </View>
+    );
+  }
+  const style = { fontSize: 9.5, color: GRAY_700, lineHeight: 1.7 };
+  return (
+    <Text key={key} style={{ ...style, marginTop, marginBottom: 8 }}>
+      {renderInlineBold(item.text, style, key)}
+    </Text>
+  );
+}
+
+/**
+ * Renderiza o texto livre de "Considerações Finais" já formatado no
+ * padrão visual do resto da proposta. Cada título é agrupado (wrap={false})
+ * com o bloco seguinte, para nunca ficar "órfão" sozinho no fim de uma
+ * página enquanto o conteúdo dele pula para a próxima — o restante do
+ * texto continua quebrando livremente entre páginas, sem cortes no meio
+ * de uma frase.
+ */
+function renderConsideracoesContent(texto: string) {
+  const items = classifyConsideracoesLines(texto);
+  const elements: any[] = [];
+  let key = 0;
+  let isFirst = true;
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const marginTop = isFirst ? 0 : item.kind === "header" ? 14 : 0;
+
+    if (item.kind === "header" && items[i + 1]) {
+      const next = items[i + 1];
       elements.push(
-        <View key={key++} style={{ flexDirection: "row", marginBottom: 5, paddingLeft: 12 }}>
-          <Text style={{ fontSize: 9.5, color: GOLD, marginRight: 6 }}>•</Text>
-          <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.6, flex: 1 }}>
-            {stripBulletMarker(line)}
-          </Text>
+        <View key={`grp-${key}`} wrap={false}>
+          {renderConsideracaoLine(item, `h-${key}`, marginTop)}
+          {renderConsideracaoLine(next, `n-${key}`, 0)}
         </View>
       );
+      key++;
+      i++; // já consumiu o próximo item
       isFirst = false;
       continue;
     }
 
-    elements.push(
-      <Text key={key++} style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.7, marginBottom: 8 }}>
-        {text || line}
-      </Text>
-    );
+    elements.push(renderConsideracaoLine(item, `s-${key}`, marginTop));
+    key++;
     isFirst = false;
   }
 
@@ -1194,9 +1260,9 @@ function renderConsideracoesContent(texto: string) {
    ================================================================ */
 function PageConsideracoes({ pg, total, texto }: { pg: number; total: number; texto: string }) {
   return (
-    <Page size="A4" style={{ backgroundColor: WHITE }}>
+    <Page size="A4" style={{ backgroundColor: WHITE }} wrap>
       <PageHeader label="Considerações Finais" />
-      <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 28, paddingBottom: 52 }}>
+      <View style={{ paddingHorizontal: 50, paddingTop: 28, paddingBottom: 52 }}>
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>OBSERVAÇÕES</Text>
         <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 14 }}>Considerações Finais</Text>
         <GoldDivider />
