@@ -1086,18 +1086,122 @@ function PagePassos({ pg, total }: { pg: number; total: number }) {
 }
 
 /* ================================================================
+   CONSIDERAÇÕES FINAIS — parser de texto livre
+   Detecta e trata:
+   - Emojis usados como marcador de tópico -> vira uma bolinha dourada
+     (o mesmo marcador visual usado no resto da proposta), evitando os
+     glifos quebrados que a fonte do PDF não sabe desenhar.
+   - Linhas em CAIXA ALTA (ex: "INVESTIMENTO") -> viram subtítulo,
+     no mesmo estilo (negrito, azul-marinho) dos títulos internos
+     usados nas demais páginas.
+   - Linhas de "___________" usadas como separador -> viram um
+     divisor sutil, em vez de sublinhados crus.
+   - Linhas começando com "•", "-" ou "*" -> viram item de lista,
+     no mesmo estilo de bullet usado no restante do documento.
+   - Qualquer outra linha -> parágrafo padrão, no mesmo tamanho/
+     espaçamento de fonte usado no corpo de texto das outras páginas.
+   ================================================================ */
+const EMOJI_RE = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}]\uFE0F?|\u200D/gu;
+
+function stripLeadingEmoji(line: string): { hadEmoji: boolean; text: string } {
+  const leading = new RegExp("^\\s*(?:" + EMOJI_RE.source + ")+", "u");
+  const match = line.match(leading);
+  if (match) return { hadEmoji: true, text: line.slice(match[0].length).trim() };
+  const cleaned = line.replace(EMOJI_RE, "").trim();
+  return { hadEmoji: cleaned !== line.trim(), text: cleaned };
+}
+
+function isDividerLine(line: string): boolean {
+  const t = line.trim();
+  return t.length >= 3 && /^[_\-–—]+$/.test(t);
+}
+
+function isHeaderText(text: string): boolean {
+  if (!text || text.length > 70) return false;
+  if (/[.,;:]$/.test(text)) return false;
+  const letters = text.replace(/[^\p{L}]/gu, "");
+  if (letters.length < 3) return false;
+  return letters === letters.toUpperCase();
+}
+
+function isBulletLine(line: string): boolean {
+  return /^\s*[•\-*]\s+/.test(line);
+}
+
+function stripBulletMarker(line: string): string {
+  return line.replace(/^\s*[•\-*]\s+/, "").trim();
+}
+
+function renderConsideracoesContent(texto: string) {
+  const lines = texto.split(/\r?\n/);
+  const elements: any[] = [];
+  let isFirst = true;
+  let key = 0;
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) continue;
+
+    if (isDividerLine(line)) {
+      elements.push(
+        <View key={key++} style={{ height: 0.75, backgroundColor: GRAY_200, marginVertical: 12 }} />
+      );
+      isFirst = false;
+      continue;
+    }
+
+    const { hadEmoji, text } = stripLeadingEmoji(line);
+
+    if (hadEmoji || isHeaderText(text)) {
+      elements.push(
+        <View key={key++} style={{ flexDirection: "row", alignItems: "flex-start", marginTop: isFirst ? 0 : 14, marginBottom: 6 }}>
+          <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: GOLD, marginTop: 4, marginRight: 7 }} />
+          <Text style={{ fontSize: 10, fontWeight: "bold", color: NAVY, letterSpacing: 0.3, flex: 1 }}>
+            {text || line}
+          </Text>
+        </View>
+      );
+      isFirst = false;
+      continue;
+    }
+
+    if (isBulletLine(line)) {
+      elements.push(
+        <View key={key++} style={{ flexDirection: "row", marginBottom: 5, paddingLeft: 12 }}>
+          <Text style={{ fontSize: 9.5, color: GOLD, marginRight: 6 }}>•</Text>
+          <Text style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.6, flex: 1 }}>
+            {stripBulletMarker(line)}
+          </Text>
+        </View>
+      );
+      isFirst = false;
+      continue;
+    }
+
+    elements.push(
+      <Text key={key++} style={{ fontSize: 9.5, color: GRAY_700, lineHeight: 1.7, marginBottom: 8 }}>
+        {text || line}
+      </Text>
+    );
+    isFirst = false;
+  }
+
+  return elements;
+}
+
+/* ================================================================
    PÁGINA — CONSIDERAÇÕES FINAIS
    ================================================================ */
 function PageConsideracoes({ pg, total, texto }: { pg: number; total: number; texto: string }) {
   return (
     <Page size="A4" style={{ backgroundColor: WHITE }}>
       <PageHeader label="Considerações Finais" />
-      <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 28, paddingBottom: 52, justifyContent: "center" }}>
+      <View style={{ flex: 1, paddingHorizontal: 50, paddingTop: 28, paddingBottom: 52 }}>
         <Text style={{ fontSize: 8, color: GOLD, letterSpacing: 2.5, fontWeight: "bold", marginBottom: 6 }}>OBSERVAÇÕES</Text>
         <Text style={{ fontSize: 20, fontWeight: "bold", color: NAVY, marginBottom: 14 }}>Considerações Finais</Text>
         <GoldDivider />
-        <View style={{ backgroundColor: GRAY_50, borderRadius: 8, padding: 22, borderLeftWidth: 3, borderLeftColor: GOLD }}>
-          <Text style={{ fontSize: 10, color: GRAY_700, lineHeight: 1.75 }}>{texto}</Text>
+        <View style={{ backgroundColor: GRAY_50, borderRadius: 8, padding: 22, marginTop: 14, borderLeftWidth: 3, borderLeftColor: GOLD }}>
+          {renderConsideracoesContent(texto)}
         </View>
       </View>
       <PageFooter current={pg} total={total} />
