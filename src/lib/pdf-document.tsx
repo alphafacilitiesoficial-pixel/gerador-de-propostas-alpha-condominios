@@ -1150,16 +1150,26 @@ function renderInlineBold(text: string, baseStyle: object, keyPrefix: string) {
 type ConsideracaoLine =
   | { kind: "divider" }
   | { kind: "header"; text: string }
+  | { kind: "subheader"; text: string }
   | { kind: "bullet"; text: string }
   | { kind: "paragraph"; text: string };
 
+/** Um "bullet" curto, sem pontuação final, que NÃO é seguido por outro
+ *  bullet, é na prática um subtítulo (ex: "Síndico Certificado" antes de
+ *  um parágrafo explicativo) — e não um item de lista de verdade. */
+function looksLikeSubheading(text: string): boolean {
+  if (!text || text.length > 60) return false;
+  if (/[.,;:]$/.test(text)) return false;
+  const words = text.trim().split(/\s+/);
+  return words.length <= 6;
+}
+
 function classifyConsideracoesLines(texto: string): ConsideracaoLine[] {
-  const lines = texto.split(/\r?\n/);
+  const rawLines = texto.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   const out: ConsideracaoLine[] = [];
 
-  for (const raw of lines) {
-    const line = raw.trim();
-    if (!line) continue;
+  for (let i = 0; i < rawLines.length; i++) {
+    const line = rawLines[i];
 
     if (isDividerLine(line)) {
       out.push({ kind: "divider" });
@@ -1174,7 +1184,14 @@ function classifyConsideracoesLines(texto: string): ConsideracaoLine[] {
     }
 
     if (isBulletLine(line)) {
-      out.push({ kind: "bullet", text: stripBulletMarker(line) });
+      const bulletText = stripBulletMarker(line);
+      const nextLine = rawLines[i + 1];
+      const nextIsBullet = nextLine ? isBulletLine(nextLine) : false;
+      if (!nextIsBullet && looksLikeSubheading(bulletText)) {
+        out.push({ kind: "subheader", text: bulletText });
+      } else {
+        out.push({ kind: "bullet", text: bulletText });
+      }
       continue;
     }
 
@@ -1198,6 +1215,13 @@ function renderConsideracaoLine(item: ConsideracaoLine, key: string, marginTop: 
       </View>
     );
   }
+  if (item.kind === "subheader") {
+    return (
+      <Text key={key} style={{ fontSize: 9.5, fontWeight: "bold", color: NAVY, marginTop: marginTop || 12, marginBottom: 3, paddingLeft: 4 }}>
+        {item.text}
+      </Text>
+    );
+  }
   if (item.kind === "bullet") {
     const style = { fontSize: 9.5, color: GRAY_700, lineHeight: 1.6 };
     return (
@@ -1209,7 +1233,7 @@ function renderConsideracaoLine(item: ConsideracaoLine, key: string, marginTop: 
   }
   const style = { fontSize: 9.5, color: GRAY_700, lineHeight: 1.7 };
   return (
-    <Text key={key} style={{ ...style, marginTop, marginBottom: 8 }}>
+    <Text key={key} style={{ ...style, marginTop, marginBottom: 8, paddingLeft: 4 }}>
       {renderInlineBold(item.text, style, key)}
     </Text>
   );
@@ -1231,9 +1255,9 @@ function renderConsideracoesContent(texto: string) {
 
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
-    const marginTop = isFirst ? 0 : item.kind === "header" ? 14 : 0;
+    const marginTop = isFirst ? 0 : item.kind === "header" ? 14 : item.kind === "subheader" ? 12 : 0;
 
-    if (item.kind === "header" && items[i + 1]) {
+    if ((item.kind === "header" || item.kind === "subheader") && items[i + 1]) {
       const next = items[i + 1];
       elements.push(
         <View key={`grp-${key}`} wrap={false}>
